@@ -55,4 +55,27 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // ==========================================
+    // 4. KIỂM TRA FORM QUÊN MẬT KHẨU (forgot-password.html)
+    // ==========================================
+    const forgotPasswordForm = document.getElementById('forgotPasswordForm');
+    
+    if (forgotPasswordForm) {
+        forgotPasswordForm.addEventListener('submit', function(event) {
+            event.preventDefault(); // Chặn việc tự động reload trang
+            
+            const email = document.getElementById('reset-email').value.trim();
+
+            if (email === '') {
+                alert('Lỗi: Vui lòng nhập địa chỉ email!');
+            } else {
+                // Giả lập hiển thị thông báo thành công
+                alert('Thành công! Một đường link đặt lại mật khẩu đã được gửi đến: ' + email + '\n\nVui lòng kiểm tra hộp thư của bạn.');
+                
+                // Tự động đẩy người dùng về lại trang đăng nhập
+                window.location.href = 'login.html';
+            }
+        });
+    }
+
 });
