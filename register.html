@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Đăng ký tài khoản - Aurrelia</title>
+        <link rel="stylesheet" type="text/css" href="assets/css/auth.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    </head>
+    <body class="auth-body">
+        <div class="auth-wrapper">
+            
+            <div class="auth-image">
+                <div class="image-text">
+                    <h2>Discover Timeless Elegance</h2>
+                    <p>Join Aurrelia to curate your personal collection of artisanal, investment-grade jewelry.</p>
+                </div>
+            </div>
+
+            <div class="auth-form-section">
+                <h1 class="brand-logo">AURRELIA</h1>
+                
+                <div class="auth-tabs">
+                    <div class="tab" onclick="window.location.href='login.html'">Sign In</div>
+                    <div class="tab active">Create Account</div>
+                </div>
+
+                <form id="registerForm" action="login.html" method="get">
+                    
+                    <div class="input-group">
+                        <label for="fullname">FULL NAME</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-user icon"></i>
+                            <input type="text" id="fullname" placeholder="Nguyễn Văn A" required>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="email">EMAIL ADDRESS</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-envelope icon"></i>
+                            <input type="email" id="email" placeholder="your@email.com" required>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="reg-password">PASSWORD</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock icon"></i>
+                            <input type="password" id="reg-password" placeholder="••••••••" required>
+                            <i class="fas fa-eye-slash icon-right toggle-password" data-target="reg-password" style="cursor: pointer;"></i>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="confirm-password">CONFIRM PASSWORD</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock icon"></i>
+                            <input type="password" id="confirm-password" placeholder="••••••••" required>
+                            <i class="fas fa-eye-slash icon-right toggle-password" data-target="confirm-password" style="cursor: pointer;"></i>
+                        </div>
+                    </div>
+
+                    <div class="remember-row">
+                        <input type="checkbox" id="terms" required>
+                        <label for="terms">I agree to the Terms & Conditions</label>
+                    </div>
+
+                    <button type="submit" class="btn-primary">CREATE ACCOUNT</button>
+                </form>
+
+            </div>
+
+        </div>
+
+        <script src="assets/js/auth.js"></script>
+    </body>
+</html>
