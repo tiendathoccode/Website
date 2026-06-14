@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurelia Fine Jewelry - Order Management</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="row min-vh-100">
+        
+        <nav class="col-md-3 col-lg-2 d-md-block sidebar border-end p-4">
+            <div class="position-sticky d-flex flex-column h-100 justify-content-between">
+                <div>
+                    <div class="brand-zone mb-4">
+                        <h3 class="brand-logo mb-1">AURELIA</h3>
+                        <small class="text-muted font-xs tracking-wider text-uppercase">Fine Jewelry Admin</small>
+                    </div>
+                    
+                    <ul class="nav flex-column gap-2">
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html">
+                                <i class="bi bi-grid me-2"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="products.html">
+                                <i class="bi bi-gem me-2"></i> Products
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="orders.html">
+                                <i class="bi bi-bag-check me-2"></i> Orders
+                            </a>
+                        </li>
+                        
+                    </ul>
+                </div>
+                
+                <div class="d-flex align-items-center gap-2 pt-3 border-top">
+                    <div class="avatar bg-gold text-white rounded-circle d-flex align-items-center justify-content-center fw-bold">
+                        AA
+                    </div>
+                    <div>
+                        <h6 class="mb-0 small fw-bold text-dark">Aurelia Admin</h6>
+                        <small class="text-muted font-xs">Manager</small>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4 main-content">
+            
+            <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
+                <div>
+                    <h2 class="page-title mb-1">Order Management</h2>
+                    <small class="text-muted">Track, filter, and process premium orders.</small>
+                </div>
+            </div>
+
+            <div class="card bg-white p-3 mb-4 shadow-sm border-0">
+                <div class="row g-3 align-items-center">
+                    <div class="col-12 col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-text bg-light-custom border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                            <input type="text" id="searchOrders" class="form-control form-control-custom bg-light-custom border-start-0" placeholder="Search order ID or customer name...">
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <select id="filterPayment" class="form-select font-xs text-muted">
+                            <option value="all">All Payments</option>
+                            <option value="Paid">Paid</option>
+                            <option value="Pending">Pending</option>
+                        </select>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <select id="filterFulfillment" class="form-select font-xs text-muted">
+                            <option value="all">All Fulfillments</option>
+                            <option value="Shipped">Shipped</option>
+                            <option value="Processing">Processing</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-2">
+                        <button id="btnApplyFilters" class="btn btn-gold w-100 font-xs text-uppercase tracking-wider py-2">Apply Filters</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card bg-white border-0 shadow-sm overflow-hidden">
+                <div class="table-responsive table-custom-wrapper">
+                    <table class="table align-middle mb-0" id="ordersTable">
+                        <thead class="table-light-bg text-uppercase font-xs tracking-wider text-muted">
+                            <tr>
+                                <th scope="col" class="ps-4" style="width: 50px;">
+                                    <div class="form-check custom-checkbox">
+                                        <input class="form-check-input" type="checkbox" id="selectAll">
+                                    </div>
+                                </th>
+                                <th scope="col">Order ID</th>
+                                <th scope="col">Customer</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Total</th>
+                                <th scope="col">Payment</th>
+                                <th scope="col">Fulfillment</th>
+                                <th scope="col" class="text-end pe-4">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="row-hover" data-id="#AUR-1024" data-customer="Evelyn Thorne" data-payment="Paid" data-fulfillment="Shipped">
+                                <td class="ps-4">
+                                    <div class="form-check custom-checkbox">
+                                        <input class="form-check-input" type="checkbox">
+                                    </div>
+                                </td>
+                                <td><span class="fw-bold text-dark">#AUR-1024</span></td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="avatar-sm bg-light-custom rounded-circle d-flex align-items-center justify-content-center fw-medium text-secondary font-xs">ET</div>
+                                        <div>
+                                            <div class="fw-medium text-dark small">Evelyn Thorne</div>
+                                            <div class="text-muted font-xs">evelyn@example.com</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-muted font-xs">Jun 08, 2026</td>
+                                <td class="font-numeric text-dark">$4,250.00</td>
+                                <td>
+                                    <span class="status-badge"><i class="bi bi-circle-fill font-xs status-paid me-1"></i> Paid</span>
+                                </td>
+                                <td>
+                                    <span class="status-badge"><i class="bi bi-circle-fill font-xs status-shipped me-1"></i> Shipped</span>
+                                </td>
+                                <td class="text-end pe-4">
+                                    <button class="btn btn-outline-custom font-xs btn-update-status">UPDATE STATUS</button>
+                                </td>
+                            </tr>
+                            <tr class="row-hover" data-id="#AUR-1025" data-customer="Liam Sterling" data-payment="Pending" data-fulfillment="Processing">
+                                <td class="ps-4">
+                                    <div class="form-check custom-checkbox">
+                                        <input class="form-check-input" type="checkbox">
+                                    </div>
+                                </td>
+                                <td><span class="fw-bold text-dark">#AUR-1025</span></td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="avatar-sm bg-light-custom rounded-circle d-flex align-items-center justify-content-center fw-medium text-secondary font-xs">LS</div>
+                                        <div>
+                                            <div class="fw-medium text-dark small">Liam Sterling</div>
+                                            <div class="text-muted font-xs">liam@sterling.com</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-muted font-xs">Jun 07, 2026</td>
+                                <td class="font-numeric text-dark">$8,900.00</td>
+                                <td>
+                                    <span class="status-badge"><i class="bi bi-circle-fill font-xs status-pending me-1"></i> Pending</span>
+                                </td>
+                                <td>
+                                    <span class="status-badge"><i class="bi bi-circle-fill font-xs status-processing me-1"></i> Processing</span>
+                                </td>
+                                <td class="text-end pe-4">
+                                    <button class="btn btn-outline-custom font-xs btn-update-status">UPDATE STATUS</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<div class="modal fade" id="updateStatusModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
+        <div class="modal-content border-0 rounded-1 shadow">
+            <div class="modal-header border-bottom-0 pb-0 pt-4 px-4">
+                <h5 class="section-title fs-5 mb-0" id="modalOrderId">Update Status</h5>
+                <button type="button" class="btn-close font-xs" data-bs-shadow="none" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body px-4 pt-3 pb-4">
+                <div class="mb-3">
+                    <label class="form-label form-label-custom">Payment Status</label>
+                    <select id="modalSelectPayment" class="form-select form-control-custom">
+                        <option value="Paid">Paid</option>
+                        <option value="Pending">Pending</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label form-label-custom">Fulfillment Status</label>
+                    <select id="modalSelectFulfillment" class="form-select form-control-custom">
+                        <option value="Shipped">Shipped</option>
+                        <option value="Processing">Processing</option>
+                    </select>
+                </div>
+                <div class="d-flex gap-2 mt-4">
+                    <button type="button" class="btn btn-light-custom text-dark font-xs flex-grow-1 border" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" id="btnSaveStatus" class="btn btn-gold font-xs flex-grow-1 text-uppercase tracking-wider">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="orders.js"></script>
+</body>
+</html>
