@@ -1,0 +1,275 @@
+/* CSS: Sang Trọng & Tinh Tế (Luxury Minimalism) */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg-page: #fcfbf8;        /* Màu nền trang (Kem nhạt) */
+    --bg-card: #ffffff;        /* Màu nền thẻ (Trắng) */
+    --primary-color: #c4a477;  /* Vàng Champagne */
+    --primary-hover: #b08f62;  
+    --text-main: #2c2a29;      /* Đen xám sang trọng */
+    --text-muted: #888888;     
+    --border-color: #e8e2d9;   /* Viền kem đậm */
+    --font-heading: 'Playfair Display', serif;
+    --font-body: 'Montserrat', sans-serif;
+}
+
+body {
+    background-color: var(--bg-page);
+    color: var(--text-main);
+    font-family: var(--font-body);
+    font-weight: 300;
+    line-height: 1.6;
+    padding: 40px 20px;
+}
+
+/* Typography chung */
+h1, h2, h3, h4 {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    color: var(--text-main);
+}
+h2 { font-size: 28px; margin-bottom: 5px; }
+.section-desc {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 30px;
+}
+.sub-heading {
+    font-size: 20px;
+    margin-bottom: 15px;
+}
+
+/* Layout Chính */
+.account-container {
+    display: flex;
+    max-width: 1100px;
+    margin: 0 auto;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+}
+
+/* Sidebar Điều hướng */
+.account-sidebar {
+    width: 280px;
+    padding: 40px 30px;
+    border-right: 1px solid var(--border-color);
+    background: var(--bg-page);
+}
+.profile-summary {
+    text-align: center;
+    padding-bottom: 30px;
+    margin-bottom: 30px;
+    border-bottom: 1px solid var(--border-color);
+}
+.profile-summary img {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--primary-color);
+    padding: 3px; /* Tạo hiệu ứng viền đôi sang trọng */
+}
+.profile-summary h4 {
+    margin-top: 15px;
+    font-size: 18px;
+    letter-spacing: 0.5px;
+}
+.member-tier {
+    font-size: 12px;
+    color: var(--primary-color);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 5px;
+    font-weight: 500;
+}
+.menu-btn {
+    display: block;
+    width: 100%;
+    padding: 12px 0;
+    text-align: left;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    transition: all 0.3s ease;
+    border-bottom: 1px solid transparent;
+}
+.menu-btn:hover, .menu-btn.active {
+    color: var(--text-main);
+    border-bottom: 1px solid var(--primary-color);
+}
+
+/* Nội dung Tab */
+.account-content {
+    flex: 1;
+    padding: 50px;
+}
+.tab-panel { display: none; animation: fadeIn 0.4s ease; }
+.tab-panel.active { display: block; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Forms & Inputs */
+.form-row { display: flex; gap: 20px; }
+.form-group { margin-bottom: 20px; width: 100%; }
+.form-group label {
+    display: block;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    color: var(--text-main);
+    font-weight: 500;
+}
+.form-group input, .form-group textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    font-family: var(--font-body);
+    font-size: 14px;
+    outline: none;
+    transition: border 0.3s;
+}
+.form-group input:focus, .form-group textarea:focus {
+    border-color: var(--primary-color);
+}
+
+/* Buttons */
+.btn-submit {
+    background: var(--primary-color);
+    color: #fff;
+    padding: 14px 30px;
+    border: 1px solid var(--primary-color);
+    font-family: var(--font-body);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.btn-submit:hover {
+    background: var(--primary-hover);
+    border-color: var(--primary-hover);
+}
+.btn-outline {
+    background: transparent;
+    color: var(--text-main);
+    border: 1px solid var(--text-main);
+}
+.btn-outline:hover {
+    background: var(--text-main);
+    color: #fff;
+}
+.btn-action {
+    background: none;
+    border: none;
+    font-family: var(--font-body);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--text-main);
+    color: var(--text-main);
+    padding-bottom: 2px;
+    margin-right: 15px;
+}
+.btn-action.btn-delete {
+    color: #d9534f;
+    border-bottom-color: #d9534f;
+}
+
+/* Cards (Đơn hàng & Địa chỉ) */
+.order-card, .address-card {
+    border: 1px solid var(--border-color);
+    padding: 25px;
+    margin-bottom: 20px;
+    background: var(--bg-card);
+}
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+.order-body p { margin-bottom: 5px; font-size: 14px; }
+.order-footer { margin-top: 20px; }
+
+.status {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 500;
+}
+.status.completed { color: var(--primary-color); }
+.status.canceled { color: var(--text-muted); }
+
+.order-product-title {
+    font-family: var(--font-heading); /* Sử dụng phông chữ có chân sang trọng */
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-main);
+    letter-spacing: 0.5px;
+}
+/* Địa chỉ */
+.address-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+.address-info strong {
+    font-family: var(--font-heading);
+    font-size: 18px;
+    display: inline-block;
+    margin-bottom: 8px;
+}
+.address-info p { font-size: 14px; margin-bottom: 3px; color: var(--text-muted); }
+.badge-default {
+    background: var(--border-color);
+    color: var(--text-main);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 8px;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+.address-actions { display: flex; gap: 15px; }
+.divider { margin: 40px 0; border: 0; border-top: 1px solid var(--border-color); }
+
+/* Hệ thống đánh giá Sao */
+.review-card {
+    border: 1px solid var(--border-color);
+    padding: 30px;
+}
+.product-title { font-size: 22px; }
+.product-meta { font-size: 13px; color: var(--text-muted); margin-top: 5px; }
+.star-rating {
+    font-size: 28px;
+    cursor: pointer;
+    color: var(--border-color);
+    letter-spacing: 5px;
+}
+.star-rating span:hover, .star-rating span.selected { color: var(--primary-color); }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .account-container { flex-direction: column; }
+    .account-sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border-color); padding: 30px 20px; }
+    .account-content { padding: 30px 20px; }
+    .form-row { flex-direction: column; gap: 0; }
+    .address-card { flex-direction: column; gap: 15px; }
+}
