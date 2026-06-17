@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tài Khoản - Aurelia Fine Jewelry</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="account.css">
+</head>
+<body>
+
+<div class="account-container">
+    <div class="account-sidebar">
+        <div class="profile-summary">
+            <img id="sidebar-avatar" src="https://via.placeholder.com/100" alt="Avatar">
+            <h4 id="sidebar-name">Nguyễn Văn A</h4>
+            <p class="member-tier">Hội viên VIP</p>
+        </div>
+        <div class="menu-list">
+            <button class="menu-btn active" onclick="switchTab('profile')">Hồ Sơ Cá Nhân</button>
+            <button class="menu-btn" onclick="switchTab('orders')">Lịch Sử Đơn Hàng</button>
+            <button class="menu-btn" onclick="switchTab('addresses')">Sổ Địa Chỉ</button>
+            <button class="menu-btn" onclick="switchTab('reviews')">Đánh Giá Sản Phẩm</button>
+        </div>
+    </div>
+
+    <div class="account-content">
+        
+        <div id="profile" class="tab-panel active">
+            <h2>Hồ Sơ Cá Nhân</h2>
+            <p class="section-desc">Quản lý thông tin bảo mật và tùy chọn cá nhân của bạn.</p>
+            <form id="profileForm" onsubmit="saveProfile(event)">
+                <div class="form-group">
+                    <label for="avatarInput">Ảnh đại diện</label>
+                    <input type="file" id="avatarInput" name="avatarInput" accept="image/*" onchange="previewImage(event)">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fullName">Họ và tên</label>
+                        <input type="text" id="fullName" name="fullName" value="Nguyễn Văn A" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Số điện thoại</label>
+                        <input type="tel" id="phone" name="phone" value="0901234567" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email">Địa chỉ Email</label>
+                    <input type="email" id="email" name="email" value="vana@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="mainAddress">Địa chỉ liên hệ</label>
+                    <textarea id="mainAddress" name="mainAddress" rows="3">123 Đường ABC, Quận 1, TP. HCM</textarea>
+                </div>
+                <button type="submit" class="btn-submit">Lưu Thay Đổi</button>
+            </form>
+        </div>
+
+        <div id="orders" class="tab-panel">
+            <h2>Lịch Sử Đơn Hàng</h2>
+        <p class="section-desc">Theo dõi các tuyệt tác trang sức bạn đã sở hữu.</p>
+    
+        <div class="order-card">
+            <div class="order-header">
+                <span class="order-product-title">The Eternity Drop Necklace</span>
+                <span class="status completed">Đã hoàn thành</span>
+            </div>
+            <div class="order-body">
+                <p>Mã Đơn: <strong>#DH1002</strong></p>
+                <p>Ngày đặt: 10/06/2026</p>
+                <p>Tổng thanh toán: <strong>34,500,000 ₫</strong></p>
+            </div>
+            <div class="order-footer">
+                <button class="btn-action" onclick="switchTab('reviews')">Đánh giá tác phẩm</button>
+            </div>
+        </div>
+
+    <div class="order-card">
+        <div class="order-header">
+            <span class="order-product-title">The Radiant Diamond Ring</span>
+            <span class="status canceled">Đã hủy</span>
+        </div>
+        <div class="order-body">
+            <p>Mã Đơn: <strong>#DH1001</strong></p>
+            <p>Ngày đặt: 01/06/2026</p>
+            <p>Tổng thanh toán: <strong>12,000,000 ₫</strong></p>
+        </div>
+    </div>
+</div>
+
+        <div id="addresses" class="tab-panel">
+            <h2>Sổ Địa Chỉ</h2>
+            <p class="section-desc">Quản lý các địa chỉ nhận hàng của bạn.</p>
+            
+            <div id="addressList">
+                <div class="address-card">
+                    <div class="address-info">
+                        <strong>Nguyễn Văn A</strong> <span class="badge-default">Mặc định</span>
+                        <p>0901234567</p>
+                        <p>123 Đường ABC, Quận 1, TP. Hồ Chí Minh</p>
+                    </div>
+                    <div class="address-actions">
+                        <button class="btn-action btn-delete" onclick="deleteAddress(this)">Xóa</button>
+                    </div>
+                </div>
+                <div class="address-card">
+                    <div class="address-info">
+                        <strong>Nguyễn Văn A (Văn phòng)</strong>
+                        <p>0901234567</p>
+                        <p>456 Tòa nhà XYZ, Quận Bình Thạnh, TP. Hồ Chí Minh</p>
+                    </div>
+                    <div class="address-actions">
+                        <button class="btn-action btn-set-default" onclick="setDefaultAddress(this)">Đặt làm mặc định</button>
+                        <button class="btn-action btn-delete" onclick="deleteAddress(this)">Xóa</button>
+                    </div>
+                </div>
+            </div>
+            
+            <hr class="divider">
+            
+            <h3 class="sub-heading">Thêm địa chỉ mới</h3>
+            <form id="addressForm" onsubmit="addAddress(event)">
+                <div class="form-row">
+                    <div class="form-group" style="flex: 1;">
+                        <input type="text" id="addrName" name="addrName" placeholder="Tên người nhận" required>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <input type="text" id="addrPhone" name="addrPhone" placeholder="Số điện thoại" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <textarea id="addrDetail" name="addrDetail" rows="2" placeholder="Địa chỉ chi tiết (Số nhà, Tên đường...)" required></textarea>
+                </div>
+                <button type="submit" class="btn-submit btn-outline">Thêm Địa Chỉ</button>
+            </form>
+        </div>
+
+        <div id="reviews" class="tab-panel">
+            <h2>Đánh Giá Sản Phẩm</h2>
+            <p class="section-desc">Chia sẻ cảm nhận của bạn về sự hoàn mỹ của sản phẩm.</p>
+            
+            <div class="review-card">
+                <h4 class="product-title">The Eternity Drop Necklace</h4>
+                <p class="product-meta">Thuộc đơn hàng #DH1002</p>
+                
+                <div class="form-group" style="margin-top: 20px;">
+                    <label>Mức độ hài lòng</label>
+                    <div class="star-rating">
+                        <span onclick="rateStar(1)">★</span><span onclick="rateStar(2)">★</span><span onclick="rateStar(3)">★</span><span onclick="rateStar(4)">★</span><span onclick="rateStar(5)">★</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="reviewContent">Trải nghiệm của bạn</label>
+                    <textarea id="reviewContent" name="reviewContent" rows="4" placeholder="Thiết kế, chất liệu, độ tinh xảo..."></textarea>
+                </div>
+                <button type="button" class="btn-submit" onclick="alert('Trân trọng cảm ơn những đánh giá quý báu của bạn!')">Gửi Đánh Giá</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="account.js"></script>
+</body>
+</html>
