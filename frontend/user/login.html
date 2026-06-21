@@ -11,8 +11,8 @@
             
             <div class="auth-image">
                 <div class="image-text">
-                    <h2>Discover Timeless Elegance</h2>
-                    <p>Join Aurelia to curate your personal collection of artisanal, investment-grade jewelry.</p>
+                    <h2>Khám phá vẻ đẹp thanh lịch vượt thời gian</h2>
+                    <p>Hãy cùng Aurrelia tạo nên bộ sưu tập trang sức thủ công tinh xảo, có giá trị đầu tư dành riêng cho bạn.</p>
                 </div>
             </div>
 
@@ -20,37 +20,34 @@
                 <h1 class="brand-logo">AURRELIA</h1>
                 
                 <div class="auth-tabs">
-                    <div class="tab active">Sign In</div>
-                    <div class="tab" onclick="window.location.href='register.html'">Create Account</div>
+                    <div class="tab active">Đăng nhập</div>
+                    <div class="tab" onclick="window.location.href='register.html'">Tạo tài khoản</div>
                 </div>
 
-                <form id="loginForm" action="index.html" method="get">
-                        <div class="input-group">
-                        <label for="email">EMAIL ADDRESS</label>
+                <form id="loginForm" method="POST" action="">
+                    <div class="input-group">
+                        <label for="login-email">ĐỊA CHỈ EMAIL</label>
                         <div class="input-wrapper">
                             <i class="fas fa-envelope icon"></i>
-                            <input type="email" id="email" placeholder="your@email.com" required>
+                            <input type="email" id="login-email" name="email" placeholder="email@cua-ban.com" required>
                         </div>
                     </div>
-
+                    
                     <div class="input-group">
-                        <div class="label-row">
-                            <label for="password">PASSWORD</label>
-                            <a href="forgot-password.html" class="forgot-link">Forgot Password?</a>
-                        </div>
+                        <label for="login-password">MẬT KHẨU</label>
                         <div class="input-wrapper">
                             <i class="fas fa-lock icon"></i>
-                            <input type="password" id="password" placeholder="••••••••" required>
-                            <i class="fas fa-eye-slash icon-right" id="togglePassword" style="cursor: pointer;"></i>
+                            <input type="password" id="login-password" name="password" placeholder="••••••••" required>
                         </div>
                     </div>
-
-                    <div class="remember-row">
-                        <input type="checkbox" id="remember">
-                        <label for="remember">Remember me</label>
+                    
+                    <div style="text-align: right; margin-bottom: 20px;">
+                        <a href="forgot-password.html" style="color: #bfa15f; text-decoration: none; font-size: 13px; font-weight: bold;">Quên mật khẩu?</a>
                     </div>
+                    
+                    <div class="alert alert-danger d-none text-center mb-3" style="font-size: 13px; color: red;" id="login-error"></div>
 
-                    <button type="submit" class="btn-primary">SIGN IN</button>
+                    <button type="submit" class="btn-primary">ĐĂNG NHẬP</button>
                 </form>
 
                 <div class="divider">
