@@ -1,14 +1,13 @@
-
 const productDetail = {
   id:          'eternity-drop-necklace',
-  name:        'The Eternity Drop Necklace',
-  price:       3450.00,
-  badge:       'LIMITED EDITION',
+  name:        'Vòng Cổ Eternity Drop',
+  price:       3450000,
+  badge:       'PHIÊN BẢN GIỚI HẠN',
   metal:       'champagne-gold',      
   metalLabels: {
-    'champagne-gold': 'Champagne Gold',
-    'white-gold':     'White Gold',
-    'rose-gold':      'Rose Gold',
+    'champagne-gold': 'Vàng Champagne',
+    'white-gold':     'Vàng Trắng',
+    'rose-gold':      'Vàng Hồng',
   },
   images: {
     main:   'https://images.unsplash.com/photo-1599643477877-530eb83abc8e?w=900&auto=format&fit=crop&q=80',
@@ -22,7 +21,7 @@ let cartItems = [
     id:       productDetail.id,
     name:     productDetail.name,
     metal:    'champagne-gold',
-    metalLabel: 'Champagne Gold',
+    metalLabel: 'Vàng Champagne',
     price:    productDetail.price,
     quantity: 1,
     image:    productDetail.images.main,
@@ -55,14 +54,14 @@ function updateCartSubtotal() {
 }
 
 function formatCurrency(amount) {
-  return '$' + amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return amount.toLocaleString('vi-VN', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + '₫';
 }
 
 function renderCartItems() {
   cartItemList.innerHTML = '';
 
   if (cartItems.length === 0) {
-    cartItemList.innerHTML = '<p style="color:var(--color-muted);font-size:12px;text-align:center;padding-top:40px;">Your cart is empty.</p>';
+    cartItemList.innerHTML = '<p style="color:var(--color-muted);font-size:12px;text-align:center;padding-top:40px;">Giỏ hàng của bạn đang trống.</p>';
     updateCartBadge();
     updateCartSubtotal();
     return;
@@ -83,11 +82,11 @@ function renderCartItems() {
         <span class="cart-item-name">${item.name}</span>
         <span class="cart-item-meta">${item.metalLabel}</span>
         <div class="qty-control">
-          <button class="qty-btn" data-action="decrease" data-index="${index}" aria-label="Decrease quantity">−</button>
+          <button class="qty-btn" data-action="decrease" data-index="${index}" aria-label="Giảm số lượng">−</button>
           <span class="qty-value" id="qtyValue${index}">${item.quantity}</span>
-          <button class="qty-btn" data-action="increase" data-index="${index}" aria-label="Increase quantity">+</button>
+          <button class="qty-btn" data-action="increase" data-index="${index}" aria-label="Tăng số lượng">+</button>
         </div>
-        <button class="remove-btn" data-action="remove" data-index="${index}" aria-label="Remove item">🗑</button>
+        <button class="remove-btn" data-action="remove" data-index="${index}" aria-label="Xóa sản phẩm">🗑</button>
       </div>
       <span class="cart-item-price">${formatCurrency(item.price * item.quantity)}</span>
     `;
@@ -102,7 +101,7 @@ function renderCartItems() {
 function removeCartItem(itemIndex) {
   if (cartItems[itemIndex]) {
     cartItems.splice(itemIndex, 1);
-    showToast('Item removed from cart.');
+    showToast('Đã xóa sản phẩm khỏi giỏ hàng.');
     renderCartItems();
   }
 }
@@ -121,7 +120,7 @@ function changeItemQuantity(itemIndex, delta) {
 
   if (item.quantity <= 0) {
     cartItems.splice(itemIndex, 1);
-    showToast('Item removed from cart.');
+    showToast('Đã xóa sản phẩm khỏi giỏ hàng.');
   }
 
   renderCartItems();
@@ -148,11 +147,11 @@ function addToCart() {
 
   renderCartItems();
   openCartDrawer();
-  showToast('Added to cart!');
+  showToast('Đã thêm vào giỏ hàng!');
 }
 
 function addToWishlist() {
-  showToast('Saved to your wishlist ♡');
+  showToast('Đã lưu vào danh sách yêu thích ♡');
 }
 
 function openCartDrawer() {
@@ -243,25 +242,32 @@ function showToast(message) {
 
 function proceedToCheckout() {
   if (cartItems.length === 0) {
-    showToast('Your cart is empty.');
+    showToast('Giỏ hàng của bạn đang trống.');
     return;
   }
-  showToast('Redirecting to checkout…');
+  showToast('Đang chuyển đến trang thanh toán…');
+
+  // Chờ một chút để người dùng thấy thông báo, sau đó chuyển sang trang thanh toán
+  setTimeout(() => {
+    window.location.href = 'thanh_toan.html';
+  }, 600);
 }
 
 btnCartToggle.addEventListener('click', toggleCartDrawer);
 btnCloseCart.addEventListener('click', closeCartDrawer);
-cartItemList.addEventListener('click', (e) => {
-  const qtyBtn = e.target.closest('.qty-btn, .remove-btn');
-  if (!qtyBtn) return;
 
-  const itemIndex = parseInt(qtyBtn.dataset.index, 10);
-  const action    = qtyBtn.dataset.action;
+cartItemList.addEventListener('click', (e) => {
+  const actionBtn = e.target.closest('.qty-btn, .remove-btn');
+  if (!actionBtn) return;
+
+  const itemIndex = parseInt(actionBtn.dataset.index, 10);
+  const action    = actionBtn.dataset.action;
 
   if (action === 'increase') changeItemQuantity(itemIndex, +1);
   if (action === 'decrease') changeItemQuantity(itemIndex, -1);
   if (action === 'remove') removeCartItem(itemIndex);
 });
+
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && cartIsOpen) closeCartDrawer();
 });
@@ -284,17 +290,6 @@ thumbnailStrip.addEventListener('click', (e) => {
 productAccordion.addEventListener('click', (e) => {
   const trigger = e.target.closest('.accordion-trigger');
   if (trigger) toggleAccordion(trigger);
-});
-
-cartItemList.addEventListener('click', (e) => {
-  const qtyBtn = e.target.closest('.qty-btn');
-  if (!qtyBtn) return;
-
-  const itemIndex = parseInt(qtyBtn.dataset.index, 10);
-  const action    = qtyBtn.dataset.action;
-
-  if (action === 'increase') changeItemQuantity(itemIndex, +1);
-  if (action === 'decrease') changeItemQuantity(itemIndex, -1);
 });
 
 function initProductPage() {
