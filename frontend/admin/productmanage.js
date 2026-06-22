@@ -28,20 +28,36 @@ const DOM = {
     clearFiltersBtn: document.getElementById('clearFilters'),
     tableBody: document.getElementById('productTableBody'),
     paginationInfo: document.getElementById('paginationInfo'),
-    paginationControls: document.getElementById('paginationControls')
+    paginationControls: document.getElementById('paginationControls'),
+    addProductForm: document.getElementById('addProductForm'),
+    editModalElement: document.getElementById('editProductModal'),
+    editProductForm: document.getElementById('editProductForm'),
+    editOldSku: document.getElementById('editOldSku'),
+    editName: document.getElementById('editProductName'),
+    editDesc: document.getElementById('editProductDesc'),
+    editCategory: document.getElementById('editProductCategory'),
+    editSku: document.getElementById('editProductSku'),
+    editPrice: document.getElementById('editProductPrice'),
+    editStock: document.getElementById('editProductStock')
 };
 
 // --- LOGIC XỬ LÝ DỮ LIỆU ---
 
 function processData() {
-    let filteredData = [...productsData];
+    let localData = JSON.parse(localStorage.getItem('luxury_products'));
+    if (!localData) {
+        localStorage.setItem('luxury_products', JSON.stringify(productsData));
+        localData = [...productsData];
+    }
+    
+    let filteredData = [...localData]; 
 
-    // 1. Lọc theo danh mục (Category)
+    // 1. Lọc theo danh mục (Category) - Giữ nguyên phía dưới
     if (state.activeCategory) {
         filteredData = filteredData.filter(item => item.category === state.activeCategory);
     }
 
-    // 2. Tìm kiếm (Search)
+    // 2. Tìm kiếm (Search) - Giữ nguyên
     if (state.searchQuery) {
         const query = state.searchQuery.toLowerCase().trim();
         filteredData = filteredData.filter(item => 
@@ -50,7 +66,7 @@ function processData() {
         );
     }
 
-    // 3. Sắp xếp (Sort)
+    // 3. Sắp xếp (Sort) - Giữ nguyên
     if (state.sortOrder === 'price-asc') {
         filteredData.sort((a, b) => a.price - b.price);
     } else if (state.sortOrder === 'price-desc') {
@@ -63,6 +79,7 @@ function processData() {
     state.data = filteredData;
     render();
 }
+
 
 // --- LOGIC RENDER GIAO DIỆN ---
 
@@ -106,7 +123,7 @@ function renderTable() {
                     <img src="${item.image}" class="product-thumb object-fit-cover" alt="${item.name}">
                     <div>
                         <h6 class="mb-1 fw-bold text-dark font-xs">${item.name}</h6>
-                        <p class="text-muted font-xs mb-0">${item.desc}</p>
+                        <p class="text-muted font-xs mb-0 text-truncate" style="max-width: 180px;">${item.desc}</p>
                     </div>
                 </div>
             </td>
@@ -114,8 +131,14 @@ function renderTable() {
             <td class="font-xs text-muted font-monospace align-middle">${item.sku}</td>
             <td class="font-numeric fw-medium align-middle">${formattedPrice}</td>
             <td class="align-middle"><span class="badge badge-custom ${badgeClass}">${item.status}</span></td>
+            
             <td class="pe-4 text-end align-middle">
-                <button class="btn btn-sm btn-icon border-0" title="Edit Product"><i class="bi bi-pencil"></i></button>
+                <button class="btn btn-sm btn-icon border-0 edit-btn" data-sku="${item.sku}" title="Edit Product">
+                    <i class="bi bi-pencil"></i>
+                </button>
+                <button class="btn btn-sm btn-icon border-0 text-danger delete-btn" data-sku="${item.sku}" title="Delete Product">
+                    <i class="bi bi-trash"></i>
+                </button>
             </td>
         `;
         DOM.tableBody.appendChild(row);
@@ -249,6 +272,150 @@ if (DOM.paginationControls) {
     });
 }
 
+// 7. Xử lý khi người dùng thêm sản phẩm mới (Publish Product)
+if (DOM.addProductForm) {
+    DOM.addProductForm.addEventListener('submit', (e) => {
+        e.preventDefault(); // CHẶN LỖI 405 
+
+        const formData = new FormData(DOM.addProductForm);
+        const priceValue = parseFloat(formData.get('price')) || 0;
+        const stockValue = parseInt(formData.get('stock_quantity')) || 0;
+
+        let statusValue = "IN STOCK";
+        if (stockValue === 0) statusValue = "OUT OF STOCK";
+        else if (stockValue <= 3) statusValue = "LOW STOCK";
+
+        // Hàm phụ để lưu sản phẩm sau khi đã có đường link ảnh
+        const saveProduct = (imageUrl) => {
+            const newProduct = {
+                name: formData.get('product_name'),
+                desc: formData.get('description') || "No description.",
+                category: formData.get('category'),
+                sku: formData.get('sku').toUpperCase(),
+                price: priceValue,
+                status: statusValue,
+                image: imageUrl, 
+                dateAdded: new Date().toISOString().split('T')[0]
+            };
+
+            let currentProducts = JSON.parse(localStorage.getItem('luxury_products')) || productsData;
+            currentProducts.unshift(newProduct);
+            localStorage.setItem('luxury_products', JSON.stringify(currentProducts));
+
+            DOM.addProductForm.reset();
+            alert(`Product "${newProduct.name}" published successfully!`);
+            
+            if(DOM.tableBody) {
+                state.currentPage = 1;
+                processData();
+            } else {
+                window.location.href = "index.html"; 
+            }
+        };
+
+       
+        const imageFile = formData.get('product_images[]'); 
+
+        if (imageFile && imageFile.size > 0) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const base64Image = event.target.result;
+                saveProduct(base64Image); // Gọi hàm lưu với ảnh thật
+            };
+            reader.readAsDataURL(imageFile);
+        } else {
+            const defaultImage = "https://st2.depositphotos.com/1561359/12101/v/950/depositphotos_121012076-stock-illustration-blank-photo-icon.jpg";
+            saveProduct(defaultImage);
+        }
+    });
+}
+// 8. Xử lý tính năng Chỉnh sửa (Form Modal) và Xóa sản phẩm trực tiếp trên bảng
+if (DOM.tableBody) {
+    // Khởi tạo Bootstrap Modal Instance để điều khiển ẩn hiện qua JS
+    const editModal = DOM.editModalElement ? new bootstrap.Modal(DOM.editModalElement) : null;
+
+    DOM.tableBody.addEventListener('click', (e) => {
+        const editBtn = e.target.closest('.edit-btn');
+        const deleteBtn = e.target.closest('.delete-btn');
+        let currentProducts = JSON.parse(localStorage.getItem('luxury_products')) || productsData;
+
+        //NÚT XÓA
+        if (deleteBtn) {
+            const sku = deleteBtn.getAttribute('data-sku');
+            const targetProduct = currentProducts.find(p => p.sku === sku);
+
+            if (targetProduct && confirm(`Bạn có chắc chắn muốn xóa sản phẩm "${targetProduct.name}" khỏi hệ thống?`)) {
+                currentProducts = currentProducts.filter(p => p.sku !== sku);
+                localStorage.setItem('luxury_products', JSON.stringify(currentProducts));
+                processData();
+            }
+        }
+
+        // NÚT SỬA 
+        if (editBtn) {
+            const sku = editBtn.getAttribute('data-sku');
+            const targetProduct = currentProducts.find(p => p.sku === sku);
+
+            if (targetProduct && editModal) {
+                // Đổ toàn bộ thông tin sản phẩm hiện tại vào các ô input trên Form
+                DOM.editOldSku.value = targetProduct.sku; // Giữ lại SKU gốc để định vị
+                DOM.editName.value = targetProduct.name;
+                DOM.editDesc.value = targetProduct.desc || "";
+                DOM.editCategory.value = targetProduct.category;
+                DOM.editSku.value = targetProduct.sku;
+                DOM.editPrice.value = targetProduct.price;
+                
+                // Gán tạm số lượng kho dựa trên nhãn trạng thái hiện tại
+                if (targetProduct.status === "OUT OF STOCK") DOM.editStock.value = 0;
+                else if (targetProduct.status === "LOW STOCK") DOM.editStock.value = 2;
+                else DOM.editStock.value = 15;
+
+                // Kích hoạt hiển thị Form Modal lên màn hình
+                editModal.show();
+            }
+        }
+    });
+
+    
+    if (DOM.editProductForm) {
+        DOM.editProductForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            let currentProducts = JSON.parse(localStorage.getItem('luxury_products')) || productsData;
+            const oldSku = DOM.editOldSku.value;
+            
+            // Tìm đúng vị trí sản phẩm cũ dựa trên SKU gốc
+            const productIndex = currentProducts.findIndex(p => p.sku === oldSku);
+
+            if (productIndex !== -1) {
+                const stockCount = parseInt(DOM.editStock.value) || 0;
+                let statusValue = "IN STOCK";
+                if (stockCount === 0) statusValue = "OUT OF STOCK";
+                else if (stockCount <= 3) statusValue = "LOW STOCK";
+
+                // Cập nhật đồng loạt toàn bộ các trường dữ liệu mới
+                currentProducts[productIndex] = {
+                    ...currentProducts[productIndex], // Giữ lại các trường không sửa (ví dụ: image, dateAdded)
+                    name: DOM.editName.value.trim(),
+                    desc: DOM.editDesc.value.trim() || "No description.",
+                    category: DOM.editCategory.value,
+                    sku: DOM.editSku.value.trim().toUpperCase(),
+                    price: parseFloat(DOM.editPrice.value) || 0,
+                    status: statusValue
+                };
+
+                // Lưu lại vào bộ nhớ trình duyệt
+                localStorage.setItem('luxury_products', JSON.stringify(currentProducts));
+                
+                // Đóng form modal và làm mới bảng dữ liệu hiển thị
+                editModal.hide();
+                processData();
+                
+                alert("Product details updated successfully!");
+            }
+        });
+    }
+}
 // Khởi chạy ứng dụng lần đầu khi tải trang
 document.addEventListener('DOMContentLoaded', () => {
     processData();
