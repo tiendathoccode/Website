@@ -1,5 +1,17 @@
 document.addEventListener('DOMContentLoaded', function() {
-    
+
+    // ── CART BADGE (đồng bộ từ localStorage) ────────────────────────────────
+    function updateHeaderCartBadge() {
+        const badge = document.getElementById('headerCartBadge');
+        if (!badge) return;
+        const qty = Cart.getTotalQty();
+        badge.textContent = qty;
+        badge.style.display = qty > 0 ? 'flex' : 'none';
+    }
+    updateHeaderCartBadge();
+    window.addEventListener('storage', e => { if (e.key === 'aurrelia_cart') updateHeaderCartBadge(); });
+    window.addEventListener('cart-updated', updateHeaderCartBadge);
+
     // 1. TÍNH NĂNG THẢ TIM SẢN PHẨM (Dùng Delegation để nhận diện cả sản phẩm load ngầm)
     document.addEventListener('click', function(e) {
         if (e.target.classList.contains('toggle-heart')) {

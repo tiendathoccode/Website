@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <head>
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Giỏ Hàng</title>
+  <title>Chi Tiết Sản Phẩm - Aurrelia</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
   <link rel="stylesheet" href="../assets/css/product_details.css" />
-
 </head>
 <body>
 
@@ -177,25 +180,55 @@
         </div>
         <p class="cart-tax-note">Phí vận chuyển và thuế sẽ được tính khi thanh toán.</p>
         <button id="btnProceedToCheckout" class="btn-primary btn-checkout">TIẾN HÀNH THANH TOÁN</button>
+        <a href="shopping_cart.html" style="
+            display:block; text-align:center; margin-top:12px;
+            font-size:11px; letter-spacing:1px; color:#7a7670;
+            text-decoration:underline; text-underline-offset:3px;
+        ">Xem giỏ hàng đầy đủ →</a>
       </div>
     </div>
   </aside>
   <div id="cartOverlay" class="cart-overlay"></div>
 
   <!--FOOTER -->
-  <footer id="siteFooter">
-    <div id="footerLeft">
-      <p class="footer-logo">AURRELIA</p>
-      <p class="footer-copy">© 2024 Aurrelia<br>Trang sức cao cấp. Đã đăng ký bản quyền.</p>
+  <footer class="pt-5 pb-3 border-top mt-3" style="background-color: #fcf9f2;">
+    <div class="container-fluid px-5">
+      <div class="row">
+        <div class="col-md-4 mb-4">
+          <h4 class="fw-bold gold-text mb-3" style="font-family: 'Times New Roman', serif;">AURRELIA</h4>
+          <p class="text-muted small w-75">Điểm đến của những tuyệt tác trang sức thủ công. Kiến tạo vẻ đẹp vượt thời gian.</p>
+          <p class="small text-muted mt-4">&copy; 2026 Aurrelia Jewelry. Bản quyền thuộc về Nhóm 6.</p>
+        </div>
+        <div class="col-md-2 mb-4">
+          <h6 class="text-uppercase mb-3 fw-bold" style="font-size: 12px;">Công Ty</h6>
+          <ul class="list-unstyled text-muted small">
+            <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Về Chúng Tôi</a></li>
+            <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Tuyển Dụng</a></li>
+            <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Liên Hệ</a></li>
+          </ul>
+        </div>
+        <div class="col-md-2 mb-4">
+          <h6 class="text-uppercase mb-3 fw-bold" style="font-size: 12px;">Hỗ Trợ</h6>
+          <ul class="list-unstyled text-muted small">
+            <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Vận Chuyển</a></li>
+            <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Đổi Trả</a></li>
+            <li class="mb-2"><a href="#" class="text-muted text-decoration-none">FAQ</a></li>
+          </ul>
+        </div>
+        <div class="col-md-4 mb-4">
+          <h6 class="text-uppercase mb-3 fw-bold" style="font-size: 12px;">Nhận Ưu Đãi</h6>
+          <p class="text-muted small">Đăng ký nhận thông tin bộ sưu tập mới và ưu đãi độc quyền.</p>
+          <div class="input-group mt-2">
+            <input type="email" class="form-control form-control-sm border-0 bg-light" placeholder="Email của bạn">
+            <button class="btn btn-sm btn-gold">Đăng ký</button>
+          </div>
+        </div>
+      </div>
     </div>
-    <nav id="footerNav" aria-label="Footer navigation">
-      <a href="#" class="footer-link">Bản tin</a>
-      <a href="#" class="footer-link">Chính sách bảo mật</a>
-      <a href="#" class="footer-link">Vận chuyển &amp; Đổi trả</a>
-      <a href="#" class="footer-link">Phát triển bền vững</a>
-    </nav>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/cart.js"></script>
   <script src="../assets/js/product_details.js"></script>
 </body>
 </html>
