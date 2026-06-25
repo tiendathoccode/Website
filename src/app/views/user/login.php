@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Đăng nhập</title>
+        <link rel="stylesheet" type="text/css" href="/assets/css/auth.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    </head>
+    <body class="auth-body">
+        <div class="auth-wrapper">
+
+            <div class="auth-image">
+                <div class="image-text">
+                    <h2>Khám phá vẻ đẹp thanh lịch vượt thời gian</h2>
+                    <p>Hãy cùng Aurrelia tạo nên bộ sưu tập trang sức thủ công tinh xảo, có giá trị đầu tư dành riêng cho bạn.</p>
+                </div>
+            </div>
+
+            <div class="auth-form-section">
+                <h1 class="brand-logo">AURRELIA</h1>
+
+                <div class="auth-tabs">
+                    <div class="tab active">Đăng nhập</div>
+                    <div class="tab" onclick="window.location.href='/index.php?page=register'">Tạo tài khoản</div>
+                </div>
+
+                <form id="loginForm" method="POST" action="/index.php?page=process_login">
+                    <div class="input-group">
+                        <label for="login-email">ĐỊA CHỈ EMAIL</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-envelope icon"></i>
+                            <input type="email" id="login-email" name="email" placeholder="email@cua-ban.com" required>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="login-password">MẬT KHẨU</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock icon"></i>
+                            <input type="password" id="login-password" name="password" placeholder="••••••••" required>
+                        </div>
+                    </div>
+
+                    <div style="text-align: right; margin-bottom: 20px;">
+                        <a href="forgot-password.html" style="color: #bfa15f; text-decoration: none; font-size: 13px; font-weight: bold;">Quên mật khẩu?</a>
+                    </div>
+
+                    <div class="alert alert-danger d-none text-center mb-3" style="font-size: 13px; color: red;" id="login-error"></div>
+
+                    <form method="POST" action="/index.php?page=process_login">
+                        <?php if (isset($_SESSION["error_message"])): ?>
+                            <div style="color: #dc3545; font-size: 14px; text-align: center; margin-bottom: 15px;">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <?php
+                                echo $_SESSION["error_message"];
+                                unset($_SESSION["error_message"]);
+
+                            // Xóa đi để F5 không bị hiện lại
+                            ?>
+                            </div>
+                        <?php endif; ?>
+
+                        <button type="submit" class="btn-primary">ĐĂNG NHẬP</button>
+                    </form>
+                </form>
+
+                <div class="divider">
+                    <span>OR CONTINUE WITH</span>
+                </div>
+
+                <div class="social-login">
+                    <button class="btn-social"><i class="fab fa-google"></i> Google</button>
+                    <button class="btn-social"><i class="fab fa-apple"></i> Apple</button>
+                </div>
+            </div>
+
+        </div>
+        <script src="/assets/css/auth.css"></script>
+    </body>
+</html>

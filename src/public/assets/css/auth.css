@@ -1,0 +1,233 @@
+:root {
+    --gold-color: #bfa15f;    /* Màu vàng đặc trưng của thương hiệu */
+    --bg-page: #f9f6f0;       /* Màu nền viền ngoài cùng */
+    --input-bg: #f3f0e9;      /* Màu nền của ô nhập chữ */
+    --text-dark: #333333;
+    --text-gray: #888888;
+}
+
+.auth-body {
+    background-color: var(--bg-page);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Khung viền chứa toàn bộ giao diện */
+.auth-wrapper {
+    display: flex;
+    background-color: white;
+    max-width: 900px;
+    width: 100%;
+    min-height: 550px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    border-radius: 0px 5px 5px 0px;
+}
+
+.auth-image {
+    flex: 1;
+    background-image: url('../images/bg-auth.jpg');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    padding: 40px;
+    color: white;
+}
+
+.auth-image::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+}
+
+.image-text {
+    position: relative;
+    z-index: 1;
+}
+
+.image-text h2 {
+    font-family: "Times New Roman", Times, serif;
+    font-size: 26px;
+    margin-bottom: 10px;
+    text-transform: none;
+}
+
+.image-text p {
+    font-size: 13px;
+    line-height: 1.5;
+    opacity: 0.9;
+}
+
+.auth-form-section {
+    flex: 1; /* Chiếm 1/2 chiều rộng */
+    padding: 40px 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.brand-logo {
+    font-family: "Times New Roman", Times, serif;
+    color: var(--gold-color);
+    text-align: center;
+    font-size: 32px;
+    letter-spacing: 2px;
+    margin-bottom: 30px;
+}
+
+.auth-tabs {
+    display: flex;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 25px;
+}
+
+.tab {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--text-gray);
+    cursor: pointer;
+}
+
+.tab.active {
+    color: var(--gold-color);
+    border-bottom: 2px solid var(--gold-color);
+}
+
+.input-group {
+    margin-bottom: 18px;
+}
+
+.label-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.input-group label {
+    font-size: 11px;
+    font-weight: bold;
+    color: var(--text-gray);
+    margin-bottom: 6px;
+    display: block;
+}
+
+.forgot-link {
+    font-size: 11px;
+    color: var(--text-dark);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    background-color: var(--input-bg);
+    border-radius: 4px;
+    padding: 0 15px;
+}
+
+.input-wrapper .icon, .input-wrapper .icon-right {
+    color: var(--text-gray);
+    font-size: 14px;
+}
+
+.input-wrapper input {
+    width: 100%;
+    padding: 12px 10px;
+    border: none;
+    background: transparent;
+    outline: none;
+    color: var(--text-dark);
+}
+
+.remember-row {
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+    color: var(--text-dark);
+    margin-bottom: 20px;
+}
+
+.remember-row input {
+    margin-right: 8px;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--gold-color);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.divider {
+    text-align: center;
+    position: relative;
+    margin: 25px 0;
+}
+
+.divider::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background-color: #eee;
+    z-index: 1;
+}
+
+.divider span {
+    background-color: white;
+    padding: 0 10px;
+    font-size: 11px;
+    color: var(--text-gray);
+    position: relative;
+    z-index: 2;
+}
+
+.social-login {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-social {
+    flex: 1;
+    padding: 10px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+@media (max-width: 768px) {
+    .auth-wrapper {
+        flex-direction: column;
+    }
+    .auth-image {
+        min-height: 250px;
+        padding: 20px;
+    }
+    .auth-form-section {
+        padding: 30px 20px;
+    }
+}

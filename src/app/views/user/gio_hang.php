@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Giỏ Hàng</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="/assets/css/gio_hang.css" />
+</head>
+<body>
+
+  <header id="siteHeader">
+    <nav id="mainNav">
+      <ul class="nav-left">
+        <li><a href="#" class="nav-link">BỘ SƯU TẬP</a></li>
+        <li><a href="#" class="nav-link nav-link--active">HÀNG MỚI VỀ</a></li>
+        <li><a href="#" class="nav-link">GIỚI THIỆU</a></li>
+        <li><a href="#" class="nav-link">LIÊN HỆ</a></li>
+      </ul>
+      <a href="/index.php?page=home" id="logoLink" class="site-logo">AURELIA</a>
+      <div class="nav-icons">
+          <button class="icon-btn" id="btnSearch" aria-label="Tìm kiếm">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          </button>
+          <button class="icon-btn" id="btnWishlist" aria-label="Danh sách yêu thích">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+          <button class="icon-btn" id="btnCartToggle" aria-label="Giỏ hàng">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+              <span id="cartBadge" class="cart-badge">1</span>
+          </button>
+
+          <?php if (
+              isset($_SESSION["user_logged_in"]) &&
+              $_SESSION["user_logged_in"] === true
+          ): ?>
+              <div class="dropdown" style="position: relative;">
+                  <button class="icon-btn" id="btnAccount" aria-label="Tài khoản" data-bs-toggle="dropdown">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-2"
+                      style="min-width: 220px; background-color: #fcf9f2;">
+                      <li class="px-3 py-2 border-bottom">
+                          <p class="mb-0 fw-bold" style="font-size: 14px; color: #a47e4b;">
+                              <?= htmlspecialchars($_SESSION["user_name"]) ?>
+                          </p>
+                          <p class="mb-0 text-muted" style="font-size: 12px;">
+                              <?= htmlspecialchars($_SESSION["user_email"]) ?>
+                          </p>
+                      </li>
+                      <li>
+                          <a class="dropdown-item py-2" href="#" style="font-size: 13px;">
+                              <i class="far fa-user me-2 text-muted"></i>Thông tin cá nhân
+                          </a>
+                      </li>
+                      <li>
+                          <a class="dropdown-item py-2" href="/index.php?page=gio_hang" style="font-size: 13px;">
+                              <i class="fas fa-shopping-bag me-2 text-muted"></i>Đơn hàng của tôi
+                          </a>
+                      </li>
+                      <li>
+                          <a class="dropdown-item py-2" href="/index.php?page=change_password" style="font-size: 13px;">
+                              <i class="fas fa-key me-2 text-muted"></i>Đổi mật khẩu
+                          </a>
+                      </li>
+                      <li><hr class="dropdown-divider my-1"></li>
+                      <li>
+                          <a class="dropdown-item py-2 text-danger" href="/index.php?page=logout" style="font-size: 13px;">
+                              <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
+                          </a>
+                      </li>
+                  </ul>
+              </div>
+          <?php else: ?>
+              <a href="/index.php?page=login" class="icon-btn" id="btnAccount" aria-label="Tài khoản">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </a>
+          <?php endif; ?>
+      </div>
+    </nav>
+  </header>
+
+  <!-- NỘI DUNG CHÍNH-->
+  <main id="productPage">
+
+    <!-- Breadcrumb -->
+    <nav id="breadcrumb" aria-label="breadcrumb">
+      <a href="#" class="breadcrumb-link">Bộ sưu tập</a>
+      <span class="breadcrumb-sep">›</span>
+      <a href="#" class="breadcrumb-link">Vòng cổ</a>
+      <span class="breadcrumb-sep">›</span>
+      <span class="breadcrumb-current">Eternity Drop</span>
+    </nav>
+
+    <!-- Phần sản phẩm -->
+    <section id="productSection">
+
+      <!-- Bên trái: Thư viện ảnh -->
+      <div id="productGallery">
+        <div id="mainImageWrapper">
+          <span class="product-badge">PHIÊN BẢN GIỚI HẠN</span>
+          <img
+            src="https://images.unsplash.com/photo-1599643477877-530eb83abc8e?w=900&auto=format&fit=crop&q=80"
+            alt="Vòng cổ Eternity Drop – ảnh chính"
+            id="mainProductImage"
+            class="main-product-img"
+          />
+        </div>
+        <div id="thumbnailStrip">
+          <button
+            class="thumb-btn thumb-btn--active"
+            data-src="https://images.unsplash.com/photo-1599643477877-530eb83abc8e?w=900&auto=format&fit=crop&q=80"
+            data-alt="Vòng cổ Eternity Drop – ảnh chính"
+          >
+            <img src="https://images.unsplash.com/photo-1599643477877-530eb83abc8e?w=200&auto=format&fit=crop&q=80" alt="Ảnh nhỏ 1" />
+          </button>
+          <button
+            class="thumb-btn"
+            data-src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=900&auto=format&fit=crop&q=80"
+            data-alt="Vòng cổ Eternity Drop – khi đeo"
+          >
+            <img src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=200&auto=format&fit=crop&q=80" alt="Ảnh nhỏ 2" />
+          </button>
+          <button
+            class="thumb-btn"
+            data-src="https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=900&auto=format&fit=crop&q=80"
+            data-alt="Vòng cổ Eternity Drop – trong hộp"
+          >
+            <img src="https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=200&auto=format&fit=crop&q=80" alt="Ảnh nhỏ 3" />
+          </button>
+        </div>
+      </div>
+
+      <!-- Bên phải: Thông tin sản phẩm -->
+      <div id="productInfo">
+        <h1 id="productName" class="product-title">Vòng Cổ Eternity Drop</h1>
+        <p id="productPrice" class="product-price">3.450.000₫</p>
+
+        <p id="productDescription" class="product-desc">
+          Được chế tác tinh xảo, Vòng Cổ Eternity Drop sở hữu viên kim cương cắt hình giọt lê hoàn hảo, treo nhẹ nhàng trên dây chuyền vàng champagne nguyên khối 18k. Mỗi đường nét được thiết kế để bắt sáng từ mọi góc nhìn, toát lên vẻ sang trọng tinh tế.
+        </p>
+
+        <!-- Bộ chọn kim loại -->
+        <div id="metalSelector" class="option-group">
+          <p class="option-label">CHẤT LIỆU</p>
+          <div id="metalOptions" class="metal-swatches">
+            <button
+              class="swatch swatch--gold swatch--active"
+              data-metal="champagne-gold"
+              id="swatchChampagneGold"
+              aria-label="Vàng Champagne"
+              title="Vàng Champagne"
+            ></button>
+            <button
+              class="swatch swatch--white"
+              data-metal="white-gold"
+              id="swatchWhiteGold"
+              aria-label="Vàng Trắng"
+              title="Vàng Trắng"
+            ></button>
+            <button
+              class="swatch swatch--rose"
+              data-metal="rose-gold"
+              id="swatchRoseGold"
+              aria-label="Vàng Hồng"
+              title="Vàng Hồng"
+            ></button>
+          </div>
+          <p id="selectedMetalLabel" class="selected-metal-label">Vàng Champagne</p>
+        </div>
+
+        <!-- Hành động -->
+        <div id="productActions">
+          <button id="btnAddToCart" class="btn-primary">THÊM VÀO GIỎ HÀNG</button>
+          <button id="btnAddToWishlist" class="btn-secondary">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            Lưu vào yêu thích
+          </button>
+        </div>
+
+        <!-- Accordion -->
+        <div id="productAccordion">
+          <div class="accordion-item" id="accordionDetails">
+            <button class="accordion-trigger" data-target="panelDetails">
+              CHI TIẾT &amp; KÍCH THƯỚC
+              <span class="accordion-icon">+</span>
+            </button>
+            <div class="accordion-panel" id="panelDetails">
+              <p>Đá quý: Kim cương cắt giọt lê, 1.2ct, độ trong VS1, màu D<br>
+              Dây chuyền: Vàng champagne nguyên khối 18k, dài 42cm có thể chỉnh đến 45cm<br>
+              Kích thước mặt dây: 28mm × 14mm<br>
+              Trọng lượng: 4.2g</p>
+            </div>
+          </div>
+          <div class="accordion-item" id="accordionShipping">
+            <button class="accordion-trigger" data-target="panelShipping">
+              VẬN CHUYỂN &amp; ĐỔI TRẢ
+              <span class="accordion-icon">+</span>
+            </button>
+            <div class="accordion-panel" id="panelShipping">
+              <p>Miễn phí vận chuyển có bảo hiểm trên toàn thế giới. Giao hàng trong 3–5 ngày làm việc, đóng gói trong hộp quà đặc trưng của Aurelia. Chấp nhận đổi trả trong vòng 14 ngày kể từ ngày giao hàng đối với sản phẩm chưa sử dụng.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- KHUNG GIỎ HÀNg-->
+  <aside id="cartDrawer" class="cart-drawer" aria-label="Giỏ hàng" aria-hidden="true">
+    <div id="cartDrawerInner">
+      <div id="cartDrawerHeader">
+        <h2 id="cartDrawerTitle">Giỏ Hàng Của Bạn</h2>
+        <button id="btnCloseCart" aria-label="Đóng giỏ hàng">✕</button>
+      </div>
+
+      <div id="cartItemList">
+        <!-- Mẫu sản phẩm trong giỏ (được JS render) -->
+      </div>
+
+      <div id="cartDrawerFooter">
+        <div id="cartSubtotalRow">
+          <span>Tạm tính</span>
+          <span id="cartSubtotalAmount">3.450.000₫</span>
+        </div>
+        <p class="cart-tax-note">Phí vận chuyển và thuế sẽ được tính khi thanh toán.</p>
+        <button id="btnProceedToCheckout" class="btn-primary btn-checkout">TIẾN HÀNH THANH TOÁN</button>
+      </div>
+    </div>
+  </aside>
+  <div id="cartOverlay" class="cart-overlay"></div>
+
+  <!--FOOTER -->
+  <footer id="siteFooter">
+    <div id="footerLeft">
+      <p class="footer-logo">AURELIA</p>
+      <p class="footer-copy">© 2024 Aurelia<br>Trang sức cao cấp. Đã đăng ký bản quyền.</p>
+    </div>
+    <nav id="footerNav" aria-label="Footer navigation">
+      <a href="#" class="footer-link">Bản tin</a>
+      <a href="#" class="footer-link">Chính sách bảo mật</a>
+      <a href="#" class="footer-link">Vận chuyển &amp; Đổi trả</a>
+      <a href="#" class="footer-link">Phát triển bền vững</a>
+    </nav>
+  </footer>
+
+  <script src="/assets/js/gio_hang.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

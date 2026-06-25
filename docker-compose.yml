@@ -34,7 +34,16 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${DB_ROOT_PASSWORD:-root}"]
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-uroot",
+          "-p${DB_ROOT_PASSWORD:-root}",
+        ]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -56,7 +65,15 @@ services:
         condition: service_healthy
     networks:
       - app_network
-
+  mailpit:
+    image: axllent/mailpit
+    container_name: app_mailpit
+    restart: unless-stopped
+    ports:
+      - "1025:1025" # Cổng SMTP để PHP gửi mail
+      - "8025:8025" # Giao diện web xem email (http://localhost:8025)
+    networks:
+      - app_network
 volumes:
   mysql_data:
 
