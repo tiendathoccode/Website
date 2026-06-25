@@ -1,24 +1,22 @@
 <!DOCTYPE html>
-<html lang="vi">
 <head>
-    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sản phẩm - Aurrelia Jewelry</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body class="bg-cream">
 
     <!-- ================= HEADER ================= -->
     <nav class="navbar navbar-expand-lg py-3 sticky-top border-bottom shadow-sm" style="background-color: #fdfbf7; z-index: 1020;">
         <div class="container-fluid px-5">
-            <a class="navbar-brand fs-4 fw-bold gold-text" href="/index.php?page=home" style="font-family: 'Times New Roman', serif;">AURRELIA</a>
-
+            <a class="navbar-brand fs-4 fw-bold gold-text" href="index.html" style="font-family: 'Times New Roman', serif;">AURRELIA</a>
+            
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-
+            
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto text-uppercase" style="font-size: 13px; letter-spacing: 1px;">
                     <li class="nav-item"><a class="nav-link px-3" href="#">Trang Sức</a></li>
@@ -29,66 +27,21 @@
                 <div class="d-flex gap-3 align-items-center">
                     <a href="#" class="text-dark fs-6"><i class="fas fa-search"></i></a>
                     <a href="#" class="text-dark fs-6"><i class="far fa-heart"></i></a>
-                    <a href="/index.php?page=gio_hang" class="text-dark fs-6"><i class="fas fa-shopping-bag"></i></a>
-                    <?php if (
-                        isset($_SESSION["user_logged_in"]) &&
-                        $_SESSION["user_logged_in"] === true
-                    ): ?>
-                        <div class="dropdown">
-                            <a href="#"
-                               class="text-dark fs-6"
-                               id="userDropdown"
-                               data-bs-toggle="dropdown"
-                               aria-expanded="false"
-                               style="text-decoration: none;">
-                                <i class="far fa-user"></i>
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-2"
-                                aria-labelledby="userDropdown"
-                                style="min-width: 220px; background-color: #fcf9f2;">
-
-                                <!-- Thông tin user -->
-                                <li class="px-3 py-2 border-bottom">
-                                    <p class="mb-0 fw-bold" style="font-size: 14px; color: #a47e4b;">
-                                        <?= htmlspecialchars(
-                                            $_SESSION["user_name"],
-                                        ) ?>
-                                    </p>
-                                    <p class="mb-0 text-muted" style="font-size: 12px;">
-                                        <?= htmlspecialchars(
-                                            $_SESSION["user_email"],
-                                        ) ?>
-                                    </p>
-                                </li>
-
-                                <li>
-                                    <a class="dropdown-item py-2" href="#" style="font-size: 13px;">
-                                        <i class="far fa-user me-2 text-muted"></i>Thông tin cá nhân
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item py-2" href="/index.php?page=gio_hang" style="font-size: 13px;">
-                                        <i class="fas fa-shopping-bag me-2 text-muted"></i>Đơn hàng của tôi
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item py-2" href="/index.php?page=change_password" style="font-size: 13px;">
-                                        <i class="fas fa-key me-2 text-muted"></i>Đổi mật khẩu
-                                    </a>
-                                </li>
-                                <li><hr class="dropdown-divider my-1"></li>
-                                <li>
-                                    <a class="dropdown-item py-2 text-danger" href="/index.php?page=logout" style="font-size: 13px;">
-                                        <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    <?php else: ?>
-                        <a href="/index.php?page=login" class="text-dark fs-6">
-                            <i class="far fa-user"></i>
-                        </a>
-                    <?php endif; ?>
+                    <a href="shopping_cart.html" class="text-dark fs-6 position-relative" id="headerCartBtn">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span id="headerCartBadge" style="
+                            display:none;
+                            position:absolute;
+                            top:-8px; right:-10px;
+                            background:#c8a165; color:#fff;
+                            font-size:10px; font-weight:700;
+                            min-width:17px; height:17px;
+                            border-radius:50%;
+                            align-items:center; justify-content:center;
+                            padding:0 3px;
+                        ">0</span>
+                    </a>
+                    <a href="login.html" class="text-dark fs-6"><i class="far fa-user"></i></a>
                 </div>
             </div>
         </div>
@@ -96,7 +49,7 @@
 
     <!-- ================= BANNER ================= -->
     <section class="banner-section position-relative">
-        <img src="/assets/images/banner.png" alt="Bộ sưu tập Aurelia" class="w-100 object-fit-cover" style="height: 350px;">
+        <img src="../assets/images/banner.png" alt="Bộ sưu tập Aurelia" class="w-100 object-fit-cover" style="height: 350px;">
         <div class="position-absolute top-50 start-50 translate-middle text-center text-white">
             <h1 class="fw-normal" style="font-family: 'Times New Roman', serif; letter-spacing: 4px;">BỘ SƯU TẬP AURRELIA</h1>
             <button class="btn rounded-pill px-4 py-2 mt-3 fw-bold border-0" style="background-color: #c8a165; color: white; font-size: 12px; letter-spacing: 1px;">KHÁM PHÁ NGAY</button>
@@ -106,12 +59,12 @@
     <!-- ================= MAIN CONTENT ================= -->
     <div class="container-fluid px-5 my-5">
         <div class="row">
-
+            
             <!-- CỘT TRÁI: BỘ LỌC (SIDEBAR) -->
             <div class="col-md-3 pe-5">
                 <div class="p-4 rounded-3" style="background-color: #fcf9f2;">
                     <h5 class="mb-4" style="font-family: 'Times New Roman', serif; color: #a47e4b;">BỘ LỌC</h5>
-
+                    
                     <div class="mb-4">
                         <ul class="list-unstyled" id="category-filter">
                             <li class="mb-3">
@@ -172,15 +125,15 @@
 
                 <!-- Lưới (Grid) -->
                 <div class="row g-4" id="product-list">
-
+                    
                     <div class="col-md-4 product-item">
                         <div class="card border-0 bg-transparent mb-4">
-                            <img src="/assets/images/sp1.png" class="card-img-top rounded-0" style="height: 350px; object-fit: cover;" alt="Tên sản phẩm">
+                            <img src="../assets/images/sp1.png" class="card-img-top rounded-0" style="height: 350px; object-fit: cover;" alt="Tên sản phẩm">
                             <div class="card-body px-0 position-relative">
                                 <h6 class="card-title fw-bold" style="font-family: 'Times New Roman', serif;">Tên Sản Phẩm Mẫu</h6>
                                 <p class="text-muted small mb-1">Aurrelia Collections</p>
                                 <p class="fw-bold">0 ₫</p>
-
+                                
                                 <i class="far fa-heart position-absolute top-0 end-0 mt-3 toggle-heart" style="cursor: pointer;" data-product-id=""></i>
                             </div>
                         </div>
@@ -201,7 +154,7 @@
                 <div class="col-md-4 mb-4">
                     <h4 class="fw-bold gold-text mb-3" style="font-family: 'Times New Roman', serif;">AURRELIA</h4>
                     <p class="text-muted small w-75">Điểm đến của những tuyệt tác trang sức thủ công. Kiến tạo vẻ đẹp vượt thời gian.</p>
-                    <p class="small text-muted mt-4">&copy; 2026 Aurrelia Jewelry. Bản quyền thuộc về Nhóm 6.</p>
+                    <p class="small text-muted mt-4">&copy; 2026 Aurrelia. Bản quyền thuộc về Nhóm 6.</p>
                 </div>
                 <div class="col-md-2 mb-4">
                     <h6 class="text-uppercase mb-3 fw-bold" style="font-size: 12px;">Công Ty</h6>
@@ -232,6 +185,7 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/assets/js/main.js"></script>
+    <script src="../assets/js/cart.js"></script>
+    <script src="../assets/js/main.js"></script>
 </body>
 </html>

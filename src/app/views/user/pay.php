@@ -1,17 +1,19 @@
 <!DOCTYPE html>
+<html lang="vi">
 <head>
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Thanh Toán — Aurelia</title>
-  <link rel="stylesheet" href="/assets/css/thanh_toan.css" />
+  <title>Thanh Toán — Aurrelia</title>
+  <link rel="stylesheet" href="../assets/css/pay.css" />
 </head>
 <body>
 
   <header id="siteHeader">
     <div id="headerInner">
-      <a href="/index.php?page=home" id="logoLink" class="site-logo">AURELIA</a>
-      <a href="/index.php?page=gio_hang" id="backToCartLink" class="back-link">
+      <a href="index.html" id="logoLink" class="site-logo">AURRELIA</a>
+      <a href="shopping_cart.html" id="backToCartLink" class="back-link">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-        Quay lại
+        Thanh toán an toàn
       </a>
     </div>
   </header>
@@ -26,10 +28,8 @@
     <form id="checkoutForm" novalidate>
       <div id="checkoutGrid">
 
-        <!--  CỘT TRÁI -->
         <div id="checkoutLeft">
 
-          <!-- Địa chỉ nhận hàng -->
           <section class="checkout-section">
             <h2 class="section-title">Địa chỉ nhận hàng</h2>
 
@@ -85,7 +85,6 @@
             </div>
           </section>
 
-          <!-- Phương thức thanh toán -->
           <section class="checkout-section">
             <h2 class="section-title">Phương thức thanh toán</h2>
 
@@ -121,12 +120,11 @@
               </label>
             </div>
 
-            <!-- Khung hiện thông tin chuyển khoản, ẩn/hiện theo lựa chọn -->
             <div id="bankTransferInfo" class="payment-extra-info">
               <p><strong>Ngân hàng:</strong> Vietcombank — Chi nhánh TP.HCM</p>
               <p><strong>Số tài khoản:</strong> 0071000123456</p>
-              <p><strong>Chủ tài khoản:</strong> CÔNG TY TNHH AURELIA</p>
-              <p><strong>Nội dung CK:</strong> <span id="transferNoteCode">AURELIA [Họ tên] [SĐT]</span></p>
+              <p><strong>Chủ tài khoản:</strong> CÔNG TY TNHH AURRELIA</p>
+              <p><strong>Nội dung CK:</strong> <span id="transferNoteCode">AURRELIA [Họ tên] [SĐT]</span></p>
             </div>
 
             <div id="ewalletInfo" class="payment-extra-info">
@@ -136,14 +134,12 @@
 
         </div>
 
-        <!--  CỘT PHẢI: TÓM TẮT ĐƠN HÀNG  -->
         <aside id="checkoutRight">
           <div id="orderSummaryCard">
             <h2 class="section-title">Đơn hàng của bạn</h2>
 
             <div id="orderItemsList">
-              <!-- Render bằng JS từ dữ liệu giỏ hàng -->
-            </div>
+              </div>
 
             <div id="voucherRow">
               <label id="voucherCheckLabel">
@@ -182,7 +178,7 @@
               ĐẶT HÀNG
             </button>
 
-            <p class="secure-note">Bằng việc đặt hàng, bạn đồng ý với Điều khoản dịch vụ và Chính sách bảo mật của Aurelia.</p>
+            <p class="secure-note">Bằng việc đặt hàng, bạn đồng ý với Điều khoản dịch vụ và Chính sách bảo mật của Aurrelia.</p>
           </div>
         </aside>
 
@@ -190,14 +186,13 @@
     </form>
   </main>
 
-  <!-- FOOTER  -->
   <footer id="siteFooter">
     <div id="footerLeft">
-      <p class="footer-logo">AURELIA</p>
+      <p class="footer-logo">AURRELIA</p>
     </div>
-    <p class="footer-copy">© 2024 Aurelia Fine Jewelry. All rights reserved.</p>
+    <p class="footer-copy">&copy; 2026 Aurrelia. Bản quyền thuộc về Nhóm 6.</p>
   </footer>
 
-  <script src="/assets/js/thanh_toan.js"></script>
+  <script src="../assets/js/pay.js"></script>
 </body>
 </html>
