@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurrelia Fine Jewelry - Thêm sản phẩm mới</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="row min-vh-100">
+        
+        <nav class="col-md-3 col-lg-2 d-md-block sidebar border-end p-4">
+            <div class="position-sticky d-flex flex-column h-100 justify-content-between">
+                <div>
+                    <div class="brand-zone mb-4">
+                        <h3 class="brand-logo mb-1">AURRELIA</h3>
+                        <small class="text-muted tracking-wider text-uppercase font-xs">Fine Jewelry Admin</small>
+                    </div>
+                    
+                    <ul class="nav flex-column gap-2 mt-4">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="dashboard.html"><i class="bi bi-grid-1x2 me-2"></i> Dashboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="productsmanage.html"><i class="bi bi-gem me-2"></i> Sản Phẩm</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="ordersmanage.html"><i class="bi bi-bag me-2"></i> Đơn Hàng</a>
+                            </li>
+                    </ul>
+                </div>
+                
+                <div class="user-profile d-flex align-items-center gap-3 pt-3 border-top">
+                    <div class="avatar bg-gold text-white rounded-circle d-flex align-items-center justify-content-center fw-bold">EV</div>
+                    <div>
+                        <h6 class="mb-0 small fw-bold text-dark">Elena Vance</h6>
+                        <small class="text-muted font-xs">Giám đốc Sáng tạo</small>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-5 py-4 main-content">
+            
+            <form action="/api/add-product" method="POST" id="addProductForm" enctype="multipart/form-data">
+                <div class="d-flex justify-content-between align-items-center pt-3 pb-3 mb-4 border-bottom">
+                    <div>
+                        <h1 class="page-title mb-1">Thêm sản phẩm mới</h1>
+                        <p class="text-muted mb-0 small">Mở rộng bộ sưu tập của bạn.</p>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <button type="button" class="btn btn-outline-secondary border-color text-muted font-xs px-4 py-2">Hủy bỏ</button>
+                        <button type="submit" class="btn btn-gold font-xs px-4 py-2">Đăng sản phẩm</button>
+                    </div>
+                </div>
+
+                <div class="row g-4 mb-5">
+                    
+                    <div class="col-lg-8">
+                        
+                        <div class="card border-0 shadow-sm p-4 mb-4">
+                            <h5 class="section-title mb-4">Thông tin cơ bản</h5>
+                            
+                            <div class="mb-4">
+                                <label class="form-label form-label-custom">TÊN SẢN PHẨM</label>
+                                <input type="text" name="product_name" class="form-control form-control-custom" placeholder="Ví dụ: Aurum Solitaire Necklace" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label form-label-custom">MÔ TẢ SẢN PHẨM</label>
+                                <div class="rich-text-editor border rounded">
+                                    <div class="toolbar bg-light border-bottom p-2 d-flex gap-2">
+                                        <button type="button" class="btn btn-sm btn-light border-0"><i class="bi bi-type-bold"></i></button>
+                                        <button type="button" class="btn btn-sm btn-light border-0"><i class="bi bi-type-italic"></i></button>
+                                        <button type="button" class="btn btn-sm btn-light border-0"><i class="bi bi-type-underline"></i></button>
+                                        <div class="vr mx-1"></div>
+                                        <button type="button" class="btn btn-sm btn-light border-0"><i class="bi bi-list-ul"></i></button>
+                                        <button type="button" class="btn btn-sm btn-light border-0"><i class="bi bi-list-ol"></i></button>
+                                    </div>
+                                    <textarea name="description" class="form-control border-0 shadow-none p-3 font-xs text-muted" rows="5" placeholder="Mô tả chi tiết về độ tinh xảo, chất liệu và nguồn cảm hứng của sản phẩm này..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card border-0 shadow-sm p-4">
+                            <h5 class="section-title mb-4">Hình ảnh</h5>
+                            
+                            <div class="upload-zone border-dashed rounded text-center p-5 bg-light-custom position-relative" id="dropZone">
+                                <input type="file" name="product_images[]" class="position-absolute w-100 h-100 top-0 start-0 opacity-0 cursor-pointer" multiple accept="image/*">
+                                <div class="upload-icon mb-3">
+                                    <i class="bi bi-cloud-arrow-up fs-2 text-gold"></i>
+                                </div>
+                                <h6 class="mb-2 font-xs fw-bold">Kéo & thả hình ảnh của bạn vào đây</h6>
+                                <p class="text-muted font-xs mb-3">Hình ảnh độ phân giải cao (JPEG hoặc PNG, tối đa 5MB)</p>
+                                <button type="button" class="btn btn-outline-secondary border-color btn-sm font-xs px-3">Chọn tệp tin</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        
+                        <div class="card border-0 shadow-sm p-4 mb-4">
+                            <h5 class="section-title mb-4">Giá bán & Kho hàng</h5>
+                            
+                            <div class="mb-4">
+                                <label class="form-label form-label-custom">GIÁ BÁN ($)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white text-muted border-end-0 border-color font-xs">$</span>
+                                    <input type="number" name="price" step="0.01" class="form-control border-start-0 border-color shadow-none font-xs" placeholder="0.00" required>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="form-label form-label-custom">MÃ SKU (ĐƠN VỊ PHÂN LOẠI HÀNG HÓA)</label>
+                                <input type="text" name="sku" class="form-control form-control-custom font-monospace text-muted" placeholder="Ví dụ: AUR-NEC-001" required>
+                            </div>
+                            
+                            <div class="mb-2">
+                                <label class="form-label form-label-custom">SỐ LƯỢNG TỒN KHO</label>
+                                <input type="number" name="stock_quantity" class="form-control form-control-custom" placeholder="0" required>
+                            </div>
+                        </div>
+
+                        <div class="card border-0 shadow-sm p-4">
+                            <h5 class="section-title mb-4">Phân loại hàng hóa</h5>
+                            
+                            <div class="mb-4">
+                                <label class="form-label form-label-custom">DANH MỤC</label>
+                                <select name="category" class="form-select form-control-custom font-xs text-muted" required>
+                                    <option value="" selected disabled>Chọn danh mục</option>
+                                    <option value="Necklaces">Dây chuyền</option>
+                                    <option value="Rings">Nhẫn</option>
+                                    <option value="Earrings">Bông tai</option>
+                                    <option value="Bracelets">Vòng tay</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-2">
+                                <label class="form-label form-label-custom">CHẤT LIỆU</label>
+                                <select name="material" class="form-select form-control-custom font-xs text-muted" required>
+                                    <option value="" selected disabled>Chọn chất liệu</option>
+                                    <option value="18k Gold">Vàng nguyên khối 18k</option>
+                                    <option value="White Gold">Vàng trắng 18k</option>
+                                    <option value="Rose Gold">Vàng hồng 14k/option>
+                                    <option value="Platinum">Bạch kim</option>
+                                    <option value="Silver">Bạc cao cấp</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+
+        </main>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="productmanage.js"></script>
+</body>
+</html>

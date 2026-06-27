@@ -1,0 +1,398 @@
+:root {
+    --bg-main: #fcfbf9;         /* Màu nền kem nhẹ */
+    --gold-primary: #b39b7d;    /* Vàng đồng đặc trưng */
+    --gold-dark: #9c8567;
+    --text-dark: #2b2b2b;
+    --text-muted: #8e8d8a;
+    --border-color: #f1ede7;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-dark);
+    font-size: 14px;
+}
+
+/* Kiểu chữ tiêu đề độc quyền phong cách Serif */
+.brand-logo, .page-title, .section-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 500;
+}
+
+.font-xs { font-size: 11px; }
+.font-numeric { font-family: 'Playfair Display', serif; font-weight: 600; }
+.tracking-wider { letter-spacing: 0.1em; }
+
+/* Tùy chỉnh Sidebar */
+.sidebar {
+    background-color: #ffffff;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+}
+
+@media (max-width: 767.98px) {
+    .sidebar { position: relative; height: auto; }
+    .main-content { margin-left: 0; }
+}
+
+.sidebar .nav-link {
+    color: var(--text-muted);
+    font-weight: 400;
+    padding: 10px 12px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.sidebar .nav-link:hover, .sidebar .nav-link.active {
+    color: var(--text-dark);
+    background-color: #f9f7f3;
+    font-weight: 500;
+}
+
+.sidebar .nav-link.active i {
+    color: var(--gold-primary);
+}
+
+.avatar {
+    width: 38px;
+    height: 38px;
+    font-size: 13px;
+}
+
+/* Nút & Thẻ */
+.bg-gold, .btn-gold {
+    background-color: var(--gold-primary);
+    color: #ffffff;
+}
+
+.btn-gold:hover {
+    background-color: var(--gold-dark);
+    color: #ffffff;
+}
+
+.btn-gold, .form-select, .card {
+    border-radius: 4px; /* Bo góc vuông vắn nhẹ nhàng chuẩn Luxury */
+}
+
+.card {
+    border: 1px solid var(--border-color) !important;
+}
+
+.btn-icon {
+    border: 1px solid var(--border-color);
+    background-color: #fff;
+    color: var(--text-dark);
+    width: 38px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Huy hiệu Xu hướng */
+.trend-badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+}
+.trend-badge.positive { background-color: #ebf6ee; color: #287d3c; }
+.trend-badge.neutral { background-color: #f1effb; color: #5a4b9b; }
+
+.icon-wrapper {
+    background-color: #fbf9f5;
+    padding: 8px;
+    border-radius: 6px;
+    display: inline-flex;
+}
+
+.text-gold { color: var(--gold-primary) !important; }
+
+/* Thanh tiến trình Custom */
+.progress-bar.bg-gold {
+    background-color: var(--gold-primary);
+}
+.progress {
+    background-color: #f1ede7;
+}
+
+/* --- Các class bổ sung dành riêng cho trang Sản phẩm --- */
+.filter-sidebar {
+    border-color: var(--border-color) !important;
+}
+
+.filter-item {
+    border: none;
+    font-size: 13px;
+    background: transparent;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+}
+
+.filter-item.active {
+    background-color: #58534e !important; /* Tông xám nâu trầm sang trọng */
+    color: #ffffff !important;
+}
+
+.filter-item:hover:not(.active) {
+    background-color: #f9f7f3;
+    color: var(--text-dark) !important;
+}
+
+.btn-apply-filter {
+    background-color: #a3a19e;
+    color: #ffffff;
+    border: none;
+    border-radius: 2px;
+}
+
+.btn-apply-filter:hover {
+    background-color: #8e8d8a;
+    color: #ffffff;
+}
+
+.table-light-bg {
+    background-color: #fbfaf8;
+}
+
+.table > :not(caption) > * > * {
+    border-bottom-color: var(--border-color);
+}
+
+.product-thumb {
+    width: 48px;
+    height: 48px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+}
+
+/* Tùy chỉnh các Badge Trạng thái kho hàng */
+.badge-custom {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    padding: 6px 12px;
+    border-radius: 20px;
+}
+.badge-instock { background-color: #e0e4e1; color: #3d5547; }
+.badge-lowstock { background-color: #f9e2e2; color: #b84a4a; }
+.badge-outofstock { background-color: #ebdcd5; color: #796a65; }
+
+.pagination .page-item.active .page-link {
+    background-color: #58534e;
+    color: #ffffff;
+}
+.pagination .page-link:hover {
+    background-color: #f9f7f3;
+}
+
+/* --- Các class bổ sung dành riêng cho trang Form (Add Product) --- */
+.form-label-custom {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.form-control-custom {
+    font-size: 13px;
+    padding: 10px 14px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--text-dark);
+}
+.form-control-custom::placeholder {
+    color: #c4c1bc;
+}
+.form-control-custom:focus, 
+.form-control:focus, 
+.form-select:focus {
+    border-color: var(--gold-primary);
+    box-shadow: 0 0 0 3px rgba(179, 155, 125, 0.15); /* Hiệu ứng phát sáng vàng đồng */
+}
+
+.upload-zone {
+    border: 2px dashed #dcd8d1;
+    background-color: #fcfaf8;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+.upload-zone:hover {
+    border-color: var(--gold-primary);
+    background-color: #f7f4ef;
+}
+.cursor-pointer { cursor: pointer; }
+
+.rich-text-editor .toolbar {
+    background-color: #fcfaf8 !important;
+    border-bottom-color: var(--border-color) !important;
+}
+.rich-text-editor .btn-light {
+    background-color: transparent;
+    color: var(--text-muted);
+}
+.rich-text-editor .btn-light:hover {
+    background-color: #ebe7e1;
+    color: var(--text-dark);
+}
+
+/* --- Các class bổ sung cho Trang Quản lý Đơn hàng (Orders) --- */
+.bg-light-custom { background-color: #f7f6f4 !important; }
+.avatar-sm { width: 32px; height: 32px; }
+
+/* Các chấm trạng thái Thanh toán / Vận chuyển */
+.status-paid { color: #2e7d32; }
+.status-pending { color: #d4a017; }
+.status-shipped { color: #1565c0; }
+.status-processing { color: #757575; }
+
+.btn-outline-custom {
+    color: #58534e;
+    border: 1px solid #dcd8d1;
+    background-color: transparent;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+.btn-outline-custom:hover {
+    background-color: #f7f6f4;
+    color: var(--text-dark);
+}
+
+.row-hover { border-radius: 4px; }
+.row-hover:hover { background-color: #faf9f7; }
+
+.custom-checkbox .form-check-input {
+    border-color: #dcd8d1;
+    cursor: pointer;
+}
+.custom-checkbox .form-check-input:checked {
+    background-color: var(--gold-primary);
+    border-color: var(--gold-primary);
+}
+.custom-checkbox .form-check-label {
+    cursor: pointer;
+    padding-left: 4px;
+}
+
+/* --- TỐI ƯU LAYOUT SIDEBAR & MAIN CONTENT ĐỒNG BỘ --- */
+@media (min-width: 768px) {
+    .sidebar { width: 16.666667%; }
+    .main-content {
+        margin-left: 16.666667%;
+        background-color: var(--bg-main);
+        min-height: 100vh;
+    }
+}
+
+.status-badge {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-dark);
+}
+
+/* --- RESPONSIVE TABLE DÀNH CHO THIẾT BỊ DI ĐỘNG (< 768px) --- */
+@media (max-width: 767.98px) {
+    .table-custom-wrapper table, 
+    .table-custom-wrapper thead, 
+    .table-custom-wrapper tbody, 
+    .table-custom-wrapper th, 
+    .table-custom-wrapper td, 
+    .table-custom-wrapper tr { 
+        display: block; 
+    }
+    
+    .table-custom-wrapper thead tr { 
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    
+    .table-custom-wrapper tr {
+        border: 1px solid var(--border-color);
+        background: #ffffff;
+        margin-bottom: 1rem;
+        padding: 0.75rem;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+    
+    .table-custom-wrapper td { 
+        border: none;
+        border-bottom: 1px solid #f7f6f4; 
+        position: relative;
+        padding-left: 45% !important; 
+        text-align: right !important;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+    
+    .table-custom-wrapper td:first-child {
+        text-align: left !important;
+        padding-left: 12px !important;
+        border-bottom: 1px solid var(--border-color);
+        background-color: #faf9f7;
+    }
+
+    .table-custom-wrapper td:before { 
+        position: absolute;
+        top: 50%;
+        left: 12px;
+        transform: translateY(-50%);
+        width: 40%; 
+        padding-right: 10px; 
+        white-space: nowrap;
+        text-align: left;
+        font-weight: 600;
+        font-size: 11px;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        letter-spacing: 0.05em;
+    }
+    
+    .table-custom-wrapper td:nth-of-type(2):before { content: "Order ID"; }
+    .table-custom-wrapper td:nth-of-type(3):before { content: "Customer"; }
+    .table-custom-wrapper td:nth-of-type(4):before { content: "Date"; }
+    .table-custom-wrapper td:nth-of-type(5):before { content: "Total"; }
+    .table-custom-wrapper td:nth-of-type(6):before { content: "Payment"; }
+    .table-custom-wrapper td:nth-of-type(7):before { content: "Fulfillment"; }
+    .table-custom-wrapper td:nth-of-type(8):before { content: "Actions"; }
+    
+    .table-custom-wrapper td:last-child {
+        border-bottom: none;
+        padding-top: 12px;
+    }
+    
+    .table-custom-wrapper .avatar-sm {
+        justify-content: flex-end;
+        margin-left: auto;
+    }
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 5px; 
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #fcfbf9; 
+    border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--gold-primary); 
+    border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--gold-dark); 
+}
+
+.row-hover-effect:hover {
+    background-color: #fcfbf9;
+    transition: background-color 0.2s ease;
+}

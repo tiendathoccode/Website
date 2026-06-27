@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thanh Toán — Aurrelia</title>
+  <link rel="stylesheet" href="../assets/css/pay.css" />
+</head>
+<body>
+
+  <header id="siteHeader">
+    <div id="headerInner">
+      <a href="index.html" id="logoLink" class="site-logo">AURRELIA</a>
+      <a href="shopping_cart.html" id="backToCartLink" class="back-link">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Thanh toán an toàn
+      </a>
+    </div>
+  </header>
+
+  <main id="checkoutPage">
+
+    <div id="checkoutHeading">
+      <h1 class="page-title">Thanh toán</h1>
+      <p class="page-subtitle">Hoàn tất đơn hàng của bạn.</p>
+    </div>
+
+    <form id="checkoutForm" novalidate>
+      <div id="checkoutGrid">
+
+        <div id="checkoutLeft">
+
+          <section class="checkout-section">
+            <h2 class="section-title">Địa chỉ nhận hàng</h2>
+
+            <div class="form-row">
+              <div class="form-field">
+                <label for="fullName">Họ và tên</label>
+                <input type="text" id="fullName" name="fullName" placeholder="Nguyễn Văn A" required />
+              </div>
+              <div class="form-field">
+                <label for="phone">Số điện thoại</label>
+                <input type="tel" id="phone" name="phone" placeholder="0912 345 678" required />
+              </div>
+            </div>
+
+            <div class="form-row form-row--triple">
+              <div class="form-field">
+                <label for="province">Tỉnh / Thành phố</label>
+                <select id="province" name="province" required>
+                  <option value="" selected disabled>Chọn Tỉnh/Thành</option>
+                  <option value="hcm">TP. Hồ Chí Minh</option>
+                  <option value="hn">Hà Nội</option>
+                  <option value="dn">Đà Nẵng</option>
+                  <option value="ct">Cần Thơ</option>
+                  <option value="hp">Hải Phòng</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label for="district">Quận / Huyện</label>
+                <select id="district" name="district" required disabled>
+                  <option value="" selected disabled>Chọn Quận/Huyện</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label for="ward">Phường / Xã</label>
+                <select id="ward" name="ward" required disabled>
+                  <option value="" selected disabled>Chọn Phường/Xã</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-field form-field--full">
+                <label for="addressDetail">Địa chỉ cụ thể</label>
+                <input type="text" id="addressDetail" name="addressDetail" placeholder="Số nhà, tên đường, tòa nhà..." required />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-field form-field--full">
+                <label for="orderNote">Ghi chú đơn hàng <span class="label-optional">(Tùy chọn)</span></label>
+                <textarea id="orderNote" name="orderNote" rows="3" placeholder="Giao hàng vào giờ hành chính, gọi trước..."></textarea>
+              </div>
+            </div>
+          </section>
+
+          <section class="checkout-section">
+            <h2 class="section-title">Phương thức thanh toán</h2>
+
+            <div id="paymentMethods">
+              <label class="payment-option payment-option--active">
+                <input type="radio" name="paymentMethod" value="cod" checked />
+                <span class="payment-radio"></span>
+                <span class="payment-info">
+                  <span class="payment-name">Thanh toán khi nhận hàng (COD)</span>
+                  <span class="payment-desc">Thanh toán bằng tiền mặt khi giao hàng.</span>
+                </span>
+                <svg class="payment-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="6" width="22" height="13" rx="2"/><path d="M1 11h22M5 16h4"/></svg>
+              </label>
+
+              <label class="payment-option">
+                <input type="radio" name="paymentMethod" value="bank_transfer" />
+                <span class="payment-radio"></span>
+                <span class="payment-info">
+                  <span class="payment-name">Chuyển khoản ngân hàng</span>
+                  <span class="payment-desc">Chuyển khoản theo thông tin tài khoản của shop.</span>
+                </span>
+                <svg class="payment-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6"/></svg>
+              </label>
+
+              <label class="payment-option">
+                <input type="radio" name="paymentMethod" value="ewallet" />
+                <span class="payment-radio"></span>
+                <span class="payment-info">
+                  <span class="payment-name">Ví điện tử MoMo / ZaloPay</span>
+                  <span class="payment-desc">Quét mã QR để thanh toán nhanh chóng.</span>
+                </span>
+                <svg class="payment-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM20 14h1v1h-1zM14 20h1v1h-1zM17 17h1v1h-1zM20 18v3h-3"/></svg>
+              </label>
+            </div>
+
+            <div id="bankTransferInfo" class="payment-extra-info">
+              <p><strong>Ngân hàng:</strong> Vietcombank — Chi nhánh TP.HCM</p>
+              <p><strong>Số tài khoản:</strong> 0071000123456</p>
+              <p><strong>Chủ tài khoản:</strong> CÔNG TY TNHH AURRELIA</p>
+              <p><strong>Nội dung CK:</strong> <span id="transferNoteCode">AURRELIA [Họ tên] [SĐT]</span></p>
+            </div>
+
+            <div id="ewalletInfo" class="payment-extra-info">
+              <p>Mã QR thanh toán sẽ được hiển thị ở bước xác nhận tiếp theo sau khi bạn nhấn "Đặt hàng".</p>
+            </div>
+          </section>
+
+        </div>
+
+        <aside id="checkoutRight">
+          <div id="orderSummaryCard">
+            <h2 class="section-title">Đơn hàng của bạn</h2>
+
+            <div id="orderItemsList">
+              </div>
+
+            <div id="voucherRow">
+              <label id="voucherCheckLabel">
+                <input type="checkbox" id="voucherCheckbox" />
+                Mã giảm giá / Voucher
+              </label>
+              <div id="voucherInputRow">
+                <input type="text" id="voucherInput" placeholder="Nhập mã giảm giá" />
+                <button type="button" id="btnApplyVoucher" class="btn-secondary btn-voucher">Áp dụng</button>
+              </div>
+              <p id="voucherMessage" class="voucher-message"></p>
+            </div>
+
+            <div id="orderTotals">
+              <div class="totals-row">
+                <span>Tổng tiền hàng</span>
+                <span id="totalsSubtotal">0₫</span>
+              </div>
+              <div class="totals-row">
+                <span>Phí vận chuyển (Đã bảo hiểm)</span>
+                <span id="totalsShipping">Miễn phí</span>
+              </div>
+              <div class="totals-row" id="totalsDiscountRow">
+                <span>Giảm giá</span>
+                <span id="totalsDiscount">-0₫</span>
+              </div>
+            </div>
+
+            <div id="grandTotalRow">
+              <span>Tổng thanh toán</span>
+              <span id="grandTotalAmount">0₫</span>
+            </div>
+
+            <button type="submit" id="btnPlaceOrder" class="btn-primary btn-place-order">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              ĐẶT HÀNG
+            </button>
+
+            <p class="secure-note">Bằng việc đặt hàng, bạn đồng ý với Điều khoản dịch vụ và Chính sách bảo mật của Aurrelia.</p>
+          </div>
+        </aside>
+
+      </div>
+    </form>
+  </main>
+
+  <footer id="siteFooter">
+    <div id="footerLeft">
+      <p class="footer-logo">AURRELIA</p>
+    </div>
+    <p class="footer-copy">&copy; 2026 Aurrelia. Bản quyền thuộc về Nhóm 6.</p>
+  </footer>
+
+  <script src="../assets/js/pay.js"></script>
+</body>
+</html>
