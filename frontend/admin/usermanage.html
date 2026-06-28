@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurrelia Fine Jewelry - Quản lý Người Dùng</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="row min-vh-100">
+        
+        <nav class="col-md-3 col-lg-2 d-md-block sidebar border-end p-4">
+            <div class="position-sticky d-flex flex-column h-100 justify-content-between">
+                <div>
+                    <div class="brand-zone mb-4">
+                        <h3 class="brand-logo mb-1">AURRELIA</h3>
+                        <small class="text-muted tracking-wider text-uppercase font-xs">Fine Jewelry Admin</small>
+                    </div>
+                    
+                    <ul class="nav flex-column gap-2 mt-4">
+                        <li class="nav-item">
+                            <a class="nav-link" href="dashboard.html"><i class="bi bi-grid-1x2 me-2"></i> Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="productsmanage.html"><i class="bi bi-gem me-2"></i> Sản Phẩm</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="ordersmanage.html"><i class="bi bi-bag me-2"></i> Đơn Hàng</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="usermanage.html"><i class="bi bi-people me-2"></i> Người Dùng</a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="user-profile d-flex align-items-center gap-3 pt-3 border-top">
+                    <div class="avatar bg-gold text-white rounded-circle d-flex align-items-center justify-content-center fw-bold">EV</div>
+                    <div>
+                        <h6 class="mb-0 small fw-bold text-dark">Elena Vance</h6>
+                        <small class="text-muted font-xs">Giám đốc Sáng tạo</small>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-5 py-5">
+            
+            <div class="d-flex justify-content-between align-items-end border-bottom pb-4 mb-5">
+                <div>
+                    <h1 class="page-title display-6 mb-2">Quản lý người dùng</h1>
+                    <p class="text-muted mb-0">Quản lý tài khoản, phân quyền hệ thống và theo dõi quyền truy cập của nhân viên.</p>
+                </div>
+                <div>
+                    <button class="btn btn-gold text-nowrap py-2 px-4" id="btnOpenAddModal">
+                        <i class="bi bi-person-plus me-2"></i> THÊM TÀI KHOẢN
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-responsive bg-white border rounded-1 shadow-sm table-custom-wrapper">
+                <table class="table align-middle mb-0">
+                    <thead class="table-light-bg font-xs tracking-wider text-muted text-uppercase">
+                        <tr>
+                            <th class="ps-4 py-3">Nhân viên</th>
+                            <th class="py-3">Phân quyền (Role)</th>
+                            <th class="py-3">Trạng thái</th>
+                            <th class="py-3">Ngày tham gia</th>
+                            <th class="pe-4 py-3 text-end">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTableBody">
+                        </tbody>
+                </table>
+            </div>
+            
+            <footer class="d-flex justify-content-between text-muted font-xs mt-5 pt-4 border-top">
+                <span>&copy; 2026 Aurelia Fine Jewelry. All rights reserved.</span>
+            </footer>
+        </main>
+    </div>
+</div>
+
+<div class="modal fade" id="userModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content card shadow-sm border-0 p-2">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title page-title fw-bold text-dark tracking-wider fs-5" id="userModalTitle">THÊM TÀI KHOẢN MỚI</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="userForm">
+                    <input type="hidden" id="userId"> <div class="mb-3">
+                        <label class="form-label-custom">Họ và Tên</label>
+                        <input type="text" class="form-control-custom w-100" id="userName" placeholder="VD: Marcus Cole" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label-custom">Địa chỉ Email</label>
+                        <input type="email" class="form-control-custom w-100" id="userEmail" placeholder="marcus@aurrelia.com" required>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label class="form-label-custom">Vai trò</label>
+                            <select class="form-select form-control-custom" id="userRole" required>
+                                <option value="Admin">Admin (Quản trị viên)</option>
+                                <option value="Manager">Manager (Quản lý)</option>
+                                <option value="Staff" selected>Staff (Nhân viên)</option>
+                            </select>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label class="form-label-custom">Trạng thái</label>
+                            <select class="form-select form-control-custom" id="userStatus" required>
+                                <option value="Active" selected>Hoạt động</option>
+                                <option value="Locked">Bị khóa (Locked)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="text-end mt-4 pt-2 border-top border-light">
+                        <button type="button" class="btn btn-outline-custom py-2 px-3 me-2" data-bs-dismiss="modal">Hủy bỏ</button>
+                        <button type="submit" class="btn btn-gold py-2 px-4">Lưu thông tin</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="usermanage.js"></script>
+</body>
+</html>
