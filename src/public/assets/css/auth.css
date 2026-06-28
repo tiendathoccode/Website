@@ -1,11 +1,18 @@
 :root {
-    --gold-color: #bfa15f;    /* Màu vàng đặc trưng của thương hiệu */
-    --bg-page: #f9f6f0;       /* Màu nền viền ngoài cùng */
-    --input-bg: #f3f0e9;      /* Màu nền của ô nhập chữ */
+    --gold-color: #bfa15f; /* Màu vàng đặc trưng của thương hiệu */
+    --bg-page: #f9f6f0; /* Màu nền viền ngoài cùng */
+    --input-bg: #f3f0e9; /* Màu nền của ô nhập chữ */
     --text-dark: #333333;
     --text-gray: #888888;
 }
 
+/* Reset cứng cho trang auth */
+html,
+body {
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 100%;
+}
 .auth-body {
     background-color: var(--bg-page);
     display: flex;
@@ -24,13 +31,13 @@
     max-width: 900px;
     width: 100%;
     min-height: 550px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     border-radius: 0px 5px 5px 0px;
 }
 
 .auth-image {
     flex: 1;
-    background-image: url('../images/bg-auth.jpg');
+    background-image: url("../images/bg-auth.jpg");
     background-size: cover;
     background-position: center;
     position: relative;
@@ -43,8 +50,11 @@
 .auth-image::before {
     content: "";
     position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent);
 }
 
 .image-text {
@@ -130,12 +140,14 @@
 .input-wrapper {
     display: flex;
     align-items: center;
+    position: relative;
     background-color: var(--input-bg);
     border-radius: 4px;
     padding: 0 15px;
 }
 
-.input-wrapper .icon, .input-wrapper .icon-right {
+.input-wrapper .icon,
+.input-wrapper .icon-right {
     color: var(--text-gray);
     font-size: 14px;
 }

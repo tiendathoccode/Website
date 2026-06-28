@@ -1,4 +1,8 @@
 <?php
+// 1. Nhúng thủ công thư viện PHPMailer từ thư mục lib của bạn
+require_once "/var/www/html/vendor/autoload.php";
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 class AuthController
 {
     // ==========================================
@@ -147,72 +151,88 @@ class AuthController
             exit();
         }
     }
-    // --- NHÓM 3: XỬ LÝ QUÊN MẬT KHẨU ---
-
-    // 1. Hiển thị form nhập email
+    // ==========================================
+    // NHÓM 3: XỬ LÝ QUÊN MẬT KHẨU
+    // ==========================================
     public function showForgotPassword()
     {
         require_once BASE_PATH . "/app/views/user/forgot_password.php";
     }
 
-    // 2. Xử lý tạo Token và giả lập gửi email
+    // THAY ĐỔI HOÀN TOÀN LOGIC THỰC TẾ GỬI MAIL QUA MAILPIT Ở ĐÂY
     public function handleForgotPassword()
     {
         $email = $_POST["email"] ?? "";
 
-        // 1. KIỂM TRA ĐẦU VÀO (Fail-fast): Chặn ngay nếu để trống
         if (empty($email)) {
-            $_SESSION["error_message"] = "Vui lòng nhập địa chỉ email!";
+            $_SESSION["error_message"] = "Vui lòng nhập email!";
             header("Location: /index.php?page=forgot_password");
             exit();
         }
 
-        // 2. TƯƠNG TÁC DATABASE
         require_once BASE_PATH . "/app/models/UserModel.php";
         $userModel = new UserModel();
+        $user = $userModel->findByEmail($email);
 
-        if ($user = $userModel->findByEmail($email)) {
-            // Tạo token và thời hạn
+        // Luôn hiện thông báo thành công (tránh lộ email tồn tại)
+        if ($user) {
             $token = bin2hex(random_bytes(16));
             $expiry = date("Y-m-d H:i:s", strtotime("+15 minutes"));
-
             $userModel->setResetToken($email, $token, $expiry);
 
-            // Tạm thời in link ra màn hình để bạn test ngay
-            // BẢN THỰC TẾ: Bạn sẽ thay phần này bằng hàm gửi Mail và header() về trang Login
-            echo "<h1>Mô phỏng gửi email</h1>";
-            echo "<p>Link reset (chỉ dùng được trong 15p): <a href='/index.php?page=reset_password&token=$token'>Đặt lại mật khẩu</a></p>";
-        } else {
-            // 3. XỬ LÝ LỖI CHUẨN MVC: Gắn thông báo vào Session và đẩy về trang cũ
-            $_SESSION["error_message"] = "Email không tồn tại trong hệ thống!";
-            header("Location: /index.php?page=forgot_password");
-            exit();
+            $resetLink =
+                "http://localhost:8080/index.php?page=reset_password&token=" .
+                $token;
+
+            $mail = new PHPMailer(true);
+            try {
+                $mail->isSMTP();
+                $mail->Host = "mailpit";
+                $mail->SMTPAuth = false;
+                $mail->Port = 1025;
+                $mail->SMTPAutoTLS = false;
+                $mail->SMTPSecure = false;
+                $mail->CharSet = "UTF-8";
+
+                $mail->setFrom("no-reply@aurrelia.local", "Aurrelia Boutique");
+                $mail->addAddress($email);
+                $mail->isHTML(true);
+                $mail->Subject = "Khôi phục mật khẩu Aurrelia";
+                $mail->Body = "<p>Click để đặt lại: <a href='{$resetLink}'>{$resetLink}</a></p>";
+                $mail->send();
+            } catch (Exception $e) {
+                // Log lỗi nội bộ, không lộ ra ngoài
+                error_log("Mailer Error: " . $mail->ErrorInfo);
+            }
         }
+
+        $_SESSION["success_message"] =
+            "Nếu email tồn tại, chúng tôi đã gửi liên kết đặt lại mật khẩu!";
+        header("Location: /index.php?page=forgot_password");
+        exit();
     }
 
-    // 3. Hiển thị form nhập mật khẩu mới (khi đã có token)
     public function showResetPasswordForm($token)
     {
         require_once BASE_PATH . "/app/models/UserModel.php";
         $userModel = new UserModel();
 
-        // Kiểm tra token có hợp lệ không
         if ($userModel->findByToken($token)) {
-            // Truyền token vào view qua biến $token
             require BASE_PATH . "/app/views/user/reset_password.php";
         } else {
-            die("Token không hợp lệ hoặc đã hết hạn!");
+            die(
+                "<h3 style='text-align:center; color:red; margin-top:50px;'>Token không hợp lệ hoặc đã hết hạn! Vui lòng thử lại.</h3>"
+            );
         }
     }
 
-    // 4. Xử lý lưu mật khẩu mới vào DB
     public function handleResetPassword()
     {
+        // Kiểm tra kết nối
         $token = $_POST["token"] ?? "";
         $newPassword = $_POST["password"] ?? "";
         $confirmPassword = $_POST["confirm_password"] ?? "";
 
-        // 1. BẢO VỆ ĐẦU VÀO: Tránh submit form rỗng
         if (empty($token) || empty($newPassword) || empty($confirmPassword)) {
             $_SESSION["error_message"] = "Vui lòng nhập đầy đủ thông tin!";
             header(
@@ -222,10 +242,8 @@ class AuthController
             exit();
         }
 
-        // 2. KIỂM TRA LOGIC: Mật khẩu không khớp
         if ($newPassword !== $confirmPassword) {
             $_SESSION["error_message"] = "Mật khẩu không khớp!";
-            // Bắt buộc phải gắn kèm token cũ để form reset có thể tiếp tục hiển thị
             header(
                 "Location: /index.php?page=reset_password&token=" .
                     urlencode($token),
@@ -236,19 +254,16 @@ class AuthController
         require_once BASE_PATH . "/app/models/UserModel.php";
         $userModel = new UserModel();
 
-        // 3. XÁC THỰC VÀ CẬP NHẬT
-        // Xác thực lại token lần cuối
         if ($user = $userModel->findByToken($token)) {
             $hashed = password_hash($newPassword, PASSWORD_DEFAULT);
             $userModel->updatePassword($user["email"], $hashed);
-            $userModel->clearResetToken($user["email"]); // Xóa token sau khi dùng xong
+            $userModel->clearResetToken($user["email"]);
 
             $_SESSION["success_message"] =
                 "Đổi mật khẩu thành công! Vui lòng đăng nhập.";
             header("Location: /index.php?page=login");
             exit();
         } else {
-            // Lỗi token (hết hạn hoặc bị sửa bậy) -> Bắt người dùng làm lại từ đầu
             $_SESSION["error_message"] =
                 "Liên kết không hợp lệ hoặc đã hết hạn!";
             header("Location: /index.php?page=forgot_password");

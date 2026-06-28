@@ -1,0 +1,44 @@
+<?php
+class ProductController
+{
+    public function showChiTiet($product_id)
+    {
+        if (
+            !isset($_SESSION["user_logged_in"]) ||
+            $_SESSION["user_logged_in"] !== true
+        ) {
+            header("Location: /index.php?page=login");
+            exit();
+        }
+
+        if (!$product_id) {
+            header("Location: /index.php?page=home");
+            exit();
+        }
+
+        require_once BASE_PATH . "/config/database.php";
+        $db = new Database();
+        $conn = $db->getConnection();
+
+        // Lấy thông tin sản phẩm
+        $stmt = $conn->prepare("SELECT p.*, c.category_name FROM products p
+                                LEFT JOIN categories c ON p.category_id = c.category_id
+                                WHERE p.product_id = :id AND p.status = 'show'");
+        $stmt->execute([":id" => $product_id]);
+        $product = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$product) {
+            header("Location: /index.php?page=home");
+            exit();
+        }
+
+        // Lấy ảnh phụ từ product_images
+        $stmt2 = $conn->prepare(
+            "SELECT * FROM product_images WHERE product_id = :id",
+        );
+        $stmt2->execute([":id" => $product_id]);
+        $extraImages = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+
+        require_once BASE_PATH . "/app/views/user/product-details.php";
+    }
+}

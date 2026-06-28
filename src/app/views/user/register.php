@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Đăng ký tài khoản - Aurrelia</title>
         <link rel="stylesheet" type="text/css" href="/assets/css/auth.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -20,7 +21,7 @@
                 <h1 class="brand-logo">AURRELIA</h1>
 
                 <div class="auth-tabs">
-                    <div class="tab" onclick="window.location.href='login.html'">Đăng nhập</div>
+                    <div class="tab" onclick="window.location.href='/index.php?page=login'">Đăng nhập</div>
                     <div class="tab active">Tạo tài khoản</div>
                 </div>
 

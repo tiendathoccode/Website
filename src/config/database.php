@@ -5,7 +5,7 @@ class Database
     private $host = "mysql"; // Tên service mysql trong mạng Docker
     private $db_name = "recruitment_db"; // Tên database mặc định
     private $username = "recruitment_user"; // User mặc định
-    private $password = "caeltia2810@"; // Password mặc định
+    private $password = "caeltia"; // Password mặc định
     public $conn;
 
     // Hàm lấy kết nối

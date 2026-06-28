@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chi Tiết Sản Phẩm - Aurrelia</title>
+  <title><?php echo htmlspecialchars(
+      $product["product_name"],
+  ); ?> - Aurrelia</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
   <link rel="stylesheet" href="../assets/css/style.css" />
@@ -14,11 +16,11 @@
   <nav class="navbar navbar-expand-lg py-3 sticky-top border-bottom shadow-sm" style="background-color: #fdfbf7; z-index: 1020;">
       <div class="container-fluid px-5">
           <a class="navbar-brand fs-4 fw-bold gold-text" href="index.html" style="font-family: 'Times New Roman', serif;">AURRELIA</a>
-          
+
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
               <span class="navbar-toggler-icon"></span>
           </button>
-          
+
           <div class="collapse navbar-collapse" id="navbarNav">
               <ul class="navbar-nav mx-auto text-uppercase" style="font-size: 13px; letter-spacing: 1px;">
                   <li class="nav-item"><a class="nav-link px-3 text-dark fw-semibold" href="#">Trang Sức</a></li>
@@ -41,117 +43,194 @@
   <main id="productPage" class="container-fluid px-5 my-4">
 
     <nav id="breadcrumb" aria-label="breadcrumb" class="mb-4">
-      <a href="#" class="text-muted text-decoration-none" style="font-size: 13px;">Bộ sưu tập</a>
-      <span class="text-muted mx-2">›</span>
-      <a href="#" class="text-muted text-decoration-none" style="font-size: 13px;">Vòng cổ</a>
-      <span class="text-muted mx-2">›</span>
-      <span class="text-dark fw-semibold" style="font-size: 13px;">Eternity Drop</span>
+        <a href="#" class="text-muted text-decoration-none" style="font-size: 13px;">
+            <?php echo htmlspecialchars($product["category_name"]); ?>
+        </a>
+        <span class="text-muted mx-2">›</span>
+        <span class="text-dark fw-semibold" style="font-size: 13px;">
+            <?php echo htmlspecialchars($product["product_name"]); ?>
+        </span>
     </nav>
 
     <section id="productSection">
 
       <div id="productGallery">
-        <div id="mainImageWrapper">
-          <span class="product-badge">PHIÊN BẢN GIỚI HẠN</span>
-          <img
-            src="https://images.unsplash.com/photo-1599643477877-530eb83abc8e?w=900&auto=format&fit=crop&q=80"
-            alt="Vòng cổ Eternity Drop – ảnh chính"
-            id="mainProductImage"
-            class="main-product-img"
-          />
-        </div>
-        <div id="thumbnailStrip">
-          <button
-            class="thumb-btn thumb-btn--active"
-            data-src="https://images.unsplash.com/photo-1599643477877-530eb83abc8e?w=900&auto=format&fit=crop&q=80"
-            data-alt="Vòng cổ Eternity Drop – ảnh chính"
-          >
-            <img src="https://images.unsplash.com/photo-1599643477877-530eb83abc8e?w=200&auto=format&fit=crop&q=80" alt="Ảnh nhỏ 1" />
-          </button>
-          <button
-            class="thumb-btn"
-            data-src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=900&auto=format&fit=crop&q=80"
-            data-alt="Vòng cổ Eternity Drop – khi đeo"
-          >
-            <img src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=200&auto=format&fit=crop&q=80" alt="Ảnh nhỏ 2" />
-          </button>
-          <button
-            class="thumb-btn"
-            data-src="https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=900&auto=format&fit=crop&q=80"
-            data-alt="Vòng cổ Eternity Drop – trong hộp"
-          >
-            <img src="https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=200&auto=format&fit=crop&q=80" alt="Ảnh nhỏ 3" />
-          </button>
-        </div>
+          <div id="mainImageWrapper">
+              <img src="/<?php echo htmlspecialchars(
+                  $product["main_image"],
+              ); ?>"
+                   alt="<?php echo htmlspecialchars(
+                       $product["product_name"],
+                   ); ?>"
+                   id="mainProductImage" class="main-product-img"/>
+          </div>
+          <div id="thumbnailStrip">
+              <!-- Ảnh chính luôn là thumbnail đầu tiên -->
+              <button class="thumb-btn thumb-btn--active"
+                      data-src="/<?php echo htmlspecialchars(
+                          $product["main_image"],
+                      ); ?>"
+                      data-alt="<?php echo htmlspecialchars(
+                          $product["product_name"],
+                      ); ?>">
+                  <img src="/<?php echo htmlspecialchars(
+                      $product["main_image"],
+                  ); ?>"
+                       alt="Ảnh chính"/>
+              </button>
+              <!-- Ảnh phụ nếu có -->
+              <?php foreach ($extraImages as $img): ?>
+              <button class="thumb-btn"
+                      data-src="/<?php echo htmlspecialchars(
+                          $img["image_url"],
+                      ); ?>"
+                      data-alt="<?php echo htmlspecialchars(
+                          $product["product_name"],
+                      ); ?>">
+                  <img src="/<?php echo htmlspecialchars(
+                      $img["image_url"],
+                  ); ?>" alt="Ảnh phụ"/>
+              </button>
+              <?php endforeach; ?>
+          </div>
       </div>
+          <div id="productInfo">
+              <h1 id="productName" class="product-title" style="font-family: 'Times New Roman', serif;">
+                  <?php echo htmlspecialchars($product["product_name"]); ?>
+              </h1>
 
-      <div id="productInfo">
-        <h1 id="productName" class="product-title" style="font-family: 'Times New Roman', serif;">Vòng Cổ Eternity Drop</h1>
-        <p id="productPrice" class="product-price">3.450.000₫</p>
+              <p id="productPrice" class="product-price">
+                  <?php if ($product["sale_price"] > 0): ?>
+                      <span style="color:#c0392b;">
+                          <?php echo number_format(
+                              $product["sale_price"],
+                              0,
+                              ",",
+                              ".",
+                          ); ?>₫
+                      </span>
+                      <span style="text-decoration:line-through; color:#999; font-size:16px; margin-left:10px;">
+                          <?php echo number_format(
+                              $product["price"],
+                              0,
+                              ",",
+                              ".",
+                          ); ?>₫
+                      </span>
+                  <?php else: ?>
+                      <?php echo number_format(
+                          $product["price"],
+                          0,
+                          ",",
+                          ".",
+                      ); ?>₫
+                  <?php endif; ?>
+              </p>
 
-        <p id="productDescription" class="product-desc">
-          Được chế tác tinh xảo, Vòng Cổ Eternity Drop sở hữu viên kim cương cắt hình giọt lê hoàn hảo, treo nhẹ nhàng trên dây chuyền vàng champagne nguyên khối 18k. Mỗi đường nét được thiết kế để bắt sáng từ mọi góc nhìn, toát lên vẻ sang trọng tinh tế.
-        </p>
+              <p id="productDescription" class="product-desc">
+                  <?php echo htmlspecialchars($product["description"]); ?>
+              </p>
 
-        <div id="metalSelector" class="option-group">
-          <p class="option-label">CHẤT LIỆU</p>
-          <div id="metalOptions" class="metal-swatches">
-            <button
-              class="swatch swatch--gold swatch--active"
-              data-metal="champagne-gold"
-              id="swatchChampagneGold"
-              aria-label="Vàng Champagne"
-              title="Vàng Champagne"
-            ></button>
-            <button
-              class="swatch swatch--white"
-              data-metal="white-gold"
-              id="swatchWhiteGold"
-              aria-label="Vàng Trắng"
-              title="Vàng Trắng"
-            ></button>
-            <button
-              class="swatch swatch--rose"
-              data-metal="rose-gold"
-              id="swatchRoseGold"
-              aria-label="Vàng Hồng"
-              title="Vàng Hồng"
-            ></button>
-          </div>
-          <p id="selectedMetalLabel" class="selected-metal-label">Vàng Champagne</p>
-        </div>
+              <!-- Thông tin nhanh -->
+              <div style="background:#fcf9f2; border-radius:8px; padding:16px 20px; margin:20px 0; font-size:13px;">
+                  <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #f0ece4;">
+                      <span style="color:#888;">Tình trạng</span>
+                      <span style="font-weight:bold; color:<?php echo $product[
+                          "stock_quantity"
+                      ] > 0
+                          ? "#27ae60"
+                          : "#c0392b"; ?>;">
+                          <?php echo $product["stock_quantity"] > 0
+                              ? "✓ Còn hàng (" .
+                                  $product["stock_quantity"] .
+                                  " sản phẩm)"
+                              : "✗ Hết hàng"; ?>
+                      </span>
+                  </div>
+                  <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #f0ece4;">
+                      <span style="color:#888;">Danh mục</span>
+                      <span style="font-weight:bold;"><?php echo htmlspecialchars(
+                          $product["category_name"],
+                      ); ?></span>
+                  </div>
+                  <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #f0ece4;">
+                      <span style="color:#888;">Mã sản phẩm</span>
+                      <span style="font-weight:bold; font-family:monospace;">
+                          #<?php echo str_pad(
+                              $product["product_id"],
+                              4,
+                              "0",
+                              STR_PAD_LEFT,
+                          ); ?>
+                      </span>
+                  </div>
+                  <div style="display:flex; justify-content:space-between; padding:8px 0;">
+                      <span style="color:#888;">Cập nhật</span>
+                      <span style="font-weight:bold;">
+                          <?php echo date(
+                              "d/m/Y",
+                              strtotime($product["updated_at"]),
+                          ); ?>
+                      </span>
+                  </div>
+              </div>
 
-        <div id="productActions">
-          <button id="btnAddToCart" class="btn-primary w-100 mb-2">THÊM VÀO GIỎ HÀNG</button>
-          <button id="btnAddToWishlist" class="btn-secondary w-100 bg-transparent border-0 d-flex align-items-center justify-content-center gap-2">
-            <i class="far fa-heart"></i>
-            Lưu vào yêu thích
-          </button>
-        </div>
+              <!-- Nút hành động -->
+              <div id="productActions">
+                  <button id="btnAddToCart" class="btn-primary w-100 mb-2">
+                      <i class="fas fa-shopping-bag me-2"></i>THÊM VÀO GIỎ HÀNG
+                  </button>
+                  <!-- Thêm nút này -->
+                  <a href="/index.php?page=thanh_toan"
+                     id="btnBuyNow"
+                     class="btn-primary w-100 mb-2"
+                     style="display:block; text-align:center; text-decoration:none; background-color:#333; padding:12px;"
+                     onclick="Cart.add({
+                         id: '<?php echo $product["product_id"]; ?>',
+                         name: '<?php echo addslashes(
+                             $product["product_name"],
+                         ); ?>',
+                         metal: 'default',
+                         metalLabel: 'Mặc định',
+                         price: <?php echo $product["sale_price"] > 0
+                             ? $product["sale_price"]
+                             : $product["price"]; ?>,
+                         image: '/<?php echo $product["main_image"]; ?>'
+                     });">
+                      <i class="fas fa-bolt me-2"></i>MUA NGAY
+                  </a>
+                  <button id="btnAddToWishlist" class="btn-secondary w-100 bg-transparent border-0 d-flex align-items-center justify-content-center gap-2">
+                      <i class="far fa-heart"></i> Lưu vào yêu thích
+                  </button>
+              </div>
 
-        <div id="productAccordion">
-          <div class="accordion-item" id="accordionDetails">
-            <button class="accordion-trigger" data-target="panelDetails">
-              CHI TIẾT &amp; KÍCH THƯỚC
-              <span class="accordion-icon">+</span>
-            </button>
-            <div class="accordion-panel" id="panelDetails">
-              <p>Đá quý: Kim cương cắt giọt lê, 1.2ct, độ trong VS1, màu D<br>
-              Dây chuyền: Vàng champagne nguyên khối 18k, dài 42cm có thể chỉnh đến 45cm<br>
-              Kích thước mặt dây: 28mm × 14mm<br>
-              Trọng lượng: 4.2g</p>
-            </div>
-          </div>
-          <div class="accordion-item" id="accordionShipping">
-            <button class="accordion-trigger" data-target="panelShipping">
-              VẬN CHUYỂN &amp; ĐỔI TRẢ
-              <span class="accordion-icon">+</span>
-            </button>
-            <div class="accordion-panel" id="panelShipping">
-              <p>Miễn phí vận chuyển có bảo hiểm trên toàn thế giới. Giao hàng trong 3–5 ngày làm việc, đóng gói trong hộp quà đặc trưng của Aurelia. Chấp nhận đổi trả trong vòng 14 ngày kể từ ngày giao hàng đối với sản phẩm chưa sử dụng.</p>
-            </div>
-          </div>
-        </div>
+              <!-- Accordion chi tiết -->
+              <div id="productAccordion">
+                  <div class="accordion-item">
+                      <button class="accordion-trigger" data-target="panelDetails">
+                          CHI TIẾT & KÍCH THƯỚC
+                          <span class="accordion-icon">+</span>
+                      </button>
+                      <div class="accordion-panel" id="panelDetails">
+                          <p><?php echo nl2br(
+                              htmlspecialchars($product["description"]),
+                          ); ?></p>
+                          <p>Tồn kho: <?php echo $product[
+                              "stock_quantity"
+                          ]; ?> sản phẩm</p>
+                      </div>
+                  </div>
+                  <div class="accordion-item">
+                      <button class="accordion-trigger" data-target="panelShipping">
+                          VẬN CHUYỂN & ĐỔI TRẢ
+                          <span class="accordion-icon">+</span>
+                      </button>
+                      <div class="accordion-panel" id="panelShipping">
+                          <p>Miễn phí vận chuyển toàn quốc. Giao hàng trong 3–5 ngày làm việc. Đổi trả trong vòng 14 ngày kể từ ngày nhận hàng với sản phẩm chưa qua sử dụng.</p>
+                      </div>
+                  </div>
+              </div>
+
 
       </div>
     </section>
@@ -220,7 +299,19 @@
       </div>
   </footer>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="../assets/js/cart.js"></script>
-  <script src="../assets/js/product_details.js"></script>
+  <script>
+  const productDetail = {
+      id:    '<?php echo $product["product_id"]; ?>',
+      name:  '<?php echo addslashes($product["product_name"]); ?>',
+      price: <?php echo $product["sale_price"] > 0
+          ? $product["sale_price"]
+          : $product["price"]; ?>,
+      metal: 'default',
+      metalLabels: { 'default': 'Mặc định' },
+      images: { main: '/<?php echo $product["main_image"]; ?>' },
+  };
+  </script>
+  <script src="/assets/js/cart.js"></script>
+  <script src="/assets/js/product_details.js"></script>
 </body>
 </html>

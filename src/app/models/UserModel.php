@@ -52,37 +52,33 @@ class UserModel
         $stmt->bindParam(":email", $email);
         return $stmt->execute();
     }
-    // 1. Lưu token và thời gian hết hạn vào DB
     public function setResetToken($email, $token, $expiry)
     {
         $query =
-            "UPDATE users SET reset_token = :token, reset_token_expire = :expiry WHERE email = :email";
+            "UPDATE users SET reset_token = :token, reset_token_expiry = :expiry WHERE email = :email";
         $stmt = $this->conn->prepare($query);
-        $stmt->execute([
+        return $stmt->execute([
             ":token" => $token,
             ":expiry" => $expiry,
             ":email" => $email,
         ]);
     }
 
-    // 2. Tìm User dựa trên Token (để kiểm tra xem link còn hạn không)
     public function findByToken($token)
     {
-        // Kiểm tra token khớp VÀ thời gian hiện tại phải nhỏ hơn thời gian hết hạn (NOW())
-        $query =
-            "SELECT * FROM users WHERE reset_token = :token AND reset_token_expire > NOW() LIMIT 1";
-        $stmt = $this->conn->prepare($query);
+        $sql =
+            "SELECT * FROM users WHERE reset_token = :token AND reset_token_expiry > NOW()";
+        $stmt = $this->conn->prepare($sql);
         $stmt->execute([":token" => $token]);
-        return $stmt->fetch();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    // 3. Xóa token sau khi đổi xong (để bảo mật, không cho dùng lại link cũ)
     public function clearResetToken($email)
     {
-        $query =
-            "UPDATE users SET reset_token = NULL, reset_token_expire = NULL WHERE email = :email";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute([":email" => $email]);
+        $sql =
+            "UPDATE users SET reset_token = NULL, reset_token_expiry = NULL WHERE email = :email";
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute([":email" => $email]);
     }
 }
 ?>

@@ -1,75 +1,57 @@
 /**
- * product_details.js
- * Giỏ hàng riêng của trang product_details (drawer bên phải).
- * Dữ liệu được đồng bộ vào localStorage qua Cart (cart.js).
+ * product_details.js - Đã dọn dẹp để khớp với HTML PHP
  */
 
-// ── Dữ liệu sản phẩm ────────────────────────────────────────────────────────
-const productDetail = {
-  id:          'eternity-drop-necklace',
-  name:        'Vòng Cổ Eternity Drop',
-  price:       3450000,
-  badge:       'PHIÊN BẢN GIỚI HẠN',
-  metal:       'champagne-gold',
-  metalLabels: {
-    'champagne-gold': 'Vàng Champagne',
-    'white-gold':     'Vàng Trắng',
-    'rose-gold':      'Vàng Hồng',
-  },
-  images: {
-    main:   'https://images.unsplash.com/photo-1599643477877-530eb83abc8e?w=900&auto=format&fit=crop&q=80',
-    thumb1: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=900&auto=format&fit=crop&q=80',
-    thumb2: 'https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=900&auto=format&fit=crop&q=80',
-  },
-};
+// productDetail được khai báo từ PHP trong file .php, không khai báo lại ở đây
 
-// ── Trạng thái ───────────────────────────────────────────────────────────────
 let cartIsOpen = false;
 let toastTimer = null;
 
 // ── DOM refs ─────────────────────────────────────────────────────────────────
-const btnCartToggle       = document.getElementById('btnCartToggle');
-const btnCloseCart        = document.getElementById('btnCloseCart');
-const cartDrawer          = document.getElementById('cartDrawer');
-const cartOverlay         = document.getElementById('cartOverlay');
-const cartBadge           = document.getElementById('cartBadge');
-const cartItemList        = document.getElementById('cartItemList');
-const cartSubtotalAmount  = document.getElementById('cartSubtotalAmount');
-const btnAddToCart        = document.getElementById('btnAddToCart');
-const btnAddToWishlist    = document.getElementById('btnAddToWishlist');
-const btnProceedToCheckout= document.getElementById('btnProceedToCheckout');
-const metalOptions        = document.getElementById('metalOptions');
-const selectedMetalLabel  = document.getElementById('selectedMetalLabel');
-const mainProductImage    = document.getElementById('mainProductImage');
-const thumbnailStrip      = document.getElementById('thumbnailStrip');
-const productAccordion    = document.getElementById('productAccordion');
+const btnCloseCart = document.getElementById("btnCloseCart");
+const cartDrawer = document.getElementById("cartDrawer");
+const cartOverlay = document.getElementById("cartOverlay");
+const cartItemList = document.getElementById("cartItemList");
+const cartSubtotalAmount = document.getElementById("cartSubtotalAmount");
+const btnAddToCart = document.getElementById("btnAddToCart");
+const btnAddToWishlist = document.getElementById("btnAddToWishlist");
+const btnProceedToCheckout = document.getElementById("btnProceedToCheckout");
+const mainProductImage = document.getElementById("mainProductImage");
+const thumbnailStrip = document.getElementById("thumbnailStrip");
+const productAccordion = document.getElementById("productAccordion");
+const headerCartBadge = document.getElementById("headerCartBadge");
+const headerCartBtn = document.getElementById("headerCartBtn");
 
-// ── Render giỏ hàng (chỉ hiện sản phẩm của trang này) ─────────────────────
-function getPageCartItems() {
-  // Giỏ hàng drawer chỉ hiện sản phẩm đang xem (theo productDetail.id)
-  // Bạn có thể đổi thành Cart.getAll() nếu muốn hiện tất cả
-  return Cart.getAll().filter(i => i.id === productDetail.id);
+// ── Badge giỏ hàng trên navbar ───────────────────────────────────────────────
+function updateCartBadge() {
+  const qty = Cart.getTotalQty();
+  if (headerCartBadge) {
+    headerCartBadge.textContent = qty;
+    headerCartBadge.style.display = qty > 0 ? "inline-block" : "none";
+  }
 }
 
+// ── Render giỏ hàng trong drawer ─────────────────────────────────────────────
 function renderCartItems() {
-  const items = Cart.getAll(); // Hiện toàn bộ giỏ trong drawer
-  cartItemList.innerHTML = '';
+  const items = Cart.getAll();
+  cartItemList.innerHTML = "";
 
   if (items.length === 0) {
-    cartItemList.innerHTML = '<p style="color:var(--color-muted);font-size:12px;text-align:center;padding-top:40px;">Giỏ hàng của bạn đang trống.</p>';
+    cartItemList.innerHTML =
+      '<p style="color:#888; font-size:12px; text-align:center; padding-top:40px;">Giỏ hàng của bạn đang trống.</p>';
+    cartSubtotalAmount.textContent = "0₫";
     updateCartBadge();
-    cartSubtotalAmount.textContent = formatVND(0);
     return;
   }
 
-  items.forEach(item => {
-    const el = document.createElement('div');
-    el.classList.add('cart-item');
+  items.forEach((item) => {
+    const el = document.createElement("div");
+    el.classList.add("cart-item");
     el.innerHTML = `
       <img src="${item.image}" alt="${item.name}" class="cart-item-img"/>
       <div class="cart-item-info">
         <span class="cart-item-name">${item.name}</span>
-        <span class="cart-item-meta">${item.metalLabel}</span>
+        <span class="cart-item-meta">${item.metalLabel || ""}</span>
         <div class="qty-control">
           <button class="qty-btn" data-action="decrease" data-id="${item.id}" data-metal="${item.metal}" aria-label="Giảm">−</button>
           <span class="qty-value">${item.quantity}</span>
@@ -77,154 +59,158 @@ function renderCartItems() {
         </div>
         <button class="remove-btn" data-action="remove" data-id="${item.id}" data-metal="${item.metal}" aria-label="Xóa">🗑</button>
       </div>
-      <span class="cart-item-price">${formatVND(item.price * item.quantity)}</span>
+      <span class="cart-item-price">${(item.price * item.quantity).toLocaleString("vi-VN")}₫</span>
     `;
     cartItemList.appendChild(el);
   });
 
+  cartSubtotalAmount.textContent =
+    Cart.getTotalPrice().toLocaleString("vi-VN") + "₫";
   updateCartBadge();
-  cartSubtotalAmount.textContent = formatVND(Cart.getTotalPrice());
 }
 
-function updateCartBadge() {
-  const qty = Cart.getTotalQty();
-  cartBadge.textContent = qty;
-  cartBadge.style.display = qty > 0 ? 'flex' : 'none';
-}
-
-// ── Thao tác giỏ hàng ────────────────────────────────────────────────────────
-function addToCart() {
-  const metal     = productDetail.metal;
-  const metalLabel= productDetail.metalLabels[metal];
-  Cart.add({
-    id:         productDetail.id,
-    name:       productDetail.name,
-    metal,
-    metalLabel,
-    price:      productDetail.price,
-    image:      mainProductImage.src,
-  });
-  renderCartItems();
-  openCartDrawer();
-  showToast('Đã thêm vào giỏ hàng!');
-}
-
-// ── Drawer ───────────────────────────────────────────────────────────────────
+// ── Drawer ────────────────────────────────────────────────────────────────────
 function openCartDrawer() {
   cartIsOpen = true;
-  cartDrawer.classList.add('is-open');
-  cartOverlay.classList.add('is-visible');
-  cartDrawer.setAttribute('aria-hidden', 'false');
-  document.body.style.overflow = 'hidden';
+  cartDrawer.classList.add("is-open");
+  cartOverlay.classList.add("is-visible");
+  cartDrawer.setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
 }
 
 function closeCartDrawer() {
   cartIsOpen = false;
-  cartDrawer.classList.remove('is-open');
-  cartOverlay.classList.remove('is-visible');
-  cartDrawer.setAttribute('aria-hidden', 'true');
-  document.body.style.overflow = '';
+  cartDrawer.classList.remove("is-open");
+  cartOverlay.classList.remove("is-visible");
+  cartDrawer.setAttribute("aria-hidden", "true");
+  document.body.style.overflow = "";
 }
 
-function toggleCartDrawer() {
-  cartIsOpen ? closeCartDrawer() : openCartDrawer();
-}
-
-// ── Metal selector ───────────────────────────────────────────────────────────
-function selectMetal(metalKey) {
-  if (!productDetail.metalLabels[metalKey]) return;
-  productDetail.metal = metalKey;
-  metalOptions.querySelectorAll('.swatch').forEach(s => {
-    s.classList.toggle('swatch--active', s.dataset.metal === metalKey);
+// ── Thêm vào giỏ hàng ────────────────────────────────────────────────────────
+function addToCart() {
+  Cart.add({
+    id: productDetail.id,
+    name: productDetail.name,
+    metal: productDetail.metal,
+    metalLabel: productDetail.metalLabels[productDetail.metal],
+    price: productDetail.price,
+    image: mainProductImage ? mainProductImage.src : productDetail.images.main,
   });
-  selectedMetalLabel.textContent = productDetail.metalLabels[metalKey];
+  renderCartItems();
+  openCartDrawer();
+  showToast("Đã thêm vào giỏ hàng!");
 }
 
-// ── Gallery ──────────────────────────────────────────────────────────────────
+// ── Gallery ───────────────────────────────────────────────────────────────────
 function switchMainImage(src, alt, btn) {
-  mainProductImage.src = src;
-  mainProductImage.alt = alt;
-  thumbnailStrip.querySelectorAll('.thumb-btn').forEach(b => b.classList.remove('thumb-btn--active'));
-  btn.classList.add('thumb-btn--active');
+  if (mainProductImage) {
+    mainProductImage.src = src;
+    mainProductImage.alt = alt;
+  }
+  thumbnailStrip
+    .querySelectorAll(".thumb-btn")
+    .forEach((b) => b.classList.remove("thumb-btn--active"));
+  btn.classList.add("thumb-btn--active");
 }
 
-// ── Accordion ────────────────────────────────────────────────────────────────
+// ── Accordion ─────────────────────────────────────────────────────────────────
 function toggleAccordion(trigger) {
   const panel = document.getElementById(trigger.dataset.target);
   if (!panel) return;
-  const open = trigger.classList.contains('is-open');
-  productAccordion.querySelectorAll('.accordion-trigger').forEach(t => {
-    t.classList.remove('is-open');
+  const isOpen = trigger.classList.contains("is-open");
+  // Đóng tất cả
+  productAccordion.querySelectorAll(".accordion-trigger").forEach((t) => {
+    t.classList.remove("is-open");
     const p = document.getElementById(t.dataset.target);
-    if (p) p.classList.remove('is-open');
+    if (p) p.classList.remove("is-open");
   });
-  if (!open) { trigger.classList.add('is-open'); panel.classList.add('is-open'); }
+  // Mở cái được click nếu chưa mở
+  if (!isOpen) {
+    trigger.classList.add("is-open");
+    panel.classList.add("is-open");
+  }
 }
 
-// ── Toast ─────────────────────────────────────────────────────────────────────
-function getOrCreateToast() {
-  let el = document.getElementById('toastNotification');
-  if (!el) { el = document.createElement('div'); el.id = 'toastNotification'; document.body.appendChild(el); }
-  return el;
-}
+// ── Toast ──────────────────────────────────────────────────────────────────────
 function showToast(msg) {
-  const el = getOrCreateToast();
+  let el = document.getElementById("toastNotification");
+  if (!el) {
+    el = document.createElement("div");
+    el.id = "toastNotification";
+    el.style.cssText = `
+      position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+      background:#333; color:#fff; padding:10px 20px; border-radius:6px;
+      font-size:13px; z-index:99999; opacity:0; transition:opacity .3s;
+      pointer-events:none;
+    `;
+    document.body.appendChild(el);
+  }
   el.textContent = msg;
-  el.classList.add('is-visible');
+  el.style.opacity = "1";
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('is-visible'), 2600);
+  toastTimer = setTimeout(() => {
+    el.style.opacity = "0";
+  }, 2600);
 }
 
-// ── Checkout ─────────────────────────────────────────────────────────────────
+// ── Checkout ───────────────────────────────────────────────────────────────────
 function proceedToCheckout() {
-  if (Cart.getTotalQty() === 0) { showToast('Giỏ hàng của bạn đang trống.'); return; }
-  showToast('Đang chuyển đến trang thanh toán…');
-  setTimeout(() => { window.location.href = 'pay.html'; }, 600);
+  if (Cart.getTotalQty() === 0) {
+    showToast("Giỏ hàng của bạn đang trống.");
+    return;
+  }
+  window.location.href = "/index.php?page=thanh_toan";
 }
 
-// ── Wishlist ─────────────────────────────────────────────────────────────────
-function addToWishlist() { showToast('Đã lưu vào danh sách yêu thích ♡'); }
+// ── Wishlist ───────────────────────────────────────────────────────────────────
+function addToWishlist() {
+  showToast("Đã lưu vào danh sách yêu thích ♡");
+}
 
-// ── Sự kiện ──────────────────────────────────────────────────────────────────
-btnCartToggle.addEventListener('click', toggleCartDrawer);
-btnCloseCart.addEventListener('click', closeCartDrawer);
-cartOverlay.addEventListener('click', closeCartDrawer);
+// ── Gắn sự kiện ───────────────────────────────────────────────────────────────
+// Navbar cart icon → mở drawer
+if (headerCartBtn)
+  headerCartBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    openCartDrawer();
+  });
 
-cartItemList.addEventListener('click', e => {
-  const btn = e.target.closest('.qty-btn, .remove-btn');
-  if (!btn) return;
-  const { id, metal, action } = btn.dataset;
-  if (action === 'increase') Cart.updateQuantity(id, metal, +1);
-  if (action === 'decrease') Cart.updateQuantity(id, metal, -1);
-  if (action === 'remove')   Cart.remove(id, metal);
-  renderCartItems();
+if (btnCloseCart) btnCloseCart.addEventListener("click", closeCartDrawer);
+if (cartOverlay) cartOverlay.addEventListener("click", closeCartDrawer);
+
+if (cartItemList)
+  cartItemList.addEventListener("click", (e) => {
+    const btn = e.target.closest(".qty-btn, .remove-btn");
+    if (!btn) return;
+    const { id, metal, action } = btn.dataset;
+    if (action === "increase") Cart.updateQuantity(id, metal, +1);
+    if (action === "decrease") Cart.updateQuantity(id, metal, -1);
+    if (action === "remove") Cart.remove(id, metal);
+    renderCartItems();
+  });
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && cartIsOpen) closeCartDrawer();
 });
 
-document.addEventListener('keydown', e => { if (e.key === 'Escape' && cartIsOpen) closeCartDrawer(); });
+if (btnAddToCart) btnAddToCart.addEventListener("click", addToCart);
+if (btnAddToWishlist) btnAddToWishlist.addEventListener("click", addToWishlist);
+if (btnProceedToCheckout)
+  btnProceedToCheckout.addEventListener("click", proceedToCheckout);
 
-btnAddToCart.addEventListener('click', addToCart);
-btnAddToWishlist.addEventListener('click', addToWishlist);
-btnProceedToCheckout.addEventListener('click', proceedToCheckout);
+if (thumbnailStrip)
+  thumbnailStrip.addEventListener("click", (e) => {
+    const btn = e.target.closest(".thumb-btn");
+    if (btn) switchMainImage(btn.dataset.src, btn.dataset.alt, btn);
+  });
 
-metalOptions.addEventListener('click', e => {
-  const swatch = e.target.closest('.swatch');
-  if (swatch) selectMetal(swatch.dataset.metal);
-});
+if (productAccordion)
+  productAccordion.addEventListener("click", (e) => {
+    const trigger = e.target.closest(".accordion-trigger");
+    if (trigger) toggleAccordion(trigger);
+  });
 
-thumbnailStrip.addEventListener('click', e => {
-  const btn = e.target.closest('.thumb-btn');
-  if (btn) switchMainImage(btn.dataset.src, btn.dataset.alt, btn);
-});
+window.addEventListener("cart-updated", renderCartItems);
 
-productAccordion.addEventListener('click', e => {
-  const trigger = e.target.closest('.accordion-trigger');
-  if (trigger) toggleAccordion(trigger);
-});
-
-// Lắng nghe thay đổi từ tab/trang khác
-window.addEventListener('cart-updated', () => {
-  renderCartItems();
-});
-
-// ── Khởi tạo ─────────────────────────────────────────────────────────────────
+// ── Khởi tạo ──────────────────────────────────────────────────────────────────
 renderCartItems();

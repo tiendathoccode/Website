@@ -88,10 +88,24 @@ switch ($page) {
         $controller = new HomeController();
         $controller->showGioHang();
         break;
+
     case "thanh_toan":
         require_once BASE_PATH . "/app/controllers/HomeController.php";
         $controller = new HomeController();
         $controller->showThanhToan();
+        break;
+
+    case "san_pham":
+        require_once BASE_PATH . "/app/controllers/HomeController.php";
+        $controller = new HomeController();
+        $controller->showSanPham();
+        break;
+
+    case "chi_tiet":
+        $product_id = isset($_GET["id"]) ? (int) $_GET["id"] : 0;
+        require_once BASE_PATH . "/app/controllers/ProductController.php";
+        $controller = new ProductController();
+        $controller->showChiTiet($product_id);
         break;
     default:
         echo "<h1 style='text-align:center;'>Lỗi 404 - Không tìm thấy trang!</h1>";
