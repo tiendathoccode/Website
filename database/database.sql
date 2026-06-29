@@ -10,6 +10,8 @@ CREATE TABLE users (
     
     -- Mật khẩu cần độ dài lớn để lưu chuỗi đã mã hóa (ví dụ dùng hàm password_hash() trong PHP)
     password VARCHAR(255) NOT NULL, 
+    reset_token VARCHAR(255),
+    reset_token_expire DATETIME,
     
     -- Phân quyền và Trạng thái
     role ENUM('customer', 'admin') DEFAULT 'customer',
@@ -74,6 +76,7 @@ CREATE TABLE products (
     
     -- Thông tin cơ bản của sản phẩm
     product_name VARCHAR(255) NOT NULL,
+    sku VARCHAR(100) UNIQUE,
     description TEXT,
     
     -- Giá cả (dùng INT vì tiền VNĐ thường là số chẵn lớn, ví dụ: 500000)

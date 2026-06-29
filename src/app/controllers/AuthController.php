@@ -86,12 +86,26 @@ class AuthController
 
         // 3. XÁC MINH BẢO MẬT KÉP
         if ($user && password_verify($password, $user["password"])) {
+            if (($user["status"] ?? "active") !== "active") {
+                $_SESSION["error_message"] =
+                    "Tài khoản của bạn đang bị khóa!";
+                header("Location: /index.php?page=login");
+                exit();
+            }
+
             // 4. Phát Thẻ Căn Cước (Session)
+            session_regenerate_id(true);
             $_SESSION["user_logged_in"] = true;
+            $_SESSION["user_id"] = $user["user_id"];
             $_SESSION["user_email"] = $user["email"];
             $_SESSION["user_name"] = $user["full_name"];
+            $_SESSION["user_role"] = $user["role"];
 
-            // Chuyển hướng vào nhà
+            if ($user["role"] === "admin") {
+                header("Location: /index.php?page=admin_dashboard");
+                exit();
+            }
+
             header("Location: /index.php?page=home");
             exit();
         } else {

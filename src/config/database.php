@@ -1,12 +1,19 @@
 <?php
 class Database
 {
-    // Thông số dựa theo cấu hình Docker Compose của bạn
-    private $host = "mysql"; // Tên service mysql trong mạng Docker
-    private $db_name = "recruitment_db"; // Tên database mặc định
-    private $username = "recruitment_user"; // User mặc định
-    private $password = "caeltia2810@"; // Password mặc định
+    private $host;
+    private $db_name;
+    private $username;
+    private $password;
     public $conn;
+
+    public function __construct()
+    {
+        $this->host = getenv("DB_HOST") ?: "mysql";
+        $this->db_name = getenv("DB_NAME") ?: "recruitment_db";
+        $this->username = getenv("DB_USER") ?: "recruitment_user";
+        $this->password = getenv("DB_PASSWORD") ?: "admin123";
+    }
 
     // Hàm lấy kết nối
     public function getConnection()

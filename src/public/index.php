@@ -27,6 +27,60 @@ switch ($page) {
         $controller->handleLogin();
         break;
 
+    case "admin_dashboard":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->dashboard();
+        break;
+
+    case "admin_categories":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->categories();
+        break;
+
+    case "admin_category_store":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->storeCategory();
+        break;
+
+    case "admin_category_update":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->updateCategory();
+        break;
+
+    case "admin_category_toggle":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->toggleCategoryStatus();
+        break;
+
+    case "admin_products":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->products();
+        break;
+
+    case "admin_product_create":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->createProduct();
+        break;
+
+    case "admin_product_store":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->storeProduct();
+        break;
+
+    case "admin_product_toggle":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->toggleProductStatus();
+        break;
+
     // --- 2 CỬA MỚI CHO TÍNH NĂNG ĐĂNG KÝ ---
     case "register":
         require_once BASE_PATH . "/app/controllers/AuthController.php";
