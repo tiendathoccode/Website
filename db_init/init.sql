@@ -466,3 +466,12 @@ INSERT INTO contacts (customer_name, customer_email, message, is_read, created_a
 ('Nguyễn Thị Hoa', 'hoa.nguyen@gmail.com', 'Cho tôi hỏi sản phẩm bông tai mã VT001 còn hàng không ạ? Tôi muốn mua làm quà tặng.', 1, '2026-06-02 08:30:00'),
 ('Lê Văn Minh', 'minh.le@gmail.com', 'Shop có nhận đặt làm trang sức theo yêu cầu không? Tôi muốn đặt 1 cặp nhẫn cưới theo thiết kế riêng.', 0, '2026-06-07 11:20:00'),
 ('Phạm Thanh Tú', 'tu.pham@gmail.com', 'Tôi đã đặt hàng đơn mã ORD-20260605-002 nhưng chưa thấy cập nhật trạng thái. Mong shop hỗ trợ sớm.', 0, '2026-06-09 16:15:00');
+
+
+-- Thêm ảnh phụ cho sản phẩm #38 (Bông tai hoa tuyết)
+INSERT INTO product_images (product_id, image_url) VALUES
+(38, 'assets/images/product/image_2076968380_4.jpg'),
+(38, 'assets/images/product/image_2076968380_5.jpg'),
+(39, 'assets/images/product/image_2076968380_1.jpg'),
+(39, 'assets/images/product/image_2076968380_2.jpg'),
+(39, 'assets/images/product/image_2076968380_3.jpg');

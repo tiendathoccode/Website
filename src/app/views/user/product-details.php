@@ -8,92 +8,160 @@
   ); ?> - Aurrelia</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-  <link rel="stylesheet" href="../assets/css/style.css" />
-  <link rel="stylesheet" href="../assets/css/product_details.css" />
+  <link rel="stylesheet" href="/assets/css/style.css" />
+  <link rel="stylesheet" href="/assets/css/product_details.css" />
 </head>
 <body class="bg-cream">
 
-  <nav class="navbar navbar-expand-lg py-3 sticky-top border-bottom shadow-sm" style="background-color: #fdfbf7; z-index: 1020;">
-      <div class="container-fluid px-5">
-          <a class="navbar-brand fs-4 fw-bold gold-text" href="index.html" style="font-family: 'Times New Roman', serif;">AURRELIA</a>
+<nav class="navbar navbar-expand-lg py-3 sticky-top border-bottom shadow-sm" style="background-color: #fdfbf7; z-index: 1020;">
+    <div class="container-fluid px-4">
+        <a class="navbar-brand fs-4 fw-bold gold-text" href="index.html" style="font-family: 'Times New Roman', serif;">AURRELIA</a>
 
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-              <span class="navbar-toggler-icon"></span>
-          </button>
+        <!-- ICONS: luôn hiện kể cả mobile, đặt TRƯỚC nút toggler -->
+        <div class="d-flex gap-3 align-items-center me-2 order-lg-last">
+            <a href="#" class="text-dark fs-6"><i class="fas fa-search"></i></a>
+            <a href="#" class="text-dark fs-6"><i class="far fa-heart"></i></a>
+            <a href="/index.php?page=gio_hang" class="text-dark fs-6 position-relative" id="headerCartBtn">
+                <i class="fas fa-shopping-bag"></i>
+                <span id="headerCartBadge" style="
+                    display:none;
+                    position:absolute;
+                    top:-8px; right:-10px;
+                    background:#c8a165; color:#fff;
+                    font-size:10px; font-weight:700;
+                    min-width:17px; height:17px;
+                    border-radius:50%;
+                    align-items:center; justify-content:center;
+                    padding:0 3px;
+                ">0</span>
+            </a>
+            <div class="position-relative" id="userDropdownWrapper">
+                <a href="#" class="text-dark fs-6" id="userIconBtn" onclick="toggleUserDropdown(event)">
+                    <i class="far fa-user"></i>
+                </a>
+                <div id="userDropdownMenu" style="
+                    display: none;
+                    position: absolute;
+                    top: calc(100% + 12px);
+                    right: 0;
+                    background: white;
+                    border: 1px solid #eee;
+                    border-radius: 8px;
+                    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+                    min-width: 200px;
+                    z-index: 9999;
+                    overflow: hidden;
+                ">
+                    <?php if (
+                        isset($_SESSION["user_logged_in"]) &&
+                        $_SESSION["user_logged_in"] === true
+                    ): ?>
+                        <div style="padding: 14px 18px; border-bottom: 1px solid #f0ece4; background: #fcf9f2;">
+                            <p style="margin:0; font-size:12px; color:#888;">Xin chào,</p>
+                            <p style="margin:0; font-weight:bold; font-size:14px; color:#333;">
+                                <?php echo htmlspecialchars(
+                                    $_SESSION["user_name"],
+                                ); ?>
+                            </p>
+                        </div>
+                        <a href="/index.php?page=profile" style="display:flex; align-items:center; gap:10px; padding:12px 18px; text-decoration:none; color:#333; font-size:13px; border-bottom:1px solid #f5f5f5;">
+                            <i class="far fa-user" style="color:#bfa15f; width:16px;"></i> Thông tin cá nhân
+                        </a>
+                        <a href="/index.php?page=gio_hang" style="display:flex; align-items:center; gap:10px; padding:12px 18px; text-decoration:none; color:#333; font-size:13px; border-bottom:1px solid #f5f5f5;">
+                            <i class="fas fa-box" style="color:#bfa15f; width:16px;"></i> Đơn hàng của tôi
+                        </a>
+                        <a href="/index.php?page=change_password" style="display:flex; align-items:center; gap:10px; padding:12px 18px; text-decoration:none; color:#333; font-size:13px; border-bottom:1px solid #f5f5f5;">
+                            <i class="fas fa-lock" style="color:#bfa15f; width:16px;"></i> Đổi mật khẩu
+                        </a>
+                        <a href="/index.php?page=logout" style="display:flex; align-items:center; gap:10px; padding:12px 18px; text-decoration:none; color:#c0392b; font-size:13px;">
+                            <i class="fas fa-sign-out-alt" style="color:#c0392b; width:16px;"></i> Đăng xuất
+                        </a>
+                    <?php else: ?>
+                        <a href="/index.php?page=login" style="display:flex; align-items:center; gap:10px; padding:12px 18px; text-decoration:none; color:#333; font-size:13px; border-bottom:1px solid #f5f5f5;">
+                            <i class="fas fa-sign-in-alt" style="color:#bfa15f; width:16px;"></i> Đăng nhập
+                        </a>
+                        <a href="/index.php?page=register" style="display:flex; align-items:center; gap:10px; padding:12px 18px; text-decoration:none; color:#333; font-size:13px;">
+                            <i class="fas fa-user-plus" style="color:#bfa15f; width:16px;"></i> Tạo tài khoản
+                        </a>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
 
-          <div class="collapse navbar-collapse" id="navbarNav">
-              <ul class="navbar-nav mx-auto text-uppercase" style="font-size: 13px; letter-spacing: 1px;">
-                  <li class="nav-item"><a class="nav-link px-3 text-dark fw-semibold" href="#">Trang Sức</a></li>
-                  <li class="nav-item"><a class="nav-link px-3 text-dark fw-semibold" href="#">Trang Sức Cao Cấp</a></li>
-                  <li class="nav-item"><a class="nav-link px-3 text-dark fw-semibold" href="#">Về Chúng Tôi</a></li>
-                  <li class="nav-item"><a class="nav-link px-3 text-dark fw-semibold" href="#">Liên Hệ</a></li>
-              </ul>
-              <div class="d-flex gap-3 align-items-center">
-                  <a href="#" class="text-dark fs-6"><i class="fas fa-search"></i></a>
-                  <a href="#" class="text-dark fs-6"><i class="far fa-heart"></i></a>
-                  <a href="#" class="text-dark fs-6 position-relative" id="headerCartBtn">
-                      <i class="fas fa-shopping-bag"></i>
-                      <span class="cart-badge-header" id="headerCartBadge" style="display:none; position: absolute; top: -8px; right: -10px; background-color: #c8a165; color: white; font-size: 10px; border-radius: 50%; padding: 2px 6px;">0</span>
-                  </a>
-                  <a href="login.html" class="text-dark fs-6"><i class="far fa-user"></i></a>
-              </div>
-          </div>
-      </div>
-  </nav>
-  <main id="productPage" class="container-fluid px-5 my-4">
+        <!-- NÚT HAMBURGER -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-    <nav id="breadcrumb" aria-label="breadcrumb" class="mb-4">
-        <a href="#" class="text-muted text-decoration-none" style="font-size: 13px;">
-            <?php echo htmlspecialchars($product["category_name"]); ?>
-        </a>
-        <span class="text-muted mx-2">›</span>
-        <span class="text-dark fw-semibold" style="font-size: 13px;">
-            <?php echo htmlspecialchars($product["product_name"]); ?>
-        </span>
-    </nav>
+        <!-- MENU: chỉ hiện khi mở collapse trên mobile -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mx-auto text-uppercase" style="font-size: 13px; letter-spacing: 1px;">
+                <li class="nav-item"><a class="nav-link px-3" href="#">Trang Sức</a></li>
+                <li class="nav-item"><a class="nav-link px-3" href="#">Trang Sức Cao Cấp</a></li>
+                <li class="nav-item"><a class="nav-link px-3" href="#">Về Chúng Tôi</a></li>
+                <li class="nav-item"><a class="nav-link px-3" href="#">Liên Hệ</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
 
     <section id="productSection">
 
-      <div id="productGallery">
-          <div id="mainImageWrapper">
-              <img src="/<?php echo htmlspecialchars(
-                  $product["main_image"],
-              ); ?>"
-                   alt="<?php echo htmlspecialchars(
-                       $product["product_name"],
-                   ); ?>"
-                   id="mainProductImage" class="main-product-img"/>
-          </div>
-          <div id="thumbnailStrip">
-              <!-- Ảnh chính luôn là thumbnail đầu tiên -->
-              <button class="thumb-btn thumb-btn--active"
-                      data-src="/<?php echo htmlspecialchars(
-                          $product["main_image"],
-                      ); ?>"
-                      data-alt="<?php echo htmlspecialchars(
-                          $product["product_name"],
-                      ); ?>">
-                  <img src="/<?php echo htmlspecialchars(
-                      $product["main_image"],
-                  ); ?>"
-                       alt="Ảnh chính"/>
-              </button>
-              <!-- Ảnh phụ nếu có -->
-              <?php foreach ($extraImages as $img): ?>
-              <button class="thumb-btn"
-                      data-src="/<?php echo htmlspecialchars(
-                          $img["image_url"],
-                      ); ?>"
-                      data-alt="<?php echo htmlspecialchars(
-                          $product["product_name"],
-                      ); ?>">
-                  <img src="/<?php echo htmlspecialchars(
-                      $img["image_url"],
-                  ); ?>" alt="Ảnh phụ"/>
-              </button>
-              <?php endforeach; ?>
-          </div>
-      </div>
+        <div id="productGallery">
+                    <div id="mainImageWrapper" style="position:relative;">
+                        <button id="prevBtn" onclick="slideCarousel(-1)" style="
+                            position:absolute; left:10px; top:50%; transform:translateY(-50%);
+                            background:rgba(255,255,255,0.85); border:none; border-radius:50%;
+                            width:36px; height:36px; font-size:18px; cursor:pointer;
+                            z-index:10; box-shadow:0 2px 8px rgba(0,0,0,0.15);
+                            display:none; align-items:center; justify-content:center;
+                        ">‹</button>
+
+                        <img src="/<?php echo htmlspecialchars(
+                            $product["main_image"],
+                        ); ?>"
+                             alt="<?php echo htmlspecialchars(
+                                 $product["product_name"],
+                             ); ?>"
+                             id="mainProductImage" class="main-product-img"
+                             style="transition: opacity 0.3s ease;"/>
+
+                        <button id="nextBtn" onclick="slideCarousel(1)" style="
+                            position:absolute; right:10px; top:50%; transform:translateY(-50%);
+                            background:rgba(255,255,255,0.85); border:none; border-radius:50%;
+                            width:36px; height:36px; font-size:18px; cursor:pointer;
+                            z-index:10; box-shadow:0 2px 8px rgba(0,0,0,0.15);
+                            display:none; align-items:center; justify-content:center;
+                        ">›</button>
+                    </div>
+
+                    <div id="thumbnailStrip">
+                        <button class="thumb-btn thumb-btn--active"
+                                data-src="/<?php echo htmlspecialchars(
+                                    $product["main_image"],
+                                ); ?>"
+                                data-alt="<?php echo htmlspecialchars(
+                                    $product["product_name"],
+                                ); ?>">
+                            <img src="/<?php echo htmlspecialchars(
+                                $product["main_image"],
+                            ); ?>" alt="Ảnh chính"/>
+                        </button>
+                        <?php foreach ($extraImages as $img): ?>
+                        <button class="thumb-btn"
+                                data-src="/<?php echo htmlspecialchars(
+                                    $img["image_url"],
+                                ); ?>"
+                                data-alt="<?php echo htmlspecialchars(
+                                    $product["product_name"],
+                                ); ?>">
+                            <img src="/<?php echo htmlspecialchars(
+                                $img["image_url"],
+                            ); ?>" alt="Ảnh phụ"/>
+                        </button>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
           <div id="productInfo">
               <h1 id="productName" class="product-title" style="font-family: 'Times New Roman', serif;">
                   <?php echo htmlspecialchars($product["product_name"]); ?>
@@ -101,7 +169,7 @@
 
               <p id="productPrice" class="product-price">
                   <?php if ($product["sale_price"] > 0): ?>
-                      <span style="color:#c0392b;">
+                  <span style="color:#c8a165;">
                           <?php echo number_format(
                               $product["sale_price"],
                               0,
@@ -184,19 +252,7 @@
                   <a href="/index.php?page=thanh_toan"
                      id="btnBuyNow"
                      class="btn-primary w-100 mb-2"
-                     style="display:block; text-align:center; text-decoration:none; background-color:#333; padding:12px;"
-                     onclick="Cart.add({
-                         id: '<?php echo $product["product_id"]; ?>',
-                         name: '<?php echo addslashes(
-                             $product["product_name"],
-                         ); ?>',
-                         metal: 'default',
-                         metalLabel: 'Mặc định',
-                         price: <?php echo $product["sale_price"] > 0
-                             ? $product["sale_price"]
-                             : $product["price"]; ?>,
-                         image: '/<?php echo $product["main_image"]; ?>'
-                     });">
+                     style="display:block; text-align:center; text-decoration:none; background-color:#333; padding:12px;">
                       <i class="fas fa-bolt me-2"></i>MUA NGAY
                   </a>
                   <button id="btnAddToWishlist" class="btn-secondary w-100 bg-transparent border-0 d-flex align-items-center justify-content-center gap-2">
@@ -300,6 +356,86 @@
   </footer>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
+  // ===== CAROUSEL =====
+  const allImages = [
+      { src: '/<?php echo $product[
+          "main_image"
+      ]; ?>', alt: '<?php echo addslashes($product["product_name"]); ?>' },
+      <?php foreach ($extraImages as $img): ?>
+      { src: '/<?php echo htmlspecialchars(
+          $img["image_url"],
+      ); ?>', alt: '<?php echo addslashes($product["product_name"]); ?>' },
+      <?php endforeach; ?>
+  ];
+
+  let currentIndex = 0;
+
+  function slideCarousel(dir) {
+      currentIndex = (currentIndex + dir + allImages.length) % allImages.length;
+      goToSlide(currentIndex);
+  }
+
+  function goToSlide(index) {
+      currentIndex = index;
+      const mainImg = document.getElementById('mainProductImage');
+
+      // Fade effect
+      mainImg.style.opacity = '0';
+      setTimeout(() => {
+          mainImg.src = allImages[index].src;
+          mainImg.alt = allImages[index].alt;
+          mainImg.style.opacity = '1';
+      }, 150);
+
+      // Cập nhật thumbnail active
+      document.querySelectorAll('.thumb-btn').forEach((btn, i) => {
+          btn.classList.toggle('thumb-btn--active', i === index);
+      });
+  }
+
+  // Gắn sự kiện click thumbnail - dùng goToSlide để đồng bộ currentIndex
+  thumbnailStrip.addEventListener('click', (e) => {
+      const btn = e.target.closest('.thumb-btn');
+      if (!btn) return;
+      const idx = [...thumbnailStrip.querySelectorAll('.thumb-btn')].indexOf(btn);
+      if (idx !== -1) goToSlide(idx);
+  });
+
+  // Hiện mũi tên nếu có nhiều hơn 1 ảnh
+  if (allImages.length > 1) {
+      document.getElementById('prevBtn').style.display = 'flex';
+      document.getElementById('nextBtn').style.display = 'flex';
+  }
+
+  // Swipe trên mobile
+  let touchStartX = 0;
+  document.getElementById('mainImageWrapper').addEventListener('touchstart', e => {
+      touchStartX = e.touches[0].clientX;
+  });
+  document.getElementById('mainImageWrapper').addEventListener('touchend', e => {
+      const diff = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 50) slideCarousel(diff > 0 ? 1 : -1);
+  });
+  document.getElementById('btnBuyNow').addEventListener('click', function(e) {
+      e.preventDefault();
+
+      const item = {
+          id:         productDetail.id,
+          name:       productDetail.name,
+          metal:      productDetail.metal,
+          metalLabel: productDetail.metalLabels[productDetail.metal],
+          price:      productDetail.price,
+          image:      document.getElementById('mainProductImage').src,
+          quantity:   1
+      };
+
+      // Chỉ lưu riêng sản phẩm này, không ảnh hưởng giỏ hàng
+      sessionStorage.setItem('checkout_items', JSON.stringify([item]));
+
+      window.location.href = '/index.php?page=thanh_toan';
+  });
+  </script>
+  <script>
   const productDetail = {
       id:    '<?php echo $product["product_id"]; ?>',
       name:  '<?php echo addslashes($product["product_name"]); ?>',
@@ -310,6 +446,21 @@
       metalLabels: { 'default': 'Mặc định' },
       images: { main: '/<?php echo $product["main_image"]; ?>' },
   };
+  </script>
+  <script>
+  function toggleUserDropdown(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      const menu = document.getElementById('userDropdownMenu');
+      menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+  }
+
+  document.addEventListener('click', function(e) {
+      const wrapper = document.getElementById('userDropdownWrapper');
+      if (wrapper && !wrapper.contains(e.target)) {
+          document.getElementById('userDropdownMenu').style.display = 'none';
+      }
+  });
   </script>
   <script src="/assets/js/cart.js"></script>
   <script src="/assets/js/product_details.js"></script>

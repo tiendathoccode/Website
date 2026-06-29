@@ -719,3 +719,6 @@ body {
 .col-md-9 .card-body {
     padding: 15px 10px 0 10px !important;
 }
+#userDropdownMenu {
+    z-index: 99999 !important;
+}

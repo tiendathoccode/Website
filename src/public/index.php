@@ -107,6 +107,37 @@ switch ($page) {
         $controller = new ProductController();
         $controller->showChiTiet($product_id);
         break;
+    case "cart":
+        require_once BASE_PATH . "/app/controllers/CartController.php";
+        $controller = new CartController();
+        $action = $_GET["action"] ?? ($_POST["action"] ?? "");
+        switch ($action) {
+            case "add":
+                $controller->add();
+                break;
+            case "update":
+                $controller->update();
+                break;
+            case "remove":
+                $controller->remove();
+                break;
+            case "clear":
+                $controller->clear();
+                break;
+            case "get":
+                $controller->get();
+                break;
+            case "check_voucher":
+                $controller->checkVoucher();
+                break;
+            default:
+                header("Content-Type: application/json");
+                echo json_encode([
+                    "status" => "error",
+                    "message" => "Action không hợp lệ",
+                ]);
+        }
+        break;
     default:
         echo "<h1 style='text-align:center;'>Lỗi 404 - Không tìm thấy trang!</h1>";
         break;

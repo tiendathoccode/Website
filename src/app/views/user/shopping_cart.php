@@ -6,44 +6,101 @@
   <title>Giỏ Hàng – Aurrelia</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="/assets/css/style.css" />
   <link rel="stylesheet" href="/assets/css/shopping_cart.css" />
 </head>
 <body class="bg-cream">
 
-  <nav class="navbar navbar-expand-lg py-3 sticky-top border-bottom shadow-sm" style="background-color: #fdfbf7; z-index: 1020;">
-      <div class="container-fluid px-5">
-          <a class="navbar-brand fs-4 fw-bold gold-text" href="index.html" style="font-family: 'Times New Roman', serif;">AURELIA</a>
+    <nav class="navbar navbar-expand-lg py-3 sticky-top border-bottom shadow-sm" style="background-color: #fdfbf7; z-index: 1020;">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand fs-4 fw-bold gold-text" href="index.html" style="font-family: 'Times New Roman', serif;">AURRELIA</a>
 
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-              <span class="navbar-toggler-icon"></span>
-          </button>
+            <!-- ICONS: luôn hiện kể cả mobile, đặt TRƯỚC nút toggler -->
+            <div class="d-flex gap-3 align-items-center me-2 order-lg-last">
+                <a href="#" class="text-dark fs-6"><i class="fas fa-search"></i></a>
+                <a href="#" class="text-dark fs-6"><i class="far fa-heart"></i></a>
+                <a href="/index.php?page=gio_hang" class="text-dark fs-6 position-relative" id="headerCartBtn">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span id="headerCartBadge" style="
+                        display:none;
+                        position:absolute;
+                        top:-8px; right:-10px;
+                        background:#c8a165; color:#fff;
+                        font-size:10px; font-weight:700;
+                        min-width:17px; height:17px;
+                        border-radius:50%;
+                        align-items:center; justify-content:center;
+                        padding:0 3px;
+                    ">0</span>
+                </a>
+                <div class="position-relative" id="userDropdownWrapper">
+                    <a href="#" class="text-dark fs-6" id="userIconBtn" onclick="toggleUserDropdown(event)">
+                        <i class="far fa-user"></i>
+                    </a>
+                    <div id="userDropdownMenu" style="
+                        display: none;
+                        position: absolute;
+                        top: calc(100% + 12px);
+                        right: 0;
+                        background: white;
+                        border: 1px solid #eee;
+                        border-radius: 8px;
+                        box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+                        min-width: 200px;
+                        z-index: 9999;
+                        overflow: hidden;
+                    ">
+                        <?php if (
+                            isset($_SESSION["user_logged_in"]) &&
+                            $_SESSION["user_logged_in"] === true
+                        ): ?>
+                            <div style="padding: 14px 18px; border-bottom: 1px solid #f0ece4; background: #fcf9f2;">
+                                <p style="margin:0; font-size:12px; color:#888;">Xin chào,</p>
+                                <p style="margin:0; font-weight:bold; font-size:14px; color:#333;">
+                                    <?php echo htmlspecialchars(
+                                        $_SESSION["user_name"],
+                                    ); ?>
+                                </p>
+                            </div>
+                            <a href="/index.php?page=profile" style="display:flex; align-items:center; gap:10px; padding:12px 18px; text-decoration:none; color:#333; font-size:13px; border-bottom:1px solid #f5f5f5;">
+                                <i class="far fa-user" style="color:#bfa15f; width:16px;"></i> Thông tin cá nhân
+                            </a>
+                            <a href="/index.php?page=gio_hang" style="display:flex; align-items:center; gap:10px; padding:12px 18px; text-decoration:none; color:#333; font-size:13px; border-bottom:1px solid #f5f5f5;">
+                                <i class="fas fa-box" style="color:#bfa15f; width:16px;"></i> Đơn hàng của tôi
+                            </a>
+                            <a href="/index.php?page=change_password" style="display:flex; align-items:center; gap:10px; padding:12px 18px; text-decoration:none; color:#333; font-size:13px; border-bottom:1px solid #f5f5f5;">
+                                <i class="fas fa-lock" style="color:#bfa15f; width:16px;"></i> Đổi mật khẩu
+                            </a>
+                            <a href="/index.php?page=logout" style="display:flex; align-items:center; gap:10px; padding:12px 18px; text-decoration:none; color:#c0392b; font-size:13px;">
+                                <i class="fas fa-sign-out-alt" style="color:#c0392b; width:16px;"></i> Đăng xuất
+                            </a>
+                        <?php else: ?>
+                            <a href="/index.php?page=login" style="display:flex; align-items:center; gap:10px; padding:12px 18px; text-decoration:none; color:#333; font-size:13px; border-bottom:1px solid #f5f5f5;">
+                                <i class="fas fa-sign-in-alt" style="color:#bfa15f; width:16px;"></i> Đăng nhập
+                            </a>
+                            <a href="/index.php?page=register" style="display:flex; align-items:center; gap:10px; padding:12px 18px; text-decoration:none; color:#333; font-size:13px;">
+                                <i class="fas fa-user-plus" style="color:#bfa15f; width:16px;"></i> Tạo tài khoản
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
 
-          <div class="collapse navbar-collapse" id="navbarNav">
-              <ul class="navbar-nav mx-auto text-uppercase" style="font-size: 13px; letter-spacing: 1px;">
-                  <li class="nav-item"><a class="nav-link px-3 text-dark fw-semibold" href="#">Trang Sức</a></li>
-                  <li class="nav-item"><a class="nav-link px-3 text-dark fw-semibold" href="#">Trang Sức Cao Cấp</a></li>
-                  <li class="nav-item"><a class="nav-link px-3 text-dark fw-semibold" href="#">Về Chúng Tôi</a></li>
-                  <li class="nav-item"><a class="nav-link px-3 text-dark fw-semibold" href="#">Liên Hệ</a></li>
-              </ul>
-              <div class="d-flex gap-3 align-items-center">
-                  <a href="#" class="text-dark fs-6"><i class="fas fa-search"></i></a>
-                  <a href="#" class="text-dark fs-6"><i class="far fa-heart"></i></a>
-                  <a href="shopping_cart.html" class="text-dark fs-6 position-relative" id="headerCartBtn">
-                      <i class="fas fa-shopping-bag"></i>
-                      <span class="cart-badge-header" id="headerCartBadge" style="display:none; position: absolute; top: -8px; right: -10px; background-color: #c8a165; color: white; font-size: 10px; border-radius: 50%; padding: 2px 6px;">0</span>
-                  </a>
-                  <a href="login.html" class="text-dark fs-6"><i class="far fa-user"></i></a>
-              </div>
-          </div>
-      </div>
-  </nav>
-  <div class="container-fluid px-5 pt-4 pb-2">
-    <nav aria-label="breadcrumb">
-      <ol class="breadcrumb" style="font-size: 13px;">
-        <li class="breadcrumb-item"><a href="index.html" class="text-muted text-decoration-none">Trang chủ</a></li>
-        <li class="breadcrumb-item active text-dark">Giỏ hàng</li>
-      </ol>
+            <!-- NÚT HAMBURGER -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- MENU: chỉ hiện khi mở collapse trên mobile -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto text-uppercase" style="font-size: 13px; letter-spacing: 1px;">
+                    <li class="nav-item"><a class="nav-link px-3" href="#">Trang Sức</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="#">Trang Sức Cao Cấp</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="#">Về Chúng Tôi</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="#">Liên Hệ</a></li>
+                </ul>
+            </div>
+        </div>
     </nav>
     <h2 class="fw-normal mb-0" style="font-family: 'Times New Roman', serif; letter-spacing: 2px;">GIỎ HÀNG CỦA BẠN</h2>
     <p class="text-muted mt-1" style="font-size:13px;" id="cartItemCount">0 sản phẩm</p>
@@ -161,7 +218,28 @@
   <div id="cartToast" class="cart-toast" style="display:none;"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="../assets/js/cart.js"></script>
-  <script src="../assets/js/shopping_cart.js"></script>
+  <script>
+      window.IS_LOGGED_IN = <?php echo isset($_SESSION["user_logged_in"]) &&
+      $_SESSION["user_logged_in"] === true
+          ? "true"
+          : "false"; ?>;
+    </script>
+  <script src="/assets/js/cart.js"></script>
+  <script src="/assets/js/shopping_cart.js"></script>
+  <script>
+      function toggleUserDropdown(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          const menu = document.getElementById('userDropdownMenu');
+          menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+      }
+
+      document.addEventListener('click', function(e) {
+          const wrapper = document.getElementById('userDropdownWrapper');
+          if (wrapper && !wrapper.contains(e.target)) {
+              document.getElementById('userDropdownMenu').style.display = 'none';
+          }
+      });
+    </script>
 </body>
 </html>

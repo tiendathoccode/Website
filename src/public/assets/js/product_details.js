@@ -198,12 +198,6 @@ if (btnAddToWishlist) btnAddToWishlist.addEventListener("click", addToWishlist);
 if (btnProceedToCheckout)
   btnProceedToCheckout.addEventListener("click", proceedToCheckout);
 
-if (thumbnailStrip)
-  thumbnailStrip.addEventListener("click", (e) => {
-    const btn = e.target.closest(".thumb-btn");
-    if (btn) switchMainImage(btn.dataset.src, btn.dataset.alt, btn);
-  });
-
 if (productAccordion)
   productAccordion.addEventListener("click", (e) => {
     const trigger = e.target.closest(".accordion-trigger");

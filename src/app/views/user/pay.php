@@ -193,6 +193,14 @@
     <p class="footer-copy">&copy; 2026 Aurrelia. Bản quyền thuộc về Nhóm 6.</p>
   </footer>
 
-  <script src="../assets/js/pay.js"></script>
+  <script>
+      window.IS_LOGGED_IN = <?php echo isset($_SESSION["user_logged_in"]) &&
+      $_SESSION["user_logged_in"] === true
+          ? "true"
+          : "false"; ?>;
+    </script>
+    <script src="/assets/js/cart.js"></script>
+    <script src="/assets/js/pay.js"></script>
+  </body>
 </body>
 </html>
