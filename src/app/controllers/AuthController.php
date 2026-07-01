@@ -1,6 +1,6 @@
 <?php
 // 1. Nhúng thủ công thư viện PHPMailer từ thư mục lib của bạn
-require_once "/var/www/html/vendor/autoload.php";
+require_once BASE_PATH . "/vendor/autoload.php";
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 class AuthController
@@ -90,13 +90,25 @@ class AuthController
 
         // 3. XÁC MINH BẢO MẬT KÉP
         if ($user && password_verify($password, $user["password"])) {
+            if (($user["status"] ?? "") === "locked") {
+                $_SESSION["error_message"] = "Tài khoản của bạn đã bị khóa bởi quản trị viên!";
+                header("Location: /index.php?page=login");
+                exit();
+            }
+
             // 4. Phát Thẻ Căn Cước (Session)
             $_SESSION["user_logged_in"] = true;
+            $_SESSION["user_id"] = $user["user_id"];
+            $_SESSION["user_role"] = $user["role"];
             $_SESSION["user_email"] = $user["email"];
             $_SESSION["user_name"] = $user["full_name"];
 
-            // Chuyển hướng vào nhà
-            header("Location: /index.php?page=home");
+            // Chuyển hướng theo vai trò (role)
+            if ($user["role"] === "admin") {
+                header("Location: /index.php?page=admin_dashboard");
+            } else {
+                header("Location: /index.php?page=home");
+            }
             exit();
         } else {
             // ĐÒN BẨY RỦI RO: Đẩy lỗi vào Session và quay đầu
@@ -269,6 +281,71 @@ class AuthController
             header("Location: /index.php?page=forgot_password");
             exit();
         }
+    }
+
+    public function showProfile()
+    {
+        if (!isset($_SESSION["user_logged_in"]) || $_SESSION["user_logged_in"] !== true) {
+            header("Location: /index.php?page=login");
+            exit();
+        }
+
+        require_once BASE_PATH . "/app/models/UserModel.php";
+        $userModel = new UserModel();
+        $user = $userModel->getDetailedProfile($_SESSION["user_id"]);
+
+        require_once BASE_PATH . "/app/views/user/profile.php";
+    }
+
+    public function handleUpdateProfile()
+    {
+        if (!isset($_SESSION["user_logged_in"]) || $_SESSION["user_logged_in"] !== true) {
+            header("Location: /index.php?page=login");
+            exit();
+        }
+
+        $fullName = trim($_POST["full_name"] ?? "");
+        $email = trim($_POST["email"] ?? "");
+        $phone = trim($_POST["phone"] ?? "");
+        $province = trim($_POST["province_city"] ?? "");
+        $district = trim($_POST["district"] ?? "");
+        $ward = trim($_POST["ward_commune"] ?? "");
+        $specific = trim($_POST["specific_address"] ?? "");
+
+        if (empty($fullName) || empty($email) || empty($phone)) {
+            $_SESSION["error_message"] = "Vui lòng nhập đầy đủ họ tên, email và số điện thoại.";
+            header("Location: /index.php?page=profile");
+            exit();
+        }
+
+        require_once BASE_PATH . "/app/models/UserModel.php";
+        $userModel = new UserModel();
+
+        try {
+            $result = $userModel->updateDetailedProfile(
+                $_SESSION["user_id"],
+                $fullName,
+                $email,
+                $phone,
+                $province,
+                $district,
+                $ward,
+                $specific
+            );
+            if ($result) {
+                $_SESSION["user_name"] = $fullName;
+                $_SESSION["user_email"] = $email;
+                $_SESSION["success_message"] = "Cập nhật hồ sơ cá nhân thành công!";
+            } else {
+                $_SESSION["error_message"] = "Có lỗi xảy ra, vui lòng thử lại sau.";
+            }
+        } catch (Exception $e) {
+            // Nhận diện thông báo lỗi ném ra từ Database Trigger (ví dụ email không hợp lệ)
+            $_SESSION["error_message"] = "Lỗi hệ thống: " . $e->getMessage();
+        }
+
+        header("Location: /index.php?page=profile");
+        exit();
     }
 }
 ?>

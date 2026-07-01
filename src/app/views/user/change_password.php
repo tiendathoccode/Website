@@ -42,7 +42,7 @@
             </form>
 
                 <div style="text-align: center; margin-top: 30px;">
-                    <a href="/index.php?login" style="color: #bfa15f; text-decoration: none; font-weight: bold; font-size: 14px;">
+                    <a href="/index.php?page=home" style="color: #bfa15f; text-decoration: none; font-weight: bold; font-size: 14px;">
                         Hủy và quay lại
                     </a>
                 </div>

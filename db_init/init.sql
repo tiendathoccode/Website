@@ -163,7 +163,7 @@ CREATE TABLE orders (
     payment_method ENUM('cod', 'bank_transfer') DEFAULT 'cod',
 
     -- Trạng thái đơn hàng đúng như tài liệu nhóm đã chốt
-    status ENUM('pending', 'processing', 'shipping', 'delivered', 'cancelled') DEFAULT 'pending',
+    status ENUM('pending', 'processing', 'shipping', 'delivered', 'cancelled', 'return_requested', 'returned') DEFAULT 'pending',
 
     -- Thời gian đặt hàng
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -364,7 +364,22 @@ INSERT INTO products (category_id, product_name, description, price, sale_price,
 (4, 'Bông tai hình bướm uyên ương khảm đá Aquamarine', 'Sắc xanh ngọc biển dịu mát kết hợp tạo hình cánh bướm dập dờn bay lượn nhẹ nhàng thanh thoát.', 420000, 360000, 90, 'assets/images/product/image_2076968380_36.jpg', 'show'),
 (4, 'Khuyên kẹp vành đính đá Garnet đỏ rực quyền quý', 'Sắc đỏ thẫm của đá Garnet tự nhiên mang lại vẻ sang quý đầy quyến rũ cuốn hút bí ẩn.', 230000, 190000, 150, 'assets/images/product/image_2076968380_37.jpg', 'show'),
 (4, 'Bông tai hoa tuyết đính kim cương nhân tạo tuyết rơi', 'Thiết kế lộng lẫy lấy cảm hứng từ những tinh thể hoa tuyết mùa đông lấp lánh rực rỡ.', 350000, 0, 135, 'assets/images/product/image_2076968380_38.jpg', 'show'),
-(4, 'Bông tai tua dài hạt ngọc trai nước ngọt', 'Những viên ngọc trai nước ngọt tự nhiên dáng dài buông lơi tự nhiên quý phái.', 790000, 699000, 30, 'assets/images/product/image_2076968380_39.jpg', 'show');
+(4, 'Bông tai tua dài hạt ngọc trai nước ngọt', 'Những viên ngọc trai nước ngọt tự nhiên dáng dài buông lơi tự nhiên quý phái.', 790000, 699000, 30, 'assets/images/product/image_2076968380_39.jpg', 'show'),
+(1, 'Nhẫn kim cương vàng trắng 18K Solitaire', 'Nhẫn kim cương Solitaire vàng trắng 18K mang vẻ đẹp cổ điển, tôn lên sự lấp lánh tuyệt đối của viên kim cương chủ.', 15000000, 13900000, 20, 'assets/images/product/nhan_1.jpg', 'show'),
+(1, 'Nhẫn kim cương Halo đính đá tấm lấp lánh', 'Thiết kế Halo kiêu sa với vòng đá tấm bao quanh viên đá chủ, mang lại cảm giác lộng lẫy và tỏa sáng rực rỡ.', 22000000, 19900000, 15, 'assets/images/product/nhan_2.jpg', 'show'),
+(1, 'Nhẫn cưới kim cương đính đôi Eternity', 'Vòng nhẫn Eternity biểu tượng của tình yêu vĩnh cửu đính kết kim cương CZ tinh xảo chạy dọc thân nhẫn.', 8500000, 7900000, 30, 'assets/images/product/nhan_3.jpg', 'show'),
+(1, 'Nhẫn nam kim cương bản lớn quyền lực', 'Kiến tạo phong thái đĩnh đạc và uy nghiêm cho quý ông thành đạt với thiết kế bản dày mạnh mẽ khảm kim cương.', 35000000, 32000000, 10, 'assets/images/product/nhan_4.jpg', 'show'),
+(1, 'Nhẫn kim cương vương miện Queen cao cấp', 'Thiết kế lấy cảm hứng từ vương miện hoàng gia quý phái, đính đá saphire kết hợp kim cương tinh tuyển.', 18500000, 16900000, 25, 'assets/images/product/nhan_5.jpg', 'show'),
+(2, 'Dây chuyền vàng ý 18K mặt cỏ bốn lá', 'Dây chuyền vàng Ý cao cấp với mặt cỏ bốn lá may mắn khảm xà cừ óng ánh, tôn vinh nét duyên dáng thanh lịch.', 5500000, 4900000, 40, 'assets/images/product/daychuyen_1.jpg', 'show'),
+(2, 'Dây chuyền vàng hồng mặt trăng khuyết Opal', 'Sự pha trộn lãng mạn giữa chất vàng hồng ấm áp và đá Opal ngũ sắc óng ánh kỳ ảo dưới mọi góc nhìn.', 6800000, 5990000, 25, 'assets/images/product/daychuyen_2.jpg', 'show'),
+(2, 'Dây chuyền chocker xích mảnh mạ vàng sang trọng', 'Phong cách chocker ôm sát cổ tinh tế, thích hợp cho những buổi tiệc tối quyến rũ gợi cảm.', 3200000, 2800000, 50, 'assets/images/product/daychuyen_3.jpg', 'show'),
+(2, 'Kiềng cổ vàng nguyên khối hoa văn cổ điển', 'Tuyệt tác chế tác thủ công từ vàng ta với họa tiết uốn lượn phượng hoàng cổ điển kiêu sa quý phái.', 45000000, 42000000, 5, 'assets/images/product/daychuyen_4.jpg', 'show'),
+(2, 'Dây chuyền mặt đá Topaz xanh ngọc biển trời', 'Đá Topaz xanh dương thiên nhiên làm dịu mát tâm hồn, tỏa sáng rạng ngời lấp lánh tựa pha lê.', 8900000, 7900000, 18, 'assets/images/product/daychuyen_5.jpg', 'show'),
+(3, 'Vòng tay bạc khảm đá Cubic Zirconia lấp lánh', 'Chiếc lắc tay thanh mảnh khảm đá Cz đa tầng lấp lánh, là điểm nhấn duyên dáng cho đôi tay ngọc ngà.', 1200000, 990000, 60, 'assets/images/product/vongtay_1.jpg', 'show'),
+(3, 'Vòng tay lu thống vàng ngọc bích phong thủy', 'Ngọc bích thiên nhiên kết hợp lu thống vàng 24k mang lại tài lộc và sự bình an vĩnh cửu cho chủ nhân.', 12500000, 11500000, 15, 'assets/images/product/vongtay_2.jpg', 'show'),
+(3, 'Lắc tay xích bản dẹt phong cách Ý thời thượng', 'Thiết kế xích bản dẹt mạ vàng hồng mạnh mẽ cá tính mang đậm dấu ấn phong cách thời trang Milan.', 4500000, 3900000, 35, 'assets/images/product/vongtay_3.jpg', 'show'),
+(3, 'Vòng tay ngọc trai nước ngọt thiên nhiên quyến rũ', 'Chuỗi ngọc trai nước ngọt trắng tròn đều đính khóa bạc đính đá lấp lánh, vẻ đẹp thuần khiết Á Đông.', 5800000, 5200000, 22, 'assets/images/product/vongtay_4.jpg', 'show'),
+(3, 'Lắc tay Charm may mắn đính đá nhiều màu', 'Bộ sưu tập charm phong phú từ cỏ bốn lá, chìa khóa tình yêu đến ngôi sao lấp lánh rực rỡ.', 2400000, 1990000, 45, 'assets/images/product/vongtay_5.jpg', 'show');
 
 
 INSERT INTO vouchers (voucher_code, discount_type, discount_value, max_discount_amount, min_order_value, usage_limit, used_count, start_date, end_date, status) VALUES
@@ -475,3 +490,81 @@ INSERT INTO product_images (product_id, image_url) VALUES
 (39, 'assets/images/product/image_2076968380_1.jpg'),
 (39, 'assets/images/product/image_2076968380_2.jpg'),
 (39, 'assets/images/product/image_2076968380_3.jpg');
+
+
+-- =============================================================================
+-- 12. VIEWS, PROCEDURES, FUNCTIONS & TRIGGERS (ĐẢM BẢO TOÀN VẸN DỮ LIỆU)
+-- =============================================================================
+
+DROP VIEW IF EXISTS v_product_details;
+DROP VIEW IF EXISTS v_user_profiles;
+DROP TRIGGER IF EXISTS trg_update_stock_after_order;
+DROP TRIGGER IF EXISTS trg_check_stock_before_order;
+DROP PROCEDURE IF EXISTS sp_get_monthly_revenue;
+DROP FUNCTION IF EXISTS fn_get_total_spent;
+
+-- [VIEW 1]: Chi tiết sản phẩm kết hợp tên danh mục
+CREATE VIEW v_product_details AS
+SELECT p.*, c.category_name 
+FROM products p
+LEFT JOIN categories c ON p.category_id = c.category_id;
+
+-- [VIEW 2]: Thông tin khách hàng kèm địa chỉ giao hàng mặc định
+CREATE VIEW v_user_profiles AS
+SELECT u.user_id, u.full_name, u.email, u.phone, 
+       ua.receiver_name, ua.receiver_phone, ua.province_city, ua.district, ua.ward_commune, ua.specific_address
+FROM users u
+LEFT JOIN user_addresses ua ON u.user_id = ua.user_id AND ua.is_default = 1;
+
+-- [TRIGGER 1]: Kiểm tra số lượng sản phẩm tồn kho trước khi đặt hàng
+DELIMITER //
+CREATE TRIGGER trg_check_stock_before_order
+BEFORE INSERT ON order_details
+FOR EACH ROW
+BEGIN
+    DECLARE current_stock INT;
+    SELECT stock_quantity INTO current_stock FROM products WHERE product_id = NEW.product_id;
+    IF current_stock < NEW.quantity THEN
+        SIGNAL SQLSTATE '45000' 
+        SET MESSAGE_TEXT = 'Số lượng sản phẩm trong kho không đủ để đáp ứng đơn hàng!';
+    END IF;
+END //
+DELIMITER ;
+
+-- [TRIGGER 2]: Tự động trừ số lượng sản phẩm tồn kho sau khi thêm chi tiết đơn hàng
+DELIMITER //
+CREATE TRIGGER trg_update_stock_after_order
+AFTER INSERT ON order_details
+FOR EACH ROW
+BEGIN
+    UPDATE products 
+    SET stock_quantity = stock_quantity - NEW.quantity
+    WHERE product_id = NEW.product_id;
+END //
+DELIMITER ;
+
+-- [PROCEDURE]: Báo cáo doanh thu hàng tháng từ các đơn hàng thành công
+DELIMITER //
+CREATE PROCEDURE sp_get_monthly_revenue()
+BEGIN
+    SELECT DATE_FORMAT(created_at, '%Y-%m') AS month, SUM(final_amount) AS revenue
+    FROM orders
+    WHERE status != 'cancelled'
+    GROUP BY DATE_FORMAT(created_at, '%Y-%m')
+    ORDER BY month ASC;
+END //
+DELIMITER ;
+
+-- [FUNCTION]: Tính tổng số tiền một người dùng đã thanh toán hoàn thành
+DELIMITER //
+CREATE FUNCTION fn_get_total_spent(p_user_id INT)
+RETURNS INT
+DETERMINISTIC
+BEGIN
+    DECLARE total INT DEFAULT 0;
+    SELECT COALESCE(SUM(final_amount), 0) INTO total
+    FROM orders
+    WHERE user_id = p_user_id AND status = 'delivered';
+    RETURN total;
+END //
+DELIMITER ;

@@ -7,33 +7,94 @@ document.addEventListener('DOMContentLoaded', function() {
             e.target.classList.toggle('fas');
             e.target.style.color = e.target.classList.contains('fas') ? '#dc3545' : '';
             
-            // Lấy ID sản phẩm để Backend biết tim nào được bấm
             const productId = e.target.getAttribute('data-product-id');
             console.log('Đã thả/hủy tim sản phẩm ID:', productId);
         }
     });
 
-    // 2. NÚT XÓA BỘ LỌC
-    const clearFilterBtn = document.querySelector('.filter-clear');
-    if (clearFilterBtn) {
-        clearFilterBtn.addEventListener('click', function(e) {
+    // 2. BỘ LỌC MỨC GIÁ DÙNG CHECKBOX (Tự động lọc ngay khi click)
+    const priceCbs = document.querySelectorAll('.price-filter-cb');
+    priceCbs.forEach(cb => {
+        cb.addEventListener('change', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (this.checked) {
+                // Chỉ cho chọn 1 checkbox tại 1 thời điểm
+                priceCbs.forEach(other => {
+                    if (other !== this) other.checked = false;
+                });
+                urlParams.set('price_range', this.value);
+            } else {
+                urlParams.delete('price_range');
+            }
+            window.location.search = urlParams.toString();
+        });
+    });
+
+    // 3. NÚT ÁP DỤNG BỘ LỌC (Hỗ trợ click nút Áp dụng nếu người dùng bấm)
+    const btnApplyFilterUser = document.getElementById('btnApplyFilterUser');
+    if (btnApplyFilterUser) {
+        btnApplyFilterUser.addEventListener('click', function() {
+            const checkedCb = document.querySelector('.price-filter-cb:checked');
+            const priceRange = checkedCb ? checkedCb.value : "";
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            if (priceRange) {
+                urlParams.set('price_range', priceRange);
+            } else {
+                urlParams.delete('price_range');
+            }
+            window.location.search = urlParams.toString();
+        });
+    }
+
+    // 4. SẮP XẾP SẢN PHẨM
+    const sortSelectUser = document.getElementById('sortSelectUser');
+    if (sortSelectUser) {
+        sortSelectUser.addEventListener('change', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            urlParams.set('sort', this.value);
+            window.location.search = urlParams.toString();
+        });
+    }
+
+    // 5. TÌM KIẾM TRÊN HEADER BẰNG THANH NHẬP LIỆU CO GIÃN
+    const searchBtn = document.getElementById('navbarSearchBtn');
+    const searchInput = document.getElementById('navbarSearchInput');
+    if (searchBtn && searchInput) {
+        searchBtn.addEventListener('click', function(e) {
             e.preventDefault();
-            const checkboxes = document.querySelectorAll('.form-check-input');
-            checkboxes.forEach(cb => cb.checked = false);
-            console.log('Đã xóa cấu hình lọc.');
+            if (searchInput.style.display === 'none' || searchInput.style.display === '') {
+                searchInput.style.display = 'block';
+                searchInput.focus();
+            } else {
+                const query = searchInput.value.trim();
+                const urlParams = new URLSearchParams(window.location.search);
+                urlParams.set('page', 'home');
+                if (query) {
+                    urlParams.set('search', query);
+                    window.location.search = urlParams.toString();
+                } else {
+                    searchInput.style.display = 'none';
+                }
+            }
+        });
+        
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const query = this.value.trim();
+                const urlParams = new URLSearchParams(window.location.search);
+                urlParams.set('page', 'home');
+                if (query) {
+                    urlParams.set('search', query);
+                } else {
+                    urlParams.delete('search');
+                }
+                window.location.search = urlParams.toString();
+            }
         });
     }
 
-    // 3. NÚT ÁP DỤNG BỘ LỌC
-    const applyFilterBtn = document.querySelector('.btn-gold');
-    if (applyFilterBtn) {
-        applyFilterBtn.addEventListener('click', function() {
-            // Nơi Backend bắt sự kiện để lọc mảng dữ liệu
-            console.log('Đang gọi API lọc sản phẩm...');
-        });
-    }
-
-    // 4. NÚT TẢI THÊM SẢN PHẨM
+    // 6. NÚT TẢI THÊM SẢN PHẨM (giữ hiệu ứng tải)
     const loadMoreBtn = document.querySelector('.btn-outline-dark.rounded-pill');
     if (loadMoreBtn && loadMoreBtn.textContent.trim() === 'TẢI THÊM SẢN PHẨM') {
         loadMoreBtn.addEventListener('click', function() {
@@ -41,12 +102,105 @@ document.addEventListener('DOMContentLoaded', function() {
             this.textContent = 'ĐANG TẢI...';
             this.disabled = true;
 
-            // Giả lập thời gian tải. Backend sẽ nhét API fetch vào đây.
             setTimeout(() => {
                 this.textContent = originalText;
                 this.disabled = false;
                 console.log('Đã load xong trang tiếp theo.');
             }, 1000);
+        });
+    }
+
+    // 7. SMOOTH SCROLL KHI CLICK CHỌN DANH MỤC
+    const categoryLinks = document.querySelectorAll('.category-link');
+    categoryLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            const targetId = this.getAttribute('href');
+            if (targetId && targetId.startsWith('#')) {
+                e.preventDefault();
+                
+                // Cập nhật trạng thái active
+                categoryLinks.forEach(other => {
+                    other.classList.remove('active');
+                    const icon = other.querySelector('.icon-active');
+                    if (icon) icon.classList.add('d-none');
+                });
+                this.classList.add('active');
+                const activeIcon = this.querySelector('.icon-active');
+                if (activeIcon) activeIcon.classList.remove('d-none');
+
+                if (targetId === '#all-sections') {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    const targetEl = document.querySelector(targetId);
+                    if (targetEl) {
+                        // Cuộn mượt mà đến vùng danh mục sản phẩm tương ứng
+                        const offset = 80; // Tránh bị thanh header che khuất
+                        const bodyRect = document.body.getBoundingClientRect().top;
+                        const elementRect = targetEl.getBoundingClientRect().top;
+                        const elementPosition = elementRect - bodyRect;
+                        const offsetPosition = elementPosition - offset;
+
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+            }
+        });
+    });
+
+    // 8. SMOOTH SCROLL KHI CLICK VỀ CHÚNG TÔI / LIÊN HỆ TRÊN NAVBAR
+    const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            const hrefVal = this.getAttribute('href');
+            if (hrefVal && hrefVal.includes('#')) {
+                const hashIndex = hrefVal.indexOf('#');
+                const hash = hrefVal.substring(hashIndex);
+                
+                // Kiểm tra xem có đang ở trang chủ không
+                const isHomePage = window.location.pathname === '/' || 
+                                   window.location.pathname.endsWith('index.php') && (window.location.search.includes('page=home') || window.location.search === '');
+                                   
+                if (isHomePage) {
+                    e.preventDefault();
+                    const targetEl = document.querySelector(hash);
+                    if (targetEl) {
+                        const offset = 80;
+                        const bodyRect = document.body.getBoundingClientRect().top;
+                        const elementRect = targetEl.getBoundingClientRect().top;
+                        const elementPosition = elementRect - bodyRect;
+                        const offsetPosition = elementPosition - offset;
+
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+            }
+        });
+    });
+
+    // 9. SMOOTH SCROLL CHO NÚT "KHÁM PHÁ NGAY" BANNER
+    const btnDiscoverNow = document.getElementById('btnDiscoverNow');
+    if (btnDiscoverNow) {
+        btnDiscoverNow.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetEl = document.getElementById('products-section');
+            if (targetEl) {
+                const offset = 80;
+                const bodyRect = document.body.getBoundingClientRect().top;
+                const elementRect = targetEl.getBoundingClientRect().top;
+                const elementPosition = elementRect - bodyRect;
+                const offsetPosition = elementPosition - offset;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+            }
         });
     }
 

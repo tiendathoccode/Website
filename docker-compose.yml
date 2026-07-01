@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: app_php
-    restart: unless-stopped
+
     ports:
       - "8080:80"
     volumes:
@@ -24,7 +24,7 @@ services:
   mysql:
     image: mysql:8.0
     container_name: app_mysql
-    restart: unless-stopped
+
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
       MYSQL_DATABASE: ${DB_NAME:-app_db}
@@ -55,7 +55,7 @@ services:
   phpmyadmin:
     image: phpmyadmin:latest
     container_name: app_phpmyadmin
-    restart: unless-stopped
+
     environment:
       PMA_HOST: mysql
       PMA_PORT: 3306
@@ -70,7 +70,7 @@ services:
   mailpit:
     image: axllent/mailpit
     container_name: app_mailpit
-    restart: unless-stopped
+
     ports:
       - "1025:1025" # Cổng SMTP để PHP gửi mail
       - "8025:8025" # Giao diện web xem email (http://localhost:8025)

@@ -4,6 +4,23 @@ session_start();
 // 1. Tọa độ gốc của toàn bộ dự án
 define("BASE_PATH", dirname(__DIR__));
 
+// Kiểm tra xem người dùng hiện tại có bị khóa tài khoản (Ban) hay không
+if (isset($_SESSION["user_logged_in"]) && $_SESSION["user_logged_in"] === true) {
+    require_once BASE_PATH . "/config/database.php";
+    $db = new Database();
+    $conn = $db->getConnection();
+    $stmtCheck = $conn->prepare("SELECT status FROM users WHERE user_id = :uid");
+    $stmtCheck->execute([":uid" => $_SESSION["user_id"]]);
+    $userStatus = $stmtCheck->fetchColumn();
+    if ($userStatus === "locked") {
+        session_destroy();
+        session_start();
+        $_SESSION["error_message"] = "Tài khoản của bạn đã bị khóa bởi quản trị viên!";
+        header("Location: /index.php?page=login");
+        exit();
+    }
+}
+
 // 2. Lấy trang khách hàng muốn vào (mặc định là home)
 $page = isset($_GET["page"]) ? $_GET["page"] : "home";
 
@@ -107,6 +124,24 @@ switch ($page) {
         $controller = new ProductController();
         $controller->showChiTiet($product_id);
         break;
+
+    case "don_hang":
+        require_once BASE_PATH . "/app/controllers/HomeController.php";
+        $controller = new HomeController();
+        $controller->showDonHang();
+        break;
+
+    case "order_details":
+        require_once BASE_PATH . "/app/controllers/CartController.php";
+        $controller = new CartController();
+        $controller->orderDetails();
+        break;
+
+    case "order_action":
+        require_once BASE_PATH . "/app/controllers/CartController.php";
+        $controller = new CartController();
+        $controller->orderAction();
+        break;
     case "cart":
         require_once BASE_PATH . "/app/controllers/CartController.php";
         $controller = new CartController();
@@ -138,6 +173,93 @@ switch ($page) {
                 ]);
         }
         break;
+
+    case "place_order":
+        require_once BASE_PATH . "/app/controllers/CartController.php";
+        $controller = new CartController();
+        $controller->placeOrder();
+        break;
+
+    case "profile":
+        require_once BASE_PATH . "/app/controllers/AuthController.php";
+        $controller = new AuthController();
+        $controller->showProfile();
+        break;
+
+    case "process_profile":
+        require_once BASE_PATH . "/app/controllers/AuthController.php";
+        $controller = new AuthController();
+        $controller->handleUpdateProfile();
+        break;
+
+    // --- CÁC ROUTE ADMIN ---
+    case "admin_dashboard":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->showDashboard();
+        break;
+
+    case "admin_products":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->showProducts();
+        break;
+
+    case "admin_add_product":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->showAddProduct();
+        break;
+
+    case "admin_orders":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->showOrders();
+        break;
+
+    case "admin_users":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->showUsers();
+        break;
+
+    case "admin_api_update_user":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->apiUpdateUser();
+        break;
+
+    // --- CÁC ROUTE ADMIN API ---
+    case "admin_api_add_product":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->apiAddProduct();
+        break;
+
+    case "admin_api_edit_product":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->apiEditProduct();
+        break;
+
+    case "admin_api_delete_product":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->apiDeleteProduct();
+        break;
+
+    case "admin_api_update_order":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->apiUpdateOrderStatus();
+        break;
+
+    case "admin_api_sales_chart":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->apiSalesChart();
+        break;
+
     default:
         echo "<h1 style='text-align:center;'>Lỗi 404 - Không tìm thấy trang!</h1>";
         break;

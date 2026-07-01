@@ -13,11 +13,25 @@
 
     <nav class="navbar navbar-expand-lg py-3 sticky-top border-bottom shadow-sm" style="background-color: #fdfbf7; z-index: 1020;">
         <div class="container-fluid px-4">
-            <a class="navbar-brand fs-4 fw-bold gold-text" href="index.html" style="font-family: 'Times New Roman', serif;">AURRELIA</a>
+            <a class="navbar-brand fs-4 fw-bold gold-text" href="/index.php?page=home" style="font-family: 'Times New Roman', serif;">AURRELIA</a>
 
             <!-- ICONS: luôn hiện kể cả mobile, đặt TRƯỚC nút toggler -->
             <div class="d-flex gap-3 align-items-center me-2 order-lg-last">
-                <a href="#" class="text-dark fs-6"><i class="fas fa-search"></i></a>
+                <div class="d-flex align-items-center" style="position: relative;">
+                    <input type="text" id="navbarSearchInput" placeholder="Tìm kiếm sản phẩm..." style="
+                        display: <?php echo isset($_GET['search']) && trim($_GET['search']) !== '' ? 'block' : 'none'; ?>;
+                        border: none;
+                        border-bottom: 1px solid #c8a165;
+                        background: transparent;
+                        outline: none;
+                        padding: 2px 8px;
+                        font-size: 13px;
+                        width: 150px;
+                        margin-right: 8px;
+                        transition: all 0.3s ease;
+                    " value="<?php echo htmlspecialchars($_GET['search'] ?? ''); ?>" />
+                    <a href="#" class="text-dark fs-6" id="navbarSearchBtn"><i class="fas fa-search"></i></a>
+                </div>
                 <a href="#" class="text-dark fs-6"><i class="far fa-heart"></i></a>
                 <a href="/index.php?page=gio_hang" class="text-dark fs-6 position-relative" id="headerCartBtn">
                     <i class="fas fa-shopping-bag"></i>
@@ -65,7 +79,12 @@
                             <a href="/index.php?page=profile" style="display:flex; align-items:center; gap:10px; padding:12px 18px; text-decoration:none; color:#333; font-size:13px; border-bottom:1px solid #f5f5f5;">
                                 <i class="far fa-user" style="color:#bfa15f; width:16px;"></i> Thông tin cá nhân
                             </a>
-                            <a href="/index.php?page=gio_hang" style="display:flex; align-items:center; gap:10px; padding:12px 18px; text-decoration:none; color:#333; font-size:13px; border-bottom:1px solid #f5f5f5;">
+                            <?php if (isset($_SESSION["user_role"]) && $_SESSION["user_role"] === "admin"): ?>
+                                <a href="/index.php?page=admin_dashboard" style="display:flex; align-items:center; gap:10px; padding:12px 18px; text-decoration:none; color:#333; font-size:13px; border-bottom:1px solid #f5f5f5;">
+                                    <i class="fas fa-user-shield" style="color:#bfa15f; width:16px;"></i> Trang quản trị (Admin)
+                                </a>
+                            <?php endif; ?>
+                            <a href="/index.php?page=don_hang" style="display:flex; align-items:center; gap:10px; padding:12px 18px; text-decoration:none; color:#333; font-size:13px; border-bottom:1px solid #f5f5f5;">
                                 <i class="fas fa-box" style="color:#bfa15f; width:16px;"></i> Đơn hàng của tôi
                             </a>
                             <a href="/index.php?page=change_password" style="display:flex; align-items:center; gap:10px; padding:12px 18px; text-decoration:none; color:#333; font-size:13px; border-bottom:1px solid #f5f5f5;">
@@ -94,10 +113,10 @@
             <!-- MENU: chỉ hiện khi mở collapse trên mobile -->
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto text-uppercase" style="font-size: 13px; letter-spacing: 1px;">
-                    <li class="nav-item"><a class="nav-link px-3" href="#">Trang Sức</a></li>
-                    <li class="nav-item"><a class="nav-link px-3" href="#">Trang Sức Cao Cấp</a></li>
-                    <li class="nav-item"><a class="nav-link px-3" href="#">Về Chúng Tôi</a></li>
-                    <li class="nav-item"><a class="nav-link px-3" href="#">Liên Hệ</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="/index.php?page=home">Trang Sức</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="/index.php?page=home&category_id=1">Trang Sức Cao Cấp</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="/index.php?page=home#about-us-section">Về Chúng Tôi</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="/index.php?page=home#contact-section">Liên Hệ</a></li>
                 </ul>
             </div>
         </div>
@@ -124,11 +143,11 @@
           <i class="fas fa-shopping-bag mb-3" style="font-size:48px; color:#d4c4a8;"></i>
           <h5 class="fw-normal mb-2" style="font-family:'Times New Roman', serif;">Giỏ hàng của bạn đang trống</h5>
           <p class="text-muted mb-4" style="font-size:13px;">Hãy khám phá bộ sưu tập và thêm sản phẩm yêu thích.</p>
-          <a href="index.html" class="btn-gold-outline">TIẾP TỤC MUA SẮM</a>
+          <a href="/index.php?page=home" class="btn-gold-outline">TIẾP TỤC MUA SẮM</a>
         </div>
 
         <div class="mt-4" id="continueShopping">
-          <a href="index.html" class="continue-link">
+          <a href="/index.php?page=home" class="continue-link">
             <i class="fas fa-arrow-left me-2" style="font-size:11px;"></i>Tiếp tục mua sắm
           </a>
         </div>

@@ -20,10 +20,8 @@ class ProductController
         $db = new Database();
         $conn = $db->getConnection();
 
-        // Lấy thông tin sản phẩm
-        $stmt = $conn->prepare("SELECT p.*, c.category_name FROM products p
-                                LEFT JOIN categories c ON p.category_id = c.category_id
-                                WHERE p.product_id = :id AND p.status = 'show'");
+        // Lấy thông tin sản phẩm từ view v_product_details
+        $stmt = $conn->prepare("SELECT * FROM v_product_details WHERE product_id = :id AND status = 'show'");
         $stmt->execute([":id" => $product_id]);
         $product = $stmt->fetch(PDO::FETCH_ASSOC);
 

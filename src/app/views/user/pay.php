@@ -4,14 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Thanh Toán — Aurrelia</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="../assets/css/pay.css" />
 </head>
 <body>
 
   <header id="siteHeader">
     <div id="headerInner">
-      <a href="index.html" id="logoLink" class="site-logo">AURRELIA</a>
-      <a href="shopping_cart.html" id="backToCartLink" class="back-link">
+      <a href="/index.php?page=home" id="logoLink" class="site-logo">AURRELIA</a>
+      <a href="/index.php?page=gio_hang" id="backToCartLink" class="back-link">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         Thanh toán an toàn
       </a>
@@ -36,11 +37,11 @@
             <div class="form-row">
               <div class="form-field">
                 <label for="fullName">Họ và tên</label>
-                <input type="text" id="fullName" name="fullName" placeholder="Nguyễn Văn A" required />
+                <input type="text" id="fullName" name="fullName" placeholder="Nguyễn Văn A" value="<?php echo htmlspecialchars($user['full_name'] ?? ''); ?>" required />
               </div>
               <div class="form-field">
                 <label for="phone">Số điện thoại</label>
-                <input type="tel" id="phone" name="phone" placeholder="0912 345 678" required />
+                <input type="tel" id="phone" name="phone" placeholder="0912 345 678" value="<?php echo htmlspecialchars($user['phone'] ?? ''); ?>" required />
               </div>
             </div>
 
@@ -49,11 +50,6 @@
                 <label for="province">Tỉnh / Thành phố</label>
                 <select id="province" name="province" required>
                   <option value="" selected disabled>Chọn Tỉnh/Thành</option>
-                  <option value="hcm">TP. Hồ Chí Minh</option>
-                  <option value="hn">Hà Nội</option>
-                  <option value="dn">Đà Nẵng</option>
-                  <option value="ct">Cần Thơ</option>
-                  <option value="hp">Hải Phòng</option>
                 </select>
               </div>
               <div class="form-field">
@@ -73,7 +69,7 @@
             <div class="form-row">
               <div class="form-field form-field--full">
                 <label for="addressDetail">Địa chỉ cụ thể</label>
-                <input type="text" id="addressDetail" name="addressDetail" placeholder="Số nhà, tên đường, tòa nhà..." required />
+                <input type="text" id="addressDetail" name="addressDetail" placeholder="Số nhà, tên đường, tòa nhà..." value="<?php echo htmlspecialchars($user['specific_address'] ?? ''); ?>" required />
               </div>
             </div>
 
@@ -193,14 +189,72 @@
     <p class="footer-copy">&copy; 2026 Aurrelia. Bản quyền thuộc về Nhóm 6.</p>
   </footer>
 
+  <!-- ================= PAYMENT QR MODAL ================= -->
+  <div class="modal fade" id="paymentQrModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true" style="font-family: 'Inter', sans-serif;">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 420px;">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; background: #fff;">
+        <div class="modal-header border-0 pb-0" style="position: relative; display: block; border-bottom: none;">
+          <h5 class="modal-title w-100 text-center fw-bold" style="color: #333; font-size: 16px; font-family:'Times New Roman', serif; letter-spacing:1px;">QUÉT MÃ THANH TOÁN</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="position: absolute; right: 15px; top: 15px; font-size:12px;"></button>
+        </div>
+        <div class="modal-body text-center pt-3 pb-4">
+          <div class="mb-3 text-muted" style="font-size: 13px;">
+            Vui lòng quét mã QR dưới đây để thực hiện thanh toán chuyển khoản:
+          </div>
+          
+          <div class="p-3 bg-light rounded-3 mb-3 d-inline-block" style="border: 1px dashed #c8a165;">
+            <img src="/assets/images/payment_qr.png" id="paymentQrImg" alt="Mã QR Thanh Toán" style="width: 220px; height: 220px; object-fit: contain; display: block; margin: 0 auto;" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=AurreliaFineJewelryPayment';"/>
+          </div>
+
+          <div class="mb-3">
+            <span style="font-size:12px; color:#999; text-transform: uppercase; letter-spacing:1px; display:block;">Số tiền cần thanh toán</span>
+            <span class="fw-bold" id="qrPayAmount" style="font-size:22px; color:#c8a165;">0₫</span>
+          </div>
+
+          <div class="text-start p-3 rounded bg-light" style="font-size:12px; line-height: 1.6; border-left: 3px solid #c8a165;">
+            <div class="d-flex justify-content-between mb-1">
+              <span class="text-muted">Ngân hàng:</span>
+              <strong id="qrBankName">Vietcombank</strong>
+            </div>
+            <div class="d-flex justify-content-between mb-1">
+              <span class="text-muted">Chủ tài khoản:</span>
+              <strong>CÔNG TY TNHH AURRELIA</strong>
+            </div>
+            <div class="d-flex justify-content-between mb-1">
+              <span class="text-muted">Số tài khoản:</span>
+              <strong id="qrAccountNo">0071000123456</strong>
+            </div>
+            <div class="d-flex justify-content-between">
+              <span class="text-muted">Nội dung CK:</span>
+              <strong style="color: #dc3545;" id="qrTransferNote">AURRELIA</strong>
+            </div>
+          </div>
+
+          <div class="mt-3 text-muted" style="font-size: 11px;">
+            Hệ thống sẽ kiểm tra và xác nhận giao dịch tự động.
+          </div>
+        </div>
+        <div class="modal-footer border-0 pt-0 d-flex gap-2">
+          <button type="button" class="btn btn-secondary flex-grow-1 py-2" data-bs-dismiss="modal" style="font-size: 13px; border-radius: 6px;">HỦY GIAO DỊCH</button>
+          <button type="button" id="btnConfirmPayment" class="btn btn-primary flex-grow-1 py-2 border-0" style="background-color: #c8a165; color: white; font-size: 13px; border-radius: 6px;">ĐÃ THANH TOÁN</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
       window.IS_LOGGED_IN = <?php echo isset($_SESSION["user_logged_in"]) &&
       $_SESSION["user_logged_in"] === true
           ? "true"
           : "false"; ?>;
+      window.savedAddress = {
+          province: <?php echo json_encode($user['province_city'] ?? ''); ?>,
+          district: <?php echo json_encode($user['district'] ?? ''); ?>,
+          ward: <?php echo json_encode($user['ward_commune'] ?? ''); ?>
+      };
     </script>
     <script src="/assets/js/cart.js"></script>
     <script src="/assets/js/pay.js"></script>
   </body>
-</body>
 </html>

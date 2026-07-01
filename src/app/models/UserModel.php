@@ -80,5 +80,29 @@ class UserModel
         $stmt = $this->conn->prepare($sql);
         return $stmt->execute([":email" => $email]);
     }
+
+    public function getDetailedProfile($userId)
+    {
+        $sql = "SELECT * FROM v_user_profiles WHERE user_id = :id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([":id" => $userId]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function updateDetailedProfile($userId, $fullName, $email, $phone, $province, $district, $ward, $specific)
+    {
+        $sql = "CALL sp_update_user_profile(:id, :name, :email, :phone, :province, :district, :ward, :specific)";
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute([
+            ":id" => $userId,
+            ":name" => $fullName,
+            ":email" => $email,
+            ":phone" => $phone,
+            ":province" => $province,
+            ":district" => $district,
+            ":ward" => $ward,
+            ":specific" => $specific
+        ]);
+    }
 }
 ?>
