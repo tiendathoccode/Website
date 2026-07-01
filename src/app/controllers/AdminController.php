@@ -133,12 +133,14 @@ class AdminController
 
             // Đảm bảo thư mục tồn tại
             if (!is_dir($uploadFileDir)) {
-                mkdir($uploadFileDir, 0755, true);
+                @mkdir($uploadFileDir, 0777, true);
             }
 
             $dest_path = $uploadFileDir . $newFileName;
-            if (move_uploaded_file($fileTmpPath, $dest_path)) {
+            if (@move_uploaded_file($fileTmpPath, $dest_path)) {
                 $mainImage = "assets/images/product/" . $newFileName;
+            } else {
+                $_SESSION["error_message"] = "Không thể ghi tệp tải lên (Lỗi phân quyền thư mục). Hệ thống đã tạo sản phẩm với ảnh mặc định.";
             }
         }
 
@@ -185,6 +187,11 @@ class AdminController
         }
 
         try {
+            // Nếu chuyển trạng thái sang cancelled, khôi phục tồn kho sản phẩm
+            if ($status === 'cancelled') {
+                $this->restoreOrderStock($orderId);
+            }
+
             // Cập nhật trạng thái đơn hàng
             $stmt = $this->conn->prepare("UPDATE orders SET status = :status, payment_method = :pmethod WHERE order_id = :oid");
             $stmt->execute([
@@ -196,6 +203,27 @@ class AdminController
             $this->json(["status" => "ok", "message" => "Cập nhật đơn hàng thành công."]);
         } catch (Exception $e) {
             $this->json(["status" => "error", "message" => $e->getMessage()]);
+        }
+    }
+
+    private function restoreOrderStock($orderId)
+    {
+        $stmtStatus = $this->conn->prepare("SELECT status FROM orders WHERE order_id = :oid");
+        $stmtStatus->execute([":oid" => $orderId]);
+        $oldStatus = $stmtStatus->fetchColumn();
+
+        if ($oldStatus && $oldStatus !== 'cancelled') {
+            $stmtItems = $this->conn->prepare("SELECT product_id, quantity FROM order_details WHERE order_id = :oid");
+            $stmtItems->execute([":oid" => $orderId]);
+            $items = $stmtItems->fetchAll(PDO::FETCH_ASSOC);
+
+            $stmtRestore = $this->conn->prepare("UPDATE products SET stock_quantity = stock_quantity + :qty WHERE product_id = :pid");
+            foreach ($items as $item) {
+                $stmtRestore->execute([
+                    ":qty" => $item["quantity"],
+                    ":pid" => $item["product_id"]
+                ]);
+            }
         }
     }
 
@@ -338,5 +366,239 @@ class AdminController
         } catch (Exception $e) {
             $this->json(["status" => "error", "message" => "Lỗi hệ thống: " . $e->getMessage()]);
         }
+    }
+
+    // ==========================================
+    // 3. QUẢN LÝ DANH MỤC
+    // ==========================================
+    public function showCategories()
+    {
+        $categories = $this->conn->query("SELECT * FROM categories ORDER BY category_id DESC")->fetchAll(PDO::FETCH_ASSOC);
+        require_once BASE_PATH . "/app/views/admin/categoriesmanage.php";
+    }
+
+    public function apiAddCategory()
+    {
+        if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+            $this->json(["status" => "error", "message" => "Phương thức không được hỗ trợ."]);
+        }
+
+        $name = trim($_POST["category_name"] ?? "");
+        $desc = trim($_POST["description"] ?? "");
+        $status = trim($_POST["status"] ?? "show");
+
+        if (empty($name) || !in_array($status, ["show", "hide"])) {
+            $this->json(["status" => "error", "message" => "Vui lòng nhập tên danh mục hợp lệ."]);
+        }
+
+        try {
+            $stmt = $this->conn->prepare("INSERT INTO categories (category_name, description, status) VALUES (:name, :desc, :status)");
+            $stmt->execute([
+                ":name" => $name,
+                ":desc" => $desc,
+                ":status" => $status
+            ]);
+            $this->json(["status" => "ok", "message" => "Thêm danh mục mới thành công!"]);
+        } catch (Exception $e) {
+            $this->json(["status" => "error", "message" => "Lỗi: " . $e->getMessage()]);
+        }
+    }
+
+    public function apiEditCategory()
+    {
+        if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+            $this->json(["status" => "error", "message" => "Phương thức không được hỗ trợ."]);
+        }
+
+        $categoryId = isset($_POST["category_id"]) ? (int)$_POST["category_id"] : 0;
+        $name = trim($_POST["category_name"] ?? "");
+        $desc = trim($_POST["description"] ?? "");
+        $status = trim($_POST["status"] ?? "show");
+
+        if ($categoryId <= 0 || empty($name) || !in_array($status, ["show", "hide"])) {
+            $this->json(["status" => "error", "message" => "Thông tin danh mục không hợp lệ."]);
+        }
+
+        try {
+            $stmt = $this->conn->prepare("UPDATE categories SET category_name = :name, description = :desc, status = :status WHERE category_id = :id");
+            $stmt->execute([
+                ":name" => $name,
+                ":desc" => $desc,
+                ":status" => $status,
+                ":id" => $categoryId
+            ]);
+            $this->json(["status" => "ok", "message" => "Cập nhật danh mục thành công!"]);
+        } catch (Exception $e) {
+            $this->json(["status" => "error", "message" => "Lỗi: " . $e->getMessage()]);
+        }
+    }
+
+    public function apiDeleteCategory()
+    {
+        if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+            $this->json(["status" => "error", "message" => "Phương thức không được hỗ trợ."]);
+        }
+
+        $categoryId = isset($_POST["category_id"]) ? (int)$_POST["category_id"] : 0;
+        if ($categoryId <= 0) {
+            $this->json(["status" => "error", "message" => "Mã danh mục không hợp lệ."]);
+        }
+
+        try {
+            // Kiểm tra xem danh mục có đang chứa sản phẩm nào không
+            $stmtCheck = $this->conn->prepare("SELECT COUNT(*) FROM products WHERE category_id = :id");
+            $stmtCheck->execute([":id" => $categoryId]);
+            $productCount = $stmtCheck->fetchColumn();
+
+            if ($productCount > 0) {
+                // Không được xóa cứng để tránh lỗi foreign key, đổi trạng thái ẩn danh mục hoặc cảnh báo
+                $stmtUpdate = $this->conn->prepare("UPDATE categories SET status = 'hide' WHERE category_id = :id");
+                $stmtUpdate->execute([":id" => $categoryId]);
+                $this->json(["status" => "ok", "message" => "Danh mục hiện đang có sản phẩm. Hệ thống đã chuyển trạng thái sang ẨN thay vì xóa cứng!"]);
+            } else {
+                // Xóa cứng nếu không có sản phẩm nào
+                $stmtDel = $this->conn->prepare("DELETE FROM categories WHERE category_id = :id");
+                $stmtDel->execute([":id" => $categoryId]);
+                $this->json(["status" => "ok", "message" => "Xóa danh mục thành công!"]);
+            }
+        } catch (Exception $e) {
+            $this->json(["status" => "error", "message" => "Lỗi: " . $e->getMessage()]);
+        }
+    }
+
+    // ==========================================
+    // 4. XUẤT BÁO CÁO CSV
+    // ==========================================
+    public function exportSales()
+    {
+        try {
+            $stmt = $this->conn->prepare(
+                "SELECT o.order_id, o.order_code, u.full_name, u.email, o.receiver_name, o.receiver_phone, o.shipping_address, o.total_amount, o.discount_amount, o.final_amount, o.payment_method, o.status, o.created_at 
+                 FROM orders o 
+                 JOIN users u ON o.user_id = u.user_id 
+                 ORDER BY o.order_id DESC"
+            );
+            $stmt->execute();
+            $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Xóa bộ đệm đầu ra để tránh lỗi font hoặc khoảng trắng trước file download
+            if (ob_get_level()) {
+                ob_end_clean();
+            }
+
+            header('Content-Type: text/csv; charset=utf-8');
+            header('Content-Disposition: attachment; filename="aurrelia_bao_cao_doanh_thu_' . date('Ymd_His') . '.csv"');
+            
+            $output = fopen('php://output', 'w');
+            fwrite($output, "\xEF\xBB\xBF"); // UTF-8 BOM
+            
+            // Header cột
+            fputcsv($output, [
+                'ID Đơn', 
+                'Mã Đơn Hàng', 
+                'Khách Hàng', 
+                'Email', 
+                'Người Nhận', 
+                'Số Điện Thoại', 
+                'Địa Chỉ Giao Hàng', 
+                'Tổng Tiền (đ)', 
+                'Giảm Giá (đ)', 
+                'Thành Tiền (đ)', 
+                'Phương Thức', 
+                'Trạng Thái', 
+                'Thời Gian Đặt'
+            ]);
+
+            foreach ($orders as $o) {
+                fputcsv($output, [
+                    $o['order_id'],
+                    $o['order_code'],
+                    $o['full_name'],
+                    $o['email'],
+                    $o['receiver_name'],
+                    $o['receiver_phone'],
+                    $o['shipping_address'],
+                    (int)$o['total_amount'],
+                    (int)$o['discount_amount'],
+                    (int)$o['final_amount'],
+                    strtoupper($o['payment_method']),
+                    $this->getOrderStatusLabel($o['status']),
+                    date('d/m/Y H:i:s', strtotime($o['created_at']))
+                ]);
+            }
+            fclose($output);
+            exit();
+        } catch (Exception $e) {
+            echo "Lỗi xuất báo cáo: " . $e->getMessage();
+            exit();
+        }
+    }
+
+    public function exportInventory()
+    {
+        try {
+            $stmt = $this->conn->prepare(
+                "SELECT p.product_id, p.product_name, c.category_name, p.price, p.sale_price, p.stock_quantity, p.status, p.created_at 
+                 FROM products p 
+                 LEFT JOIN categories c ON p.category_id = c.category_id 
+                 ORDER BY p.product_id DESC"
+            );
+            $stmt->execute();
+            $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Xóa bộ đệm đầu ra để tránh lỗi font hoặc khoảng trắng trước file download
+            if (ob_get_level()) {
+                ob_end_clean();
+            }
+
+            header('Content-Type: text/csv; charset=utf-8');
+            header('Content-Disposition: attachment; filename="aurrelia_bao_cao_ton_kho_' . date('Ymd_His') . '.csv"');
+            
+            $output = fopen('php://output', 'w');
+            fwrite($output, "\xEF\xBB\xBF"); // UTF-8 BOM
+            
+            fputcsv($output, [
+                'Mã SP', 
+                'Tên Sản Phẩm', 
+                'Danh Mục', 
+                'Giá Gốc (đ)', 
+                'Giá Giảm (đ)', 
+                'Số Lượng Tồn', 
+                'Trạng Thái', 
+                'Ngày Tạo'
+            ]);
+
+            foreach ($products as $p) {
+                fputcsv($output, [
+                    $p['product_id'],
+                    $p['product_name'],
+                    $p['category_name'] ?? 'Chưa phân loại',
+                    (int)$p['price'],
+                    (int)$p['sale_price'],
+                    (int)$p['stock_quantity'],
+                    ($p['status'] === 'show' ? 'Đang bán' : 'Đang ẩn'),
+                    date('d/m/Y H:i:s', strtotime($p['created_at']))
+                ]);
+            }
+            fclose($output);
+            exit();
+        } catch (Exception $e) {
+            echo "Lỗi xuất báo cáo: " . $e->getMessage();
+            exit();
+        }
+    }
+
+    private function getOrderStatusLabel($status)
+    {
+        $labels = [
+            'pending' => 'Chờ xử lý',
+            'processing' => 'Đang xử lý',
+            'shipped' => 'Đang giao hàng',
+            'delivered' => 'Đã giao hàng',
+            'cancelled' => 'Đã hủy',
+            'returned' => 'Đã hoàn trả',
+            'return_requested' => 'Yêu cầu hoàn trả'
+        ];
+        return $labels[$status] ?? $status;
     }
 }

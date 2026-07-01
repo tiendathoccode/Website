@@ -3,19 +3,18 @@ class HomeController
 {
     public function index()
     {
-        // BẢO VỆ: Kiểm tra xem khách có Thẻ Session chưa?
-        if (
-            !isset($_SESSION["user_logged_in"]) ||
-            $_SESSION["user_logged_in"] !== true
-        ) {
-            header("Location: /index.php?page=login");
-            exit();
-        }
-
         // TỰ KHỞI TẠO KẾT NỐI DATABASE RIÊNG BIỆT TRONG HOME
         require_once BASE_PATH . "/config/database.php";
         $db = new Database();
         $dbConn = $db->getConnection(); // Lấy biến kết nối PDO gốc ra
+
+        // Lấy danh sách danh mục để hiển thị ở bộ lọc
+        try {
+            $stmtCats = $dbConn->query("SELECT * FROM categories WHERE status = 'show'");
+            $categoriesList = $stmtCats->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            $categoriesList = [];
+        }
 
         $categoryId = isset($_GET["category_id"]) ? (int)$_GET["category_id"] : 0;
         $priceFilter = isset($_GET["price_range"]) ? $_GET["price_range"] : "";

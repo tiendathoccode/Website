@@ -3,14 +3,6 @@ class ProductController
 {
     public function showChiTiet($product_id)
     {
-        if (
-            !isset($_SESSION["user_logged_in"]) ||
-            $_SESSION["user_logged_in"] !== true
-        ) {
-            header("Location: /index.php?page=login");
-            exit();
-        }
-
         if (!$product_id) {
             header("Location: /index.php?page=home");
             exit();

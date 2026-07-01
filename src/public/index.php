@@ -223,6 +223,12 @@ switch ($page) {
         $controller->showUsers();
         break;
 
+    case "admin_categories":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->showCategories();
+        break;
+
     case "admin_api_update_user":
         require_once BASE_PATH . "/app/controllers/AdminController.php";
         $controller = new AdminController();
@@ -258,6 +264,36 @@ switch ($page) {
         require_once BASE_PATH . "/app/controllers/AdminController.php";
         $controller = new AdminController();
         $controller->apiSalesChart();
+        break;
+
+    case "admin_export_sales":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->exportSales();
+        break;
+
+    case "admin_export_inventory":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->exportInventory();
+        break;
+
+    case "admin_api_add_category":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->apiAddCategory();
+        break;
+
+    case "admin_api_edit_category":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->apiEditCategory();
+        break;
+
+    case "admin_api_delete_category":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->apiDeleteCategory();
         break;
 
     default:

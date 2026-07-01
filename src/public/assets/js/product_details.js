@@ -88,6 +88,13 @@ function closeCartDrawer() {
 
 // ── Thêm vào giỏ hàng ────────────────────────────────────────────────────────
 function addToCart() {
+  if (typeof window.USER_LOGGED_IN === "undefined" || !window.USER_LOGGED_IN) {
+    showToast("Vui lòng đăng nhập để thêm vào giỏ hàng.", "error");
+    setTimeout(() => {
+        window.location.href = "/index.php?page=login";
+    }, 1500);
+    return;
+  }
   Cart.add({
     id: productDetail.id,
     name: productDetail.name,

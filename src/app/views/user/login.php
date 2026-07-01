@@ -6,6 +6,7 @@
         <title>Đăng nhập</title>
         <link rel="stylesheet" type="text/css" href="/assets/css/auth.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        <link rel="icon" type="image/png" href="/favicon.png">
     </head>
     <body class="auth-body">
         <div class="auth-wrapper">

@@ -13,8 +13,8 @@
   --color-rose-gold:   #d4a5a5;
   --color-overlay:     rgba(26,26,26,0.38);
 
-  --font-display:      'Cormorant Garamond', Georgia, serif;
-  --font-body:         'Jost', sans-serif;
+  --font-display:      'Playfair Display', Georgia, serif;
+  --font-body:         'Inter', sans-serif;
 
   --radius-sm:         2px;
   --radius-md:         4px;
@@ -31,7 +31,7 @@ body {
   font-family:      var(--font-body);
   background-color: var(--color-bg);
   color:            var(--color-text);
-  font-size:        13px;
+  font-size:        14.5px;
   letter-spacing:   0.02em;
   line-height:      1.65;
   -webkit-font-smoothing: antialiased;

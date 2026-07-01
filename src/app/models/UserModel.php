@@ -91,18 +91,69 @@ class UserModel
 
     public function updateDetailedProfile($userId, $fullName, $email, $phone, $province, $district, $ward, $specific)
     {
-        $sql = "CALL sp_update_user_profile(:id, :name, :email, :phone, :province, :district, :ward, :specific)";
-        $stmt = $this->conn->prepare($sql);
-        return $stmt->execute([
-            ":id" => $userId,
-            ":name" => $fullName,
-            ":email" => $email,
-            ":phone" => $phone,
-            ":province" => $province,
-            ":district" => $district,
-            ":ward" => $ward,
-            ":specific" => $specific
-        ]);
+        try {
+            $this->conn->beginTransaction();
+
+            // 1. Cập nhật bảng users
+            $sqlUser = "UPDATE users SET full_name = :name, email = :email, phone = :phone WHERE user_id = :id";
+            $stmtUser = $this->conn->prepare($sqlUser);
+            $stmtUser->execute([
+                ":id" => $userId,
+                ":name" => $fullName,
+                ":email" => $email,
+                ":phone" => $phone
+            ]);
+
+            // 2. Kiểm tra xem địa chỉ mặc định đã tồn tại chưa
+            $sqlCheck = "SELECT address_id FROM user_addresses WHERE user_id = :uid AND is_default = 1 LIMIT 1";
+            $stmtCheck = $this->conn->prepare($sqlCheck);
+            $stmtCheck->execute([":uid" => $userId]);
+            $exists = $stmtCheck->fetch(PDO::FETCH_ASSOC);
+
+            if ($exists) {
+                // Đã tồn tại -> Cập nhật
+                $sqlUpdateAddr = "UPDATE user_addresses 
+                                  SET receiver_name = :name, 
+                                      receiver_phone = :phone, 
+                                      province_city = :province, 
+                                      district = :district, 
+                                      ward_commune = :ward, 
+                                      specific_address = :specific 
+                                  WHERE user_id = :uid AND is_default = 1";
+                $stmtUpdateAddr = $this->conn->prepare($sqlUpdateAddr);
+                $stmtUpdateAddr->execute([
+                    ":uid" => $userId,
+                    ":name" => $fullName,
+                    ":phone" => $phone,
+                    ":province" => $province,
+                    ":district" => $district,
+                    ":ward" => $ward,
+                    ":specific" => $specific
+                ]);
+            } else {
+                // Chưa tồn tại -> Thêm mới địa chỉ mặc định
+                $sqlInsertAddr = "INSERT INTO user_addresses (user_id, receiver_name, receiver_phone, province_city, district, ward_commune, specific_address, is_default) 
+                                  VALUES (:uid, :name, :phone, :province, :district, :ward, :specific, 1)";
+                $stmtInsertAddr = $this->conn->prepare($sqlInsertAddr);
+                $stmtInsertAddr->execute([
+                    ":uid" => $userId,
+                    ":name" => $fullName,
+                    ":phone" => $phone,
+                    ":province" => $province,
+                    ":district" => $district,
+                    ":ward" => $ward,
+                    ":specific" => $specific
+                ]);
+            }
+
+            $this->conn->commit();
+            return true;
+        } catch (Exception $e) {
+            if ($this->conn->inTransaction()) {
+                $this->conn->rollBack();
+            }
+            throw $e;
+        }
     }
 }
 ?>

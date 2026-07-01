@@ -8,7 +8,7 @@
 }
 
 body {
-    font-family: "Inter", sans-serif;
+    font-family: "Inter", "Segoe UI", sans-serif;
     background-color: var(--bg-main);
     color: var(--text-dark);
     font-size: 14px;
@@ -18,8 +18,15 @@ body {
 .brand-logo,
 .page-title,
 .section-title {
-    font-family: "Playfair Display", serif;
+    font-family: "Playfair Display", Georgia, serif !important;
     font-weight: 500;
+}
+
+.brand-logo {
+    font-weight: 700 !important;
+    letter-spacing: 3px !important;
+    text-transform: uppercase !important;
+    color: #4a3e3d;
 }
 
 .font-xs {
@@ -33,7 +40,7 @@ body {
     letter-spacing: 0.1em;
 }
 
-/* Tùy chỉnh Sidebar */
+/* Tùy chỉnh Sidebar Luxury */
 .sidebar {
     background-color: #ffffff;
     height: 100vh;
@@ -41,6 +48,9 @@ body {
     top: 0;
     left: 0;
     z-index: 100;
+    box-shadow: 4px 0 24px rgba(139, 115, 85, 0.03); /* Subtle warm luxury shadow */
+    border-right: 1px solid var(--border-color) !important;
+    padding: 24px 20px !important;
 }
 
 @media (max-width: 767.98px) {
@@ -55,17 +65,35 @@ body {
 
 .sidebar .nav-link {
     color: var(--text-muted);
-    font-weight: 400;
-    padding: 10px 12px;
-    border-radius: 6px;
-    transition: all 0.2s ease;
+    font-weight: 500;
+    padding: 12px 14px;
+    border-radius: 8px;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    align-items: center;
+    border-left: 3px solid transparent;
 }
 
-.sidebar .nav-link:hover,
+.sidebar .nav-link i {
+    font-size: 1.1rem;
+    transition: transform 0.3s ease;
+}
+
+.sidebar .nav-link:hover {
+    color: var(--gold-primary);
+    background-color: #FAF8F5;
+    transform: translateX(4px);
+}
+
+.sidebar .nav-link:hover i {
+    transform: scale(1.1);
+}
+
 .sidebar .nav-link.active {
-    color: var(--text-dark);
-    background-color: #f9f7f3;
-    font-weight: 500;
+    color: var(--gold-dark) !important;
+    background-color: #FAF6F0; /* Soft warm gold background */
+    font-weight: 600;
+    border-left: 3px solid var(--gold-primary); /* Left gold border indicator */
 }
 
 .sidebar .nav-link.active i {
@@ -76,6 +104,14 @@ body {
     width: 38px;
     height: 38px;
     font-size: 13px;
+}
+
+.user-profile {
+    background-color: #FAF8F5;
+    padding: 14px !important;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    margin-top: 15px;
 }
 
 /* Nút & Thẻ */

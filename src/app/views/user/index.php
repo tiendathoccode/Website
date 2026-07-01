@@ -5,6 +5,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <script>
+        window.USER_LOGGED_IN = <?php echo (isset($_SESSION["user_logged_in"]) && $_SESSION["user_logged_in"] === true) ? 'true' : 'false'; ?>;
+    </script>
 </head>
 <body class="bg-cream">
 
@@ -144,18 +148,16 @@
                             <li class="mb-3">
                                 <a href="#all-sections" class="category-link active"><i class="fas fa-gem me-2 icon-active"></i>Tất cả trang sức</a>
                             </li>
-                            <li class="mb-3">
-                                <a href="#category-2" class="category-link"><i class="fas fa-gem me-2 icon-active d-none"></i>Dây chuyền</a>
-                            </li>
-                            <li class="mb-3">
-                                <a href="#category-3" class="category-link"><i class="fas fa-gem me-2 icon-active d-none"></i>Vòng tay</a>
-                            </li>
-                            <li class="mb-3">
-                                <a href="#category-1" class="category-link"><i class="fas fa-gem me-2 icon-active d-none"></i>Nhẫn</a>
-                            </li>
-                            <li class="mb-3">
-                                <a href="#category-4" class="category-link"><i class="fas fa-gem me-2 icon-active d-none"></i>Bông tai</a>
-                            </li>
+                            <?php if (!empty($categoriesList)): ?>
+                                <?php foreach ($categoriesList as $cat): ?>
+                                    <li class="mb-3">
+                                        <a href="#category-<?php echo $cat['category_id']; ?>" class="category-link">
+                                            <i class="fas fa-gem me-2 icon-active d-none"></i>
+                                            <?php echo htmlspecialchars($cat['category_name']); ?>
+                                        </a>
+                                    </li>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
                         </ul>
                      </div>
 

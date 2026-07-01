@@ -111,13 +111,19 @@ document.addEventListener("DOMContentLoaded", function () {
     if (btnExportSales) {
         btnExportSales.addEventListener('click', function(e) {
             e.preventDefault();
-            showToast("Bắt đầu xuất Báo cáo Doanh thu... (Tính năng Backend sẽ tạo file Excel/CSV)", "info");
+            showToast("Đang chuẩn bị tải Báo cáo Doanh thu...", "info");
+            setTimeout(() => {
+                window.location.href = "/index.php?page=admin_export_sales";
+            }, 1000);
         });
     }
     if (btnExportInventory) {
         btnExportInventory.addEventListener('click', function(e) {
             e.preventDefault();
-            showToast("Bắt đầu xuất Báo cáo Tồn kho... (Tính năng Backend sẽ tạo file Excel/CSV)", "info");
+            showToast("Đang chuẩn bị tải Báo cáo Tồn kho...", "info");
+            setTimeout(() => {
+                window.location.href = "/index.php?page=admin_export_inventory";
+            }, 1000);
         });
     }
 });

@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
   <link rel="stylesheet" href="/assets/css/style.css" />
   <link rel="stylesheet" href="/assets/css/shopping_cart.css" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
 </head>
 <body class="bg-cream">
 

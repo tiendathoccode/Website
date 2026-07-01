@@ -1,9 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+
 :root {
     --gold-color: #bfa15f; /* Màu vàng đặc trưng của thương hiệu */
     --bg-page: #f9f6f0; /* Màu nền viền ngoài cùng */
     --input-bg: #f3f0e9; /* Màu nền của ô nhập chữ */
     --text-dark: #333333;
     --text-gray: #888888;
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'Inter', "Segoe UI", sans-serif;
 }
 
 /* Reset cứng cho trang auth */
@@ -12,6 +16,21 @@ body {
     margin: 0 !important;
     padding: 0 !important;
     height: 100%;
+    font-family: var(--font-body);
+    font-size: 15px;
+}
+
+input, select, textarea, button {
+    font-family: inherit;
+}
+
+/* Đảm bảo đồng nhất font chữ Display cho tất cả tiêu đề/logo thương hiệu */
+.navbar-brand,
+.brand-logo,
+.modal-title,
+.product-title,
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display) !important;
 }
 .auth-body {
     background-color: var(--bg-page);
@@ -63,7 +82,7 @@ body {
 }
 
 .image-text h2 {
-    font-family: "Times New Roman", Times, serif;
+    font-family: var(--font-display);
     font-size: 26px;
     margin-bottom: 10px;
     text-transform: none;
@@ -84,7 +103,7 @@ body {
 }
 
 .brand-logo {
-    font-family: "Times New Roman", Times, serif;
+    font-family: var(--font-display);
     color: var(--gold-color);
     text-align: center;
     font-size: 32px;
@@ -242,4 +261,67 @@ body {
     .auth-form-section {
         padding: 30px 20px;
     }
+}
+
+/* =============================================================================
+   CẤU HÌNH TYPOGRAPHY CHI TIẾT THEO YÊU CẦU CỦA AURRELIA
+   ============================================================================= */
+
+/* 1. Logo: Playfair Display, weight 700, letter-spacing rộng */
+.logo h1,
+.navbar-brand,
+.brand-logo,
+.site-logo,
+.footer-logo {
+    font-family: var(--font-display) !important;
+    font-weight: 700 !important;
+    letter-spacing: 3px !important;
+    text-transform: uppercase !important;
+}
+
+/* 2. Tên Sản Phẩm: Playfair Display, weight 500 */
+.product-name,
+.product-title,
+.card-title,
+.order-item-name {
+    font-family: var(--font-display) !important;
+    font-weight: 500 !important;
+    text-transform: none !important;
+}
+
+/* 3. Giá sản phẩm: Inter, weight 600 (số đậm nổi bật) */
+.product-price,
+.order-item-price,
+#grandTotalAmount,
+#detailFinalAmount,
+.text-gold,
+.price-container,
+.price {
+    font-family: var(--font-body) !important;
+    font-weight: 600 !important;
+}
+
+/* 4. Nút bấm: Inter, weight 600, uppercase, letter-spacing nhẹ */
+.btn,
+.btn-primary,
+.btn-secondary,
+.btn-gold,
+.btn-place-order,
+button[type="submit"],
+.btn-primary-custom {
+    font-family: var(--font-body) !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+}
+
+/* 5. Navigation: Inter, weight 500, uppercase */
+.navbar-nav .nav-link,
+.nav-item,
+#logoLink,
+.back-link,
+.tab {
+    font-family: var(--font-body) !important;
+    font-weight: 500 !important;
+    text-transform: uppercase !important;
 }

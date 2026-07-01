@@ -1,5 +1,5 @@
 const CART_KEY = "aurrelia_cart";
-const IS_LOGGED_IN = window.IS_LOGGED_IN || false;
+const IS_LOGGED_IN = window.USER_LOGGED_IN || window.IS_LOGGED_IN || false;
 
 async function syncDB(action, data = {}) {
   if (!IS_LOGGED_IN) return;

@@ -443,12 +443,16 @@ checkoutForm.addEventListener("submit", (e) => {
         ĐẶT HÀNG
       `;
       if (data.status === "ok") {
-        if (typeof Cart !== "undefined") {
-          Cart.clear();
-        }
-        sessionStorage.removeItem("checkout_items");
-
-        if (selectedPayment === "bank_transfer" || selectedPayment === "ewallet") {
+        if (selectedPayment === "cod") {
+            if (typeof Cart !== "undefined") {
+              Cart.clear();
+            }
+            sessionStorage.removeItem("checkout_items");
+            showToast("Đặt hàng thành công! Đang chuyển hướng...", "success");
+            setTimeout(() => {
+                window.location.href = "/index.php?page=don_hang";
+            }, 2000);
+        } else if (selectedPayment === "bank_transfer" || selectedPayment === "ewallet") {
             // Điền thông tin vào Modal QR
             document.getElementById("qrPayAmount").textContent = formatCurrency(data.final_amount);
             document.getElementById("qrTransferNote").textContent = "AURRELIA " + data.order_code;
@@ -466,8 +470,15 @@ checkoutForm.addEventListener("submit", (e) => {
             qrModal.show();
 
             // Lắng nghe xác nhận thanh toán
+            let paymentConfirmed = false;
             const btnConfirmPayment = document.getElementById("btnConfirmPayment");
             btnConfirmPayment.onclick = function() {
+                paymentConfirmed = true;
+                // Chỉ xóa giỏ hàng khi người dùng bấm ĐÃ THANH TOÁN
+                if (typeof Cart !== "undefined") {
+                    Cart.clear();
+                }
+                sessionStorage.removeItem("checkout_items");
                 qrModal.hide();
                 showToast("Cảm ơn bạn! Đơn hàng đang được kiểm duyệt thanh toán.", "success");
                 setTimeout(() => {
@@ -476,13 +487,34 @@ checkoutForm.addEventListener("submit", (e) => {
             };
 
             qrModalEl.addEventListener('hidden.bs.modal', function () {
-                window.location.href = "/index.php?page=don_hang";
+                if (!paymentConfirmed) {
+                    // Gọi API để hủy đơn hàng
+                    const cancelData = new FormData();
+                    cancelData.append("order_id", data.order_id);
+                    cancelData.append("action", "cancel");
+                    
+                    fetch("/index.php?page=order_action", {
+                        method: "POST",
+                        body: cancelData
+                    })
+                    .then(res => res.json())
+                    .then(cancelRes => {
+                        if (cancelRes.status === "ok") {
+                            showToast("Đã hủy giao dịch chuyển khoản. Đơn hàng của bạn đã bị hủy.", "info");
+                        } else {
+                            showToast(cancelRes.message || "Không thể hủy đơn hàng.", "error");
+                        }
+                        // Không xóa giỏ hàng ở đây, giữ nguyên sản phẩm để khách hàng thao tác lại
+                        setTimeout(() => {
+                            window.location.href = "/index.php?page=gio_hang";
+                        }, 2000);
+                    })
+                    .catch(err => {
+                        console.error("Lỗi hủy đơn:", err);
+                        window.location.href = "/index.php?page=gio_hang";
+                    });
+                }
             });
-        } else {
-            showToast("Đặt hàng thành công! Đang chuyển hướng...", "success");
-            setTimeout(() => {
-                window.location.href = "/index.php?page=don_hang";
-            }, 2000);
         }
       } else {
         showToast("Lỗi đặt hàng: " + data.message, "error");

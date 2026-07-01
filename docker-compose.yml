@@ -14,7 +14,7 @@ services:
       DB_NAME: ${DB_NAME:-app_db}
       DB_USER: ${DB_USER:-app_user}
       DB_PASSWORD: ${DB_PASSWORD:-app_password}
-    command: sh -c "if [ ! -d /var/www/html/vendor ]; then composer install; fi && apache2-foreground"
+    command: sh -c "if [ ! -d /var/www/html/vendor ]; then composer install; fi && mkdir -p /var/www/html/public/assets/images/product && chmod -R 777 /var/www/html/public/assets/images/product && apache2-foreground"
     depends_on:
       mysql:
         condition: service_healthy

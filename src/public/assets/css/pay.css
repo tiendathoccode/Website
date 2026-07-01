@@ -11,8 +11,8 @@
   --color-danger:      #b3403a;
   --color-success:     #4f7a52;
 
-  --font-display:      'Cormorant Garamond', Georgia, serif;
-  --font-body:         'Jost', sans-serif;
+  --font-display:      'Playfair Display', Georgia, serif;
+  --font-body:         'Inter', sans-serif;
 
   --radius-sm:         2px;
   --radius-md:         4px;
@@ -30,10 +30,19 @@ body {
   font-family:      var(--font-body);
   background-color: var(--color-bg);
   color:            var(--color-text);
-  font-size:        13px;
+  font-size:        14.5px;
   letter-spacing:   0.02em;
   line-height:      1.65;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Đảm bảo đồng nhất font chữ Display cho tất cả tiêu đề/logo thương hiệu */
+.navbar-brand,
+.brand-logo,
+.modal-title,
+.product-title,
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display) !important;
 }
 
 a { color: inherit; text-decoration: none; }
@@ -340,7 +349,7 @@ input, select, textarea { font-family: inherit; font-size: inherit; color: inher
 }
 
 .order-item-name {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: 14px;
   font-weight: 500;
   line-height: 1.3;
@@ -558,4 +567,67 @@ input, select, textarea { font-family: inherit; font-size: inherit; color: inher
   .page-title { font-size: 28px; }
   #orderSummaryCard { padding: 20px; }
   #siteFooter { flex-direction: column; gap: 10px; text-align: center; }
+}
+
+/* =============================================================================
+   CẤU HÌNH TYPOGRAPHY CHI TIẾT THEO YÊU CẦU CỦA AURRELIA
+   ============================================================================= */
+
+/* 1. Logo: Playfair Display, weight 700, letter-spacing rộng */
+.logo h1,
+.navbar-brand,
+.brand-logo,
+.site-logo,
+.footer-logo {
+    font-family: var(--font-display) !important;
+    font-weight: 700 !important;
+    letter-spacing: 3px !important;
+    text-transform: uppercase !important;
+}
+
+/* 2. Tên Sản Phẩm: Playfair Display, weight 500 */
+.product-name,
+.product-title,
+.card-title,
+.order-item-name {
+    font-family: var(--font-display) !important;
+    font-weight: 500 !important;
+    text-transform: none !important;
+}
+
+/* 3. Giá sản phẩm: Inter, weight 600 (số đậm nổi bật) */
+.product-price,
+.order-item-price,
+#grandTotalAmount,
+#detailFinalAmount,
+.text-gold,
+.price-container,
+.price {
+    font-family: var(--font-body) !important;
+    font-weight: 600 !important;
+}
+
+/* 4. Nút bấm: Inter, weight 600, uppercase, letter-spacing nhẹ */
+.btn,
+.btn-primary,
+.btn-secondary,
+.btn-gold,
+.btn-place-order,
+button[type="submit"],
+.btn-primary-custom {
+    font-family: var(--font-body) !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+}
+
+/* 5. Navigation: Inter, weight 500, uppercase */
+.navbar-nav .nav-link,
+.nav-item,
+#logoLink,
+.back-link,
+.tab {
+    font-family: var(--font-body) !important;
+    font-weight: 500 !important;
+    text-transform: uppercase !important;
 }

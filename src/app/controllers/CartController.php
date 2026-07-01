@@ -382,8 +382,8 @@ class CartController
                 $stmtVoucher->execute([":vid" => $voucherId]);
             }
 
-            // Xóa giỏ hàng chỉ khi mua qua giỏ hàng (không phải mua trực tiếp)
-            if (!$isDirectCheckout) {
+            // Xóa giỏ hàng chỉ khi mua qua giỏ hàng (không phải mua trực tiếp) và thanh toán COD
+            if (!$isDirectCheckout && $paymentMethod === "cod") {
                 $stmtClear = $this->conn->prepare("DELETE FROM cart_items WHERE user_id = :uid");
                 $stmtClear->execute([":uid" => $user_id]);
             }
@@ -392,6 +392,7 @@ class CartController
 
             $this->json([
                 "status" => "ok",
+                "order_id" => $orderId,
                 "order_code" => $orderCode,
                 "final_amount" => $finalAmount
             ]);
@@ -464,6 +465,9 @@ class CartController
                     $this->json(["status" => "error", "message" => "Đơn hàng hiện tại không thể hủy."]);
                 }
 
+                // Khôi phục tồn kho sản phẩm
+                $this->restoreOrderStock($order_id);
+
                 $stmtUpdate = $this->conn->prepare("UPDATE orders SET status = 'cancelled' WHERE order_id = :oid");
                 $stmtUpdate->execute([":oid" => $order_id]);
 
@@ -480,6 +484,27 @@ class CartController
             }
         } catch (Exception $e) {
             $this->json(["status" => "error", "message" => "Lỗi hệ thống: " . $e->getMessage()]);
+        }
+    }
+
+    private function restoreOrderStock($orderId)
+    {
+        $stmtStatus = $this->conn->prepare("SELECT status FROM orders WHERE order_id = :oid");
+        $stmtStatus->execute([":oid" => $orderId]);
+        $oldStatus = $stmtStatus->fetchColumn();
+
+        if ($oldStatus && $oldStatus !== 'cancelled') {
+            $stmtItems = $this->conn->prepare("SELECT product_id, quantity FROM order_details WHERE order_id = :oid");
+            $stmtItems->execute([":oid" => $orderId]);
+            $items = $stmtItems->fetchAll(PDO::FETCH_ASSOC);
+
+            $stmtRestore = $this->conn->prepare("UPDATE products SET stock_quantity = stock_quantity + :qty WHERE product_id = :pid");
+            foreach ($items as $item) {
+                $stmtRestore->execute([
+                    ":qty" => $item["quantity"],
+                    ":pid" => $item["product_id"]
+                ]);
+            }
         }
     }
 }
