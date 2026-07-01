@@ -1,13 +1,13 @@
 <?php
 session_start();
 
-// 1. Tọa độ gốc của toàn bộ dự án
+// 1. Tá»a Ä‘á»™ gá»‘c cá»§a toÃ n bá»™ dá»± Ã¡n
 define("BASE_PATH", dirname(__DIR__));
 
-// 2. Lấy trang khách hàng muốn vào (mặc định là home)
+// 2. Láº¥y trang khÃ¡ch hÃ ng muá»‘n vÃ o (máº·c Ä‘á»‹nh lÃ  home)
 $page = isset($_GET["page"]) ? $_GET["page"] : "home";
 
-// 3. ĐIỀU PHỐI LOGIC
+// 3. ÄIá»€U PHá»I LOGIC
 switch ($page) {
     case "home":
         require_once BASE_PATH . "/app/controllers/HomeController.php";
@@ -75,13 +75,43 @@ switch ($page) {
         $controller->storeProduct();
         break;
 
+    case "admin_product_edit":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->editProduct();
+        break;
+
+    case "admin_product_update":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->updateProduct();
+        break;
+
     case "admin_product_toggle":
         require_once BASE_PATH . "/app/controllers/AdminController.php";
         $controller = new AdminController();
         $controller->toggleProductStatus();
         break;
 
-    // --- 2 CỬA MỚI CHO TÍNH NĂNG ĐĂNG KÝ ---
+    case "admin_orders":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->orders();
+        break;
+
+    case "admin_order_detail":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->orderDetail();
+        break;
+
+    case "admin_order_update_status":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->updateOrderStatus();
+        break;
+
+    // --- 2 Cá»¬A Má»šI CHO TÃNH NÄ‚NG ÄÄ‚NG KÃ ---
     case "register":
         require_once BASE_PATH . "/app/controllers/AuthController.php";
         $controller = new AuthController();
@@ -106,7 +136,7 @@ switch ($page) {
         $controller->handleChangePassword();
         break;
 
-    // --- CỬA CHO TÍNH NĂNG QUÊN MẬT KHẨU ---
+    // --- Cá»¬A CHO TÃNH NÄ‚NG QUÃŠN Máº¬T KHáº¨U ---
     case "forgot_password":
         require_once BASE_PATH . "/app/controllers/AuthController.php";
         $controller = new AuthController();
@@ -120,7 +150,7 @@ switch ($page) {
         break;
 
     case "reset_password":
-        $token = $_GET["token"] ?? ""; // Lấy token từ URL
+        $token = $_GET["token"] ?? ""; // Láº¥y token tá»« URL
         require_once BASE_PATH . "/app/controllers/AuthController.php";
         $controller = new AuthController();
         $controller->showResetPasswordForm($token);
@@ -148,6 +178,6 @@ switch ($page) {
         $controller->showThanhToan();
         break;
     default:
-        echo "<h1 style='text-align:center;'>Lỗi 404 - Không tìm thấy trang!</h1>";
+        echo "<h1 style='text-align:center;'>Lá»—i 404 - KhÃ´ng tÃ¬m tháº¥y trang!</h1>";
         break;
 }

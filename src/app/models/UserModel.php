@@ -84,5 +84,43 @@ class UserModel
         $stmt = $this->conn->prepare($query);
         $stmt->execute([":email" => $email]);
     }
+
+    public function getAll($filters = [])
+    {
+        $query = "SELECT * FROM {$this->table} WHERE 1 = 1";
+        $params = [];
+
+        if (!empty($filters["keyword"])) {
+            $query .= " AND (full_name LIKE :keyword OR email LIKE :keyword OR phone LIKE :keyword)";
+            $params[":keyword"] = "%" . $filters["keyword"] . "%";
+        }
+
+        $query .= " ORDER BY user_id DESC";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute($params);
+
+        return $stmt->fetchAll();
+    }
+
+    public function findById($userId)
+    {
+        $query = "SELECT * FROM {$this->table} WHERE user_id = :user_id LIMIT 1";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute([":user_id" => $userId]);
+
+        return $stmt->fetch();
+    }
+
+    public function updateStatus($userId, $status)
+    {
+        $query = "UPDATE {$this->table} SET status = :status WHERE user_id = :user_id";
+        $stmt = $this->conn->prepare($query);
+
+        return $stmt->execute([
+            ":status" => $status,
+            ":user_id" => $userId
+        ]);
+    }
 }
 ?>

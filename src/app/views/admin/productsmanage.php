@@ -178,6 +178,9 @@ $selectedSort = $filters["sort"] ?? "newest";
                                                 </span>
                                             </td>
                                             <td class="pe-4 text-end align-middle">
+                                                <a class="btn btn-sm btn-icon border-0" href="/index.php?page=admin_product_edit&id=<?php echo $productId; ?>" title="Sửa sản phẩm">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
                                                 <form action="/index.php?page=admin_product_toggle" method="post" class="d-inline">
                                                     <input type="hidden" name="product_id" value="<?php echo $productId; ?>">
                                                     <input type="hidden" name="status" value="<?php echo htmlspecialchars($nextStatus); ?>">

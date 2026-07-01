@@ -102,6 +102,7 @@ body {
 }
 .trend-badge.positive { background-color: #ebf6ee; color: #287d3c; }
 .trend-badge.neutral { background-color: #f1effb; color: #5a4b9b; }
+.trend-badge.negative { background-color: #fff0f0; color: #c62828; }
 
 .icon-wrapper {
     background-color: #fbf9f5;

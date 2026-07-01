@@ -70,6 +70,67 @@ class ProductModel
         return (int) $this->conn->lastInsertId();
     }
 
+    public function findById($productId)
+    {
+        $query =
+            "SELECT p.*, c.category_name
+             FROM {$this->table} p
+             INNER JOIN categories c ON p.category_id = c.category_id
+             WHERE p.product_id = :product_id
+             LIMIT 1";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute([":product_id" => $productId]);
+
+        return $stmt->fetch();
+    }
+
+    public function skuExists($sku, $excludeProductId = null)
+    {
+        $query = "SELECT product_id FROM {$this->table} WHERE sku = :sku";
+        $params = [":sku" => $sku];
+
+        if ($excludeProductId !== null) {
+            $query .= " AND product_id != :product_id";
+            $params[":product_id"] = $excludeProductId;
+        }
+
+        $query .= " LIMIT 1";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute($params);
+
+        return (bool) $stmt->fetch();
+    }
+
+    public function update($productId, $data)
+    {
+        $query =
+            "UPDATE {$this->table}
+             SET category_id = :category_id,
+                 product_name = :product_name,
+                 sku = :sku,
+                 description = :description,
+                 price = :price,
+                 sale_price = :sale_price,
+                 stock_quantity = :stock_quantity,
+                 main_image = :main_image,
+                 status = :status
+             WHERE product_id = :product_id";
+        $stmt = $this->conn->prepare($query);
+
+        return $stmt->execute([
+            ":product_id" => $productId,
+            ":category_id" => $data["category_id"],
+            ":product_name" => $data["product_name"],
+            ":sku" => $data["sku"],
+            ":description" => $data["description"],
+            ":price" => $data["price"],
+            ":sale_price" => $data["sale_price"],
+            ":stock_quantity" => $data["stock_quantity"],
+            ":main_image" => $data["main_image"],
+            ":status" => $data["status"],
+        ]);
+    }
+
     public function updateStatus($productId, $status)
     {
         $query = "UPDATE {$this->table} SET status = :status WHERE product_id = :product_id";
@@ -110,6 +171,37 @@ class ProductModel
             ":attribute_type" => $attributeType,
             ":attribute_value" => $attributeValue,
         ]);
+    }
+
+    public function getAttributeValue($productId, $attributeType)
+    {
+        $query =
+            "SELECT attribute_value
+             FROM product_attributes
+             WHERE product_id = :product_id AND attribute_type = :attribute_type
+             LIMIT 1";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute([
+            ":product_id" => $productId,
+            ":attribute_type" => $attributeType,
+        ]);
+
+        $attribute = $stmt->fetch();
+        return $attribute["attribute_value"] ?? "";
+    }
+
+    public function replaceAttribute($productId, $attributeType, $attributeValue)
+    {
+        $deleteQuery =
+            "DELETE FROM product_attributes
+             WHERE product_id = :product_id AND attribute_type = :attribute_type";
+        $deleteStmt = $this->conn->prepare($deleteQuery);
+        $deleteStmt->execute([
+            ":product_id" => $productId,
+            ":attribute_type" => $attributeType,
+        ]);
+
+        return $this->addAttribute($productId, $attributeType, $attributeValue);
     }
 }
 ?>
