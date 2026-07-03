@@ -311,8 +311,12 @@ CREATE TABLE contacts (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 INSERT INTO users (user_id, full_name, email, phone, password, role, status) VALUES
 (1, 'Quản Trị Viên', 'admin@aurrelia.local', '0901234567', '$2y$10$D9arBnnCCmcCb1oj6dNkgOXtipipRyas1XUmTqSpbCupBGvRuJsEO', 'admin', 'active'),
-(2, 'Trần Tiến Đạt', 'test123@gmail.com', '0912345678', '$2y$10$D9arBnnCCmcCb1oj6dNkgOXtipipRyas1XUmTqSpbCupBGvRuJsEO', 'customer', 'active'),
-(3, 'Khách Hàng Mẫu', 'khachhang@gmail.com', '0987654321', '$2y$10$D9arBnnCCmcCb1oj6dNkgOXtipipRyas1XUmTqSpbCupBGvRuJsEO', 'customer', 'active');
+(2, 'Đạt Đủng Đỉnh', 'test123@gmail.com', '0912345678', '$2y$10$D9arBnnCCmcCb1oj6dNkgOXtipipRyas1XUmTqSpbCupBGvRuJsEO', 'customer', 'active'),
+(3, 'Bảo chó điên', 'gicungduoc@gmail.com', '0987654321', '$2y$10$D9arBnnCCmcCb1oj6dNkgOXtipipRyas1XUmTqSpbCupBGvRuJsEO', 'customer', 'active'),
+(4, 'Trân Trang Trải', 'huyentran@gmail.com', '0987654321', '$2y$10$D9arBnnCCmcCb1oj6dNkgOXtipipRyas1XUmTqSpbCupBGvRuJsEO', 'customer', 'active'),
+(5, 'Luân Lẳng Lơ', 'duyluan@gmail.com', '0987654321', '$2y$10$D9arBnnCCmcCb1oj6dNkgOXtipipRyas1XUmTqSpbCupBGvRuJsEO', 'customer', 'active'),
+(6, 'Thuấn Thì Thầm', 'thuan@gmail.com', '0987654321', '$2y$10$D9arBnnCCmcCb1oj6dNkgOXtipipRyas1XUmTqSpbCupBGvRuJsEO', 'customer', 'active'),
+(7, 'Trời lạnh rồi', 'bang@gmail.com', '0987654321', '$2y$10$D9arBnnCCmcCb1oj6dNkgOXtipipRyas1XUmTqSpbCupBGvRuJsEO', 'customer', 'active');
 
 
 
@@ -390,7 +394,7 @@ INSERT INTO vouchers (voucher_code, discount_type, discount_value, max_discount_
 ('FLASH25', 'percent', 25, 200000, 1000000, 10, 0, '2026-06-15 00:00:00', '2026-06-20 23:59:59', 'active');
 
 INSERT INTO user_addresses (user_id, receiver_name, receiver_phone, province_city, district, ward_commune, specific_address, is_default) VALUES
-(2, 'Trần Tiến Đạt', '0912345678', 'Hà Nội', 'Quận Cầu Giấy', 'Phường Dịch Vọng', 'Số 123, ngõ 456, đường Trần Duy Hưng', 1),
+(2, 'Trần Tiến Đạt', '0912345678', 'TP HCM', 'Thuận An', 'Phường An Phú', 'Số 123, ngõ 456, đường Trần Duy Hưng', 1),
 (2, 'Trần Tiến Đạt', '0912345679', 'Hà Nội', 'Quận Hoàn Kiếm', 'Phường Hàng Bạc', 'Số 45, phố Hàng Bạc', 0),
 (3, 'Khách Hàng Mẫu', '0987654321', 'TP. Hồ Chí Minh', 'Quận 1', 'Phường Bến Nghé', '123 Đường Lê Lợi', 1),
 (3, 'Khách Hàng Mẫu', '0987654322', 'TP. Hồ Chí Minh', 'Quận 7', 'Phường Tân Phú', 'Số 78, đường Nguyễn Thị Thập', 0);
@@ -505,13 +509,13 @@ DROP FUNCTION IF EXISTS fn_get_total_spent;
 
 -- [VIEW 1]: Chi tiết sản phẩm kết hợp tên danh mục
 CREATE VIEW v_product_details AS
-SELECT p.*, c.category_name 
+SELECT p.*, c.category_name
 FROM products p
 LEFT JOIN categories c ON p.category_id = c.category_id;
 
 -- [VIEW 2]: Thông tin khách hàng kèm địa chỉ giao hàng mặc định
 CREATE VIEW v_user_profiles AS
-SELECT u.user_id, u.full_name, u.email, u.phone, 
+SELECT u.user_id, u.full_name, u.email, u.phone,
        ua.receiver_name, ua.receiver_phone, ua.province_city, ua.district, ua.ward_commune, ua.specific_address
 FROM users u
 LEFT JOIN user_addresses ua ON u.user_id = ua.user_id AND ua.is_default = 1;
@@ -525,7 +529,7 @@ BEGIN
     DECLARE current_stock INT;
     SELECT stock_quantity INTO current_stock FROM products WHERE product_id = NEW.product_id;
     IF current_stock < NEW.quantity THEN
-        SIGNAL SQLSTATE '45000' 
+        SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Số lượng sản phẩm trong kho không đủ để đáp ứng đơn hàng!';
     END IF;
 END //
@@ -537,7 +541,7 @@ CREATE TRIGGER trg_update_stock_after_order
 AFTER INSERT ON order_details
 FOR EACH ROW
 BEGIN
-    UPDATE products 
+    UPDATE products
     SET stock_quantity = stock_quantity - NEW.quantity
     WHERE product_id = NEW.product_id;
 END //

@@ -490,5 +490,6 @@
   </script>
   <script src="/assets/js/cart.js"></script>
   <script src="/assets/js/product_details.js"></script>
+  <script src="/assets/js/chat.js"></script>
 </body>
 </html>

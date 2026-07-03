@@ -326,6 +326,11 @@ class AdminController
         require_once BASE_PATH . "/app/views/admin/usersmanage.php";
     }
 
+    public function showChat()
+    {
+        require_once BASE_PATH . "/app/views/admin/chat.php";
+    }
+
     public function apiUpdateUser()
     {
         if ($_SERVER["REQUEST_METHOD"] !== "POST") {

@@ -71,7 +71,7 @@ class HomeController
             header("Location: /index.php?page=login");
             exit();
         }
-        require_once BASE_PATH . "/app/views/user/shopping_cart.php"; // ← đổi tên file
+        require_once BASE_PATH . "/app/views/user/shopping_cart.php"; //
     }
 
     public function showThanhToan()

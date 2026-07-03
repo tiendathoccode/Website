@@ -84,5 +84,6 @@
         </div>
         <!-- Sửa lại: load JS không phải CSS -->
         <script src="/assets/js/auth.js"></script>
+        <script src="/assets/js/chat.js"></script>
     </body>
 </html>

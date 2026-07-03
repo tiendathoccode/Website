@@ -246,6 +246,7 @@
     </script>
   <script src="/assets/js/cart.js"></script>
   <script src="/assets/js/shopping_cart.js"></script>
+  <script src="/assets/js/chat.js"></script>
   <script>
       function toggleUserDropdown(e) {
           e.preventDefault();

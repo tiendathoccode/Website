@@ -260,5 +260,6 @@
     </script>
     <script src="/assets/js/cart.js"></script>
     <script src="/assets/js/pay.js"></script>
+    <script src="/assets/js/chat.js"></script>
   </body>
 </html>

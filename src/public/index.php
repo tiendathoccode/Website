@@ -296,6 +296,18 @@ switch ($page) {
         $controller->apiDeleteCategory();
         break;
 
+    case "admin_chat":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->showChat();
+        break;
+
+    case "chat":
+        require_once BASE_PATH . "/app/controllers/ChatController.php";
+        $controller = new ChatController();
+        $controller->handleRequest();
+        break;
+
     default:
         echo "<h1 style='text-align:center;'>Lỗi 404 - Không tìm thấy trang!</h1>";
         break;

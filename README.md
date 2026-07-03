@@ -1,5 +1,21 @@
 # Môi trường lập trình web: PHP 8.3 + MySQL 8.0 + phpMyAdmin
+Sau này, mỗi khi bạn muốn mở lại đường hầm kết nối (Local Tunnel) này để chia sẻ
+ cho người khác, bạn chỉ cần mở Terminal (giao diện dòng lệnh) trên máy tính của
+ mình và chạy câu lệnh sau:
 
+   npx localtunnel --port 8080
+
+ ### 💡 Lưu ý nhỏ khi chạy:
+
+ 1. Đảm bảo Docker đang chạy: Trước khi mở tunnel, hãy chắc chắn dự án web của
+ bạn đang chạy ở cổng  8080  (đã chạy lệnh  docker compose up -d ).
+ 2. Lấy mã IP xác thực: Nếu trang web LocalTunnel yêu cầu điền IP máy chủ để xác
+ minh bảo mật (chỉ hỏi 1 lần đầu tiên trên trình duyệt của máy khách), bạn có thể
+ lấy IP hiện tại bằng cách chạy lệnh này trong Terminal:
+   curl icanhazip.com
+
+ 3. Đóng đường hầm: Khi không muốn chia sẻ nữa, bạn chỉ cần nhấn tổ hợp phím
+ Ctrl + C  trong Terminal đó để tắt kết nối.
 ## Cấu trúc
 ```
 .
