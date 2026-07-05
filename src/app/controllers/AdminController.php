@@ -606,4 +606,347 @@ class AdminController
         ];
         return $labels[$status] ?? $status;
     }
+
+    // ==========================================
+    // 3. QUẢN LÝ NỘI DUNG (BANNERS, REVIEWS, FAQS, CONTACTS)
+    // ==========================================
+    
+    public function showContent()
+    {
+        require_once BASE_PATH . "/app/views/admin/contentmanage.php";
+    }
+
+    // --- BANNERS API ---
+    public function apiGetBanners()
+    {
+        try {
+            $stmt = $this->conn->query("SELECT * FROM banners ORDER BY display_order ASC");
+            $banners = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $this->json([
+                "status" => "success",
+                "data" => $banners
+            ]);
+        } catch (Exception $e) {
+            $this->json([
+                "status" => "error",
+                "message" => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function apiSaveBanner()
+    {
+        try {
+            $banner_id = isset($_POST["banner_id"]) && $_POST["banner_id"] !== '' ? (int)$_POST["banner_id"] : null;
+            $title = trim($_POST["title"] ?? "");
+            $target_link = trim($_POST["target_link"] ?? "");
+            $display_order = isset($_POST["display_order"]) ? (int)$_POST["display_order"] : 0;
+            $status = isset($_POST["status"]) && ($_POST["status"] === "show" || $_POST["status"] === "1" || $_POST["status"] === "true") ? "show" : "hide";
+
+            $image_url = null;
+            if ($banner_id) {
+                $stmt = $this->conn->prepare("SELECT image_url FROM banners WHERE banner_id = ?");
+                $stmt->execute([$banner_id]);
+                $image_url = $stmt->fetchColumn();
+            }
+
+            if (isset($_FILES["image"]) && $_FILES["image"]["error"] === UPLOAD_ERR_OK) {
+                $fileTmpPath = $_FILES["image"]["tmp_name"];
+                $fileName = $_FILES["image"]["name"];
+                $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+                $newFileName = "banner_" . time() . "_" . rand(1000, 9999) . "." . $fileExtension;
+                $uploadFileDir = BASE_PATH . "/public/assets/images/banner/";
+
+                if (!is_dir($uploadFileDir)) {
+                    @mkdir($uploadFileDir, 0777, true);
+                }
+
+                $dest_path = $uploadFileDir . $newFileName;
+                if (@move_uploaded_file($fileTmpPath, $dest_path)) {
+                    $image_url = "assets/images/banner/" . $newFileName;
+                }
+            }
+
+            if (empty($image_url)) {
+                $this->json(["status" => "error", "message" => "Vui lòng tải lên ảnh banner."]);
+            }
+
+            if ($banner_id) {
+                $stmt = $this->conn->prepare("UPDATE banners SET title = ?, image_url = ?, target_link = ?, display_order = ?, status = ? WHERE banner_id = ?");
+                $stmt->execute([$title, $image_url, $target_link, $display_order, $status, $banner_id]);
+                $this->json(["status" => "success", "message" => "Đã cập nhật banner thành công."]);
+            } else {
+                $stmt = $this->conn->prepare("INSERT INTO banners (title, image_url, target_link, display_order, status) VALUES (?, ?, ?, ?, ?)");
+                $stmt->execute([$title, $image_url, $target_link, $display_order, $status]);
+                $this->json(["status" => "success", "message" => "Đã thêm banner thành công."]);
+            }
+        } catch (Exception $e) {
+            $this->json(["status" => "error", "message" => $e->getMessage()]);
+        }
+    }
+
+    public function apiToggleBanner()
+    {
+        try {
+            $banner_id = (int)($_POST["banner_id"] ?? 0);
+            if (!$banner_id) {
+                $this->json(["status" => "error", "message" => "ID không hợp lệ."]);
+            }
+            $stmt = $this->conn->prepare("SELECT status FROM banners WHERE banner_id = ?");
+            $stmt->execute([$banner_id]);
+            $current = $stmt->fetchColumn();
+            $newStatus = ($current === "show") ? "hide" : "show";
+
+            $stmt = $this->conn->prepare("UPDATE banners SET status = ? WHERE banner_id = ?");
+            $stmt->execute([$newStatus, $banner_id]);
+            $this->json(["status" => "success", "message" => "Đã cập nhật trạng thái banner.", "new_status" => $newStatus]);
+        } catch (Exception $e) {
+            $this->json(["status" => "error", "message" => $e->getMessage()]);
+        }
+    }
+
+    public function apiDeleteBanner()
+    {
+        try {
+            $banner_id = (int)($_POST["banner_id"] ?? 0);
+            if (!$banner_id) {
+                $this->json(["status" => "error", "message" => "ID không hợp lệ."]);
+            }
+            $stmt = $this->conn->prepare("DELETE FROM banners WHERE banner_id = ?");
+            $stmt->execute([$banner_id]);
+            $this->json(["status" => "success", "message" => "Đã xoá banner thành công."]);
+        } catch (Exception $e) {
+            $this->json(["status" => "error", "message" => $e->getMessage()]);
+        }
+    }
+
+    public function apiReorderBanners()
+    {
+        try {
+            $orders = $_POST["orders"] ?? [];
+            if (empty($orders)) {
+                $input = json_decode(file_get_contents('php://input'), true);
+                $orders = $input["orders"] ?? [];
+            }
+            $this->conn->beginTransaction();
+            $stmt = $this->conn->prepare("UPDATE banners SET display_order = ? WHERE banner_id = ?");
+            foreach ($orders as $item) {
+                $stmt->execute([$item['order'], $item['id']]);
+            }
+            $this->conn->commit();
+            $this->json(["status" => "success", "message" => "Đã cập nhật thứ tự banner."]);
+        } catch (Exception $e) {
+            if ($this->conn->inTransaction()) {
+                $this->conn->rollBack();
+            }
+            $this->json(["status" => "error", "message" => $e->getMessage()]);
+        }
+    }
+
+    // --- REVIEWS API ---
+    public function apiGetReviews()
+    {
+        try {
+            $status = $_GET["status"] ?? "all";
+            $sql = "SELECT r.*, u.full_name, p.product_name 
+                    FROM reviews r 
+                    JOIN users u ON r.user_id = u.user_id 
+                    JOIN products p ON r.product_id = p.product_id";
+            
+            $params = [];
+            if ($status !== "all") {
+                $sql .= " WHERE r.status = ?";
+                $params[] = $status;
+            }
+            $sql .= " ORDER BY r.review_id DESC";
+
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute($params);
+            $reviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $this->json([
+                "status" => "success",
+                "data" => $reviews
+            ]);
+        } catch (Exception $e) {
+            $this->json([
+                "status" => "error",
+                "message" => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function apiUpdateReviewStatus()
+    {
+        try {
+            $review_id = (int)($_POST["review_id"] ?? 0);
+            $status = trim($_POST["status"] ?? "");
+            if (!$review_id || !in_array($status, ['pending', 'approved', 'hidden'])) {
+                $this->json(["status" => "error", "message" => "Dữ liệu không hợp lệ."]);
+            }
+
+            $stmt = $this->conn->prepare("UPDATE reviews SET status = ? WHERE review_id = ?");
+            $stmt->execute([$status, $review_id]);
+            $this->json(["status" => "success", "message" => "Đã cập nhật trạng thái đánh giá."]);
+        } catch (Exception $e) {
+            $this->json(["status" => "error", "message" => $e->getMessage()]);
+        }
+    }
+
+    public function apiDeleteReview()
+    {
+        try {
+            $review_id = (int)($_POST["review_id"] ?? 0);
+            if (!$review_id) {
+                $this->json(["status" => "error", "message" => "ID không hợp lệ."]);
+            }
+            $stmt = $this->conn->prepare("DELETE FROM reviews WHERE review_id = ?");
+            $stmt->execute([$review_id]);
+            $this->json(["status" => "success", "message" => "Đã xoá đánh giá."]);
+        } catch (Exception $e) {
+            $this->json(["status" => "error", "message" => $e->getMessage()]);
+        }
+    }
+
+    // --- FAQS API ---
+    public function apiGetFaqs()
+    {
+        try {
+            $stmt = $this->conn->query("SELECT * FROM faqs ORDER BY display_order ASC");
+            $faqs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $this->json([
+                "status" => "success",
+                "data" => $faqs
+            ]);
+        } catch (Exception $e) {
+            $this->json([
+                "status" => "error",
+                "message" => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function apiSaveFaq()
+    {
+        try {
+            $faq_id = isset($_POST["faq_id"]) && $_POST["faq_id"] !== '' ? (int)$_POST["faq_id"] : null;
+            $question = trim($_POST["question"] ?? "");
+            $answer = trim($_POST["answer"] ?? "");
+            $display_order = isset($_POST["display_order"]) ? (int)$_POST["display_order"] : 0;
+            $status = isset($_POST["status"]) && ($_POST["status"] === "hide" || $_POST["status"] === "0" || $_POST["status"] === "false") ? "hide" : "show";
+
+            if (empty($question) || empty($answer)) {
+                $this->json(["status" => "error", "message" => "Vui lòng nhập đầy đủ câu hỏi và câu trả lời."]);
+            }
+
+            if ($faq_id) {
+                $stmt = $this->conn->prepare("UPDATE faqs SET question = ?, answer = ?, display_order = ?, status = ? WHERE faq_id = ?");
+                $stmt->execute([$question, $answer, $display_order, $status, $faq_id]);
+                $this->json(["status" => "success", "message" => "Đã cập nhật câu hỏi FAQ thành công."]);
+            } else {
+                $stmt = $this->conn->prepare("INSERT INTO faqs (question, answer, display_order, status) VALUES (?, ?, ?, ?)");
+                $stmt->execute([$question, $answer, $display_order, $status]);
+                $this->json(["status" => "success", "message" => "Đã thêm câu hỏi FAQ thành công."]);
+            }
+        } catch (Exception $e) {
+            $this->json(["status" => "error", "message" => $e->getMessage()]);
+        }
+    }
+
+    public function apiDeleteFaq()
+    {
+        try {
+            $faq_id = (int)($_POST["faq_id"] ?? 0);
+            if (!$faq_id) {
+                $this->json(["status" => "error", "message" => "ID không hợp lệ."]);
+            }
+            $stmt = $this->conn->prepare("DELETE FROM faqs WHERE faq_id = ?");
+            $stmt->execute([$faq_id]);
+            $this->json(["status" => "success", "message" => "Đã xoá câu hỏi."]);
+        } catch (Exception $e) {
+            $this->json(["status" => "error", "message" => $e->getMessage()]);
+        }
+    }
+
+    public function apiReorderFaqs()
+    {
+        try {
+            $orders = $_POST["orders"] ?? [];
+            if (empty($orders)) {
+                $input = json_decode(file_get_contents('php://input'), true);
+                $orders = $input["orders"] ?? [];
+            }
+            $this->conn->beginTransaction();
+            $stmt = $this->conn->prepare("UPDATE faqs SET display_order = ? WHERE faq_id = ?");
+            foreach ($orders as $item) {
+                $stmt->execute([$item['order'], $item['id']]);
+            }
+            $this->conn->commit();
+            $this->json(["status" => "success", "message" => "Đã cập nhật thứ tự FAQ."]);
+        } catch (Exception $e) {
+            if ($this->conn->inTransaction()) {
+                $this->conn->rollBack();
+            }
+            $this->json(["status" => "error", "message" => $e->getMessage()]);
+        }
+    }
+
+    // --- CONTACT MESSAGES API ---
+    public function apiGetMessages()
+    {
+        try {
+            $stmt = $this->conn->query("SELECT * FROM contacts ORDER BY contact_id DESC");
+            $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $this->json([
+                "status" => "success",
+                "data" => $messages
+            ]);
+        } catch (Exception $e) {
+            $this->json([
+                "status" => "error",
+                "message" => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function apiReadMessage()
+    {
+        try {
+            $contact_id = (int)($_POST["contact_id"] ?? 0);
+            if (!$contact_id) {
+                $this->json(["status" => "error", "message" => "ID không hợp lệ."]);
+            }
+            $stmt = $this->conn->prepare("UPDATE contacts SET is_read = 1 WHERE contact_id = ?");
+            $stmt->execute([$contact_id]);
+            $this->json(["status" => "success", "message" => "Đã đánh dấu đã đọc."]);
+        } catch (Exception $e) {
+            $this->json(["status" => "error", "message" => $e->getMessage()]);
+        }
+    }
+
+    public function apiMarkAllRead()
+    {
+        try {
+            $this->conn->query("UPDATE contacts SET is_read = 1");
+            $this->json(["status" => "success", "message" => "Đã đánh dấu tất cả đã đọc."]);
+        } catch (Exception $e) {
+            $this->json(["status" => "error", "message" => $e->getMessage()]);
+        }
+    }
+
+    public function apiDeleteMessage()
+    {
+        try {
+            $contact_id = (int)($_POST["contact_id"] ?? 0);
+            if (!$contact_id) {
+                $this->json(["status" => "error", "message" => "ID không hợp lệ."]);
+            }
+            $stmt = $this->conn->prepare("DELETE FROM contacts WHERE contact_id = ?");
+            $stmt->execute([$contact_id]);
+            $this->json(["status" => "success", "message" => "Đã xoá tin nhắn."]);
+        } catch (Exception $e) {
+            $this->json(["status" => "error", "message" => $e->getMessage()]);
+        }
+    }
 }
+

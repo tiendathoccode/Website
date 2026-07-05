@@ -316,6 +316,112 @@
 
       </div>
     </section>
+
+    <!-- ================= REVIEWS SECTION ================= -->
+    <section class="reviews-section container-fluid px-5 my-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="border-top pt-5">
+                    <h3 class="mb-4 text-center text-uppercase" style="font-family: 'Times New Roman', serif; letter-spacing: 2px; color: #a47e4b; font-weight: normal;">ĐÁNH GIÁ TỪ KHÁCH HÀNG</h3>
+                    
+                    <?php 
+                    $totalReviews = count($reviewsList);
+                    $avgRating = 0;
+                    if ($totalReviews > 0) {
+                        $sum = 0;
+                        foreach ($reviewsList as $r) {
+                            $sum += $r['rating'];
+                        }
+                        $avgRating = round($sum / $totalReviews, 1);
+                    }
+                    ?>
+
+                    <!-- Review summary card -->
+                    <div class="row align-items-center mb-5 p-4 rounded-3" style="background-color: #fcf9f2;">
+                        <div class="col-md-4 text-center border-end mb-3 mb-md-0" style="border-color: #e6dfd3 !important;">
+                            <h1 class="display-4 fw-bold" style="font-family: 'Times New Roman', serif; color: #c8a165; margin-bottom: 5px;">
+                                <?php echo $avgRating > 0 ? sprintf("%.1f", $avgRating) : '0.0'; ?>
+                            </h1>
+                            <div class="mb-2 text-warning" style="font-size: 16px;">
+                                <?php 
+                                $fullStars = floor($avgRating);
+                                $halfStar = ($avgRating - $fullStars) >= 0.5 ? 1 : 0;
+                                $emptyStars = 5 - $fullStars - $halfStar;
+                                for ($i = 0; $i < $fullStars; $i++) {
+                                    echo '<i class="fas fa-star"></i>';
+                                }
+                                if ($halfStar) {
+                                    echo '<i class="fas fa-star-half-alt"></i>';
+                                }
+                                for ($i = 0; $i < $emptyStars; $i++) {
+                                    echo '<i class="far fa-star"></i>';
+                                }
+                                ?>
+                            </div>
+                            <p class="text-muted small mb-0">Dựa trên <?php echo $totalReviews; ?> đánh giá</p>
+                        </div>
+                        <div class="col-md-8 ps-md-4">
+                            <h5 class="fw-bold mb-3" style="font-size: 14px; color: #333;">Phân tích xếp hạng</h5>
+                            <?php 
+                            $starsCount = [5 => 0, 4 => 0, 3 => 0, 2 => 0, 1 => 0];
+                            foreach ($reviewsList as $r) {
+                                $starsCount[$r['rating']]++;
+                            }
+                            for ($i = 5; $i >= 1; $i--):
+                                $pct = $totalReviews > 0 ? round(($starsCount[$i] / $totalReviews) * 100) : 0;
+                            ?>
+                            <div class="d-flex align-items-center gap-2 mb-1" style="font-size: 12px; color: #555;">
+                                <span style="min-width: 45px; text-align: right;"><?php echo $i; ?> sao</span>
+                                <div class="progress flex-grow-1" style="height: 6px; background-color: #f0ece4; border-radius: 3px;">
+                                    <div class="progress-bar" role="progressbar" style="width: <?php echo $pct; ?>%; background-color: #c8a165; border-radius: 3px;" aria-valuenow="<?php echo $pct; ?>" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <span class="text-muted" style="min-width: 35px;"><?php echo $pct; ?>%</span>
+                            </div>
+                            <?php endfor; ?>
+                        </div>
+                    </div>
+
+                    <!-- Reviews List -->
+                    <div class="reviews-list">
+                        <?php if ($totalReviews > 0): ?>
+                            <div class="d-flex flex-column gap-4">
+                                <?php foreach ($reviewsList as $r): ?>
+                                    <div class="review-item border-bottom pb-4" style="border-color: #f0ece4 !important;">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <div>
+                                                <span class="fw-bold me-2" style="font-size: 14px; color: #333;"><?php echo htmlspecialchars($r['full_name']); ?></span>
+                                                <span class="text-warning" style="font-size: 11px;">
+                                                    <?php 
+                                                    for ($s = 0; $s < $r['rating']; $s++) {
+                                                        echo '<i class="fas fa-star"></i>';
+                                                    }
+                                                    for ($s = 0; $s < (5 - $r['rating']); $s++) {
+                                                        echo '<i class="far fa-star"></i>';
+                                                    }
+                                                    ?>
+                                                </span>
+                                            </div>
+                                            <small class="text-muted" style="font-size: 11px;">
+                                                <?php echo date('d/m/Y', strtotime($r['created_at'])); ?>
+                                            </small>
+                                        </div>
+                                        <p class="mb-0 text-dark small" style="line-height: 1.7; color: #444 !important;">
+                                            <?php echo nl2br(htmlspecialchars($r['comment'])); ?>
+                                        </p>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php else: ?>
+                            <div class="text-center py-5 text-muted" style="background-color: #fcf9f2; border-radius: 8px;">
+                                <i class="far fa-star fs-2 mb-3" style="color: #c8a165; opacity: 0.6;"></i>
+                                <p class="small mb-0">Chưa có đánh giá nào cho sản phẩm này.</p>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
   </main>
 
   <aside id="cartDrawer" class="cart-drawer" aria-label="Giỏ hàng" aria-hidden="true">

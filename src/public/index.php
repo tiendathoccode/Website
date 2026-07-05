@@ -229,11 +229,115 @@ switch ($page) {
         $controller->showCategories();
         break;
 
+    case "admin_content":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->showContent();
+        break;
+
     case "admin_api_update_user":
         require_once BASE_PATH . "/app/controllers/AdminController.php";
         $controller = new AdminController();
         $controller->apiUpdateUser();
         break;
+
+    // --- CÁC ROUTE QUẢN LÝ NỘI DUNG API ---
+    case "admin_api_get_banners":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->apiGetBanners();
+        break;
+
+    case "admin_api_save_banner":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->apiSaveBanner();
+        break;
+
+    case "admin_api_toggle_banner":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->apiToggleBanner();
+        break;
+
+    case "admin_api_delete_banner":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->apiDeleteBanner();
+        break;
+
+    case "admin_api_reorder_banners":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->apiReorderBanners();
+        break;
+
+    case "admin_api_get_reviews":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->apiGetReviews();
+        break;
+
+    case "admin_api_update_review_status":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->apiUpdateReviewStatus();
+        break;
+
+    case "admin_api_delete_review":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->apiDeleteReview();
+        break;
+
+    case "admin_api_get_faqs":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->apiGetFaqs();
+        break;
+
+    case "admin_api_save_faq":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->apiSaveFaq();
+        break;
+
+    case "admin_api_delete_faq":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->apiDeleteFaq();
+        break;
+
+    case "admin_api_reorder_faqs":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->apiReorderFaqs();
+        break;
+
+    case "admin_api_get_messages":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->apiGetMessages();
+        break;
+
+    case "admin_api_read_message":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->apiReadMessage();
+        break;
+
+    case "admin_api_mark_all_read":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->apiMarkAllRead();
+        break;
+
+    case "admin_api_delete_message":
+        require_once BASE_PATH . "/app/controllers/AdminController.php";
+        $controller = new AdminController();
+        $controller->apiDeleteMessage();
+        break;
+
 
     // --- CÁC ROUTE ADMIN API ---
     case "admin_api_add_product":

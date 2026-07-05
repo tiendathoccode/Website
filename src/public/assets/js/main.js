@@ -321,7 +321,29 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // 9. SMOOTH SCROLL CHO NÚT "KHÁM PHÁ NGAY" BANNER
+    // 9. SMOOTH SCROLL VÀ LỌC DANH MỤC CHO CÁC NÚT CAROUSEL BANNER
+    const bannerButtons = document.querySelectorAll('.banner-section .carousel-item a');
+    bannerButtons.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            if (href && href.startsWith('#')) {
+                if (href.startsWith('#category-')) {
+                    e.preventDefault();
+                    const targetLink = document.querySelector(`.category-link[href="${href}"]`);
+                    if (targetLink) {
+                        targetLink.click();
+                    }
+                } else if (href === '#products-section' || href === '#all-sections') {
+                    e.preventDefault();
+                    const allJewelryLink = document.querySelector('.category-link[href="#all-sections"]');
+                    if (allJewelryLink) {
+                        allJewelryLink.click();
+                    }
+                }
+            }
+        });
+    });
+
     const btnDiscoverNow = document.getElementById('btnDiscoverNow');
     if (btnDiscoverNow) {
         btnDiscoverNow.addEventListener('click', function(e) {
@@ -342,4 +364,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // 10. TỰ ĐỘNG LỌC VÀ CUỘN KHI TRANG TẢI CÓ SẴN HASH DANH MỤC
+    const initialHash = window.location.hash;
+    if (initialHash && initialHash.startsWith('#category-')) {
+        setTimeout(() => {
+            const targetLink = document.querySelector(`.category-link[href="${initialHash}"]`);
+            if (targetLink) {
+                targetLink.click();
+            }
+        }, 300);
+    }
 });

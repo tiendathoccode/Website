@@ -124,13 +124,104 @@
         </div>
     </nav>
 
-    <!-- ================= BANNER ================= -->
-    <section class="banner-section position-relative">
-        <img src="/assets/images/banner.png" alt="Bộ sưu tập Aurelia" class="w-100 object-fit-cover" style="height: 350px;">
-        <div class="position-absolute top-50 start-50 translate-middle text-center text-white">
-            <h1 class="fw-normal" style="font-family: 'Times New Roman', serif; letter-spacing: 4px;">BỘ SƯU TẬP AURRELIA</h1>
-            <a href="#products-section" class="btn rounded-pill px-4 py-2 mt-3 fw-bold border-0" id="btnDiscoverNow" style="background-color: #c8a165; color: white; font-size: 12px; letter-spacing: 1px; text-decoration: none;">KHÁM PHÁ NGAY</a>
-        </div>
+    <!-- ================= BANNER CAROUSEL ================= -->
+    <style>
+        .banner-section .carousel-item {
+            height: 500px;
+        }
+        @media (max-width: 991.98px) {
+            .banner-section .carousel-item {
+                height: 380px;
+            }
+            .banner-section .carousel-item h1 {
+                font-size: 2rem !important;
+            }
+        }
+        @media (max-width: 575.98px) {
+            .banner-section .carousel-item {
+                height: 280px;
+            }
+            .banner-section .carousel-item h1 {
+                font-size: 1.5rem !important;
+                letter-spacing: 2px !important;
+            }
+            .banner-section .carousel-item a {
+                margin-top: 15px !important;
+                padding: 6px 16px !important;
+                font-size: 11px !important;
+            }
+        }
+        /* Sleek indicators */
+        .banner-section .carousel-indicators [data-bs-target] {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.4);
+            border: none;
+            margin: 0 5px;
+            transition: all 0.2s ease;
+        }
+        .banner-section .carousel-indicators .active {
+            background-color: #c8a165;
+            transform: scale(1.2);
+        }
+    </style>
+
+    <section class="banner-section">
+        <?php if (!empty($bannersList)): ?>
+            <div id="homepageCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000">
+                <!-- Indicators -->
+                <div class="carousel-indicators mb-3">
+                    <?php foreach ($bannersList as $index => $banner): ?>
+                        <button type="button" data-bs-target="#homepageCarousel" data-bs-slide-to="<?php echo $index; ?>" 
+                                class="<?php echo $index === 0 ? 'active' : ''; ?>" aria-current="<?php echo $index === 0 ? 'true' : 'false'; ?>" 
+                                aria-label="Slide <?php echo $index + 1; ?>"></button>
+                    <?php endforeach; ?>
+                </div>
+                
+                <!-- Slides -->
+                <div class="carousel-inner">
+                    <?php foreach ($bannersList as $index => $banner): ?>
+                        <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?> position-relative" style="background-color: #000;">
+                            <img src="/<?php echo htmlspecialchars($banner['image_url']); ?>" 
+                                 alt="<?php echo htmlspecialchars($banner['title']); ?>" 
+                                 class="w-100 h-100 object-fit-cover" 
+                                 style="opacity: 0.85;">
+                            <div class="carousel-caption d-flex flex-column justify-content-center align-items-center h-100" style="bottom: 0;">
+                                <h1 class="fw-normal text-white text-uppercase tracking-wide px-3 text-center" 
+                                    style="font-family: 'Times New Roman', serif; font-size: 2.8rem; text-shadow: 0 4px 15px rgba(0,0,0,0.6); letter-spacing: 4px;">
+                                    <?php echo htmlspecialchars($banner['title']); ?>
+                                </h1>
+                                <a href="<?php echo htmlspecialchars($banner['target_link'] ?? '#products-section'); ?>" 
+                                   class="btn rounded-pill px-4 py-2 mt-4 fw-bold border-0 shadow-lg" 
+                                   style="background-color: #c8a165; color: white; font-size: 13px; letter-spacing: 1px; text-decoration: none; transition: transform 0.2s ease;">
+                                    KHÁM PHÁ NGAY
+                                </a>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+                
+                <!-- Controls -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#homepageCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Trước</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#homepageCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Sau</span>
+                </button>
+            </div>
+        <?php else: ?>
+            <!-- Fallback static banner if database has no active banners -->
+            <div class="position-relative" style="height: 500px;">
+                <img src="/assets/images/banner.png" alt="Bộ sưu tập Aurelia" class="w-100 h-100 object-fit-cover">
+                <div class="position-absolute top-50 start-50 translate-middle text-center text-white">
+                    <h1 class="fw-normal" style="font-family: 'Times New Roman', serif; letter-spacing: 4px;">BỘ SƯU TẬP AURRELIA</h1>
+                    <a href="#products-section" class="btn rounded-pill px-4 py-2 mt-3 fw-bold border-0" id="btnDiscoverNow" style="background-color: #c8a165; color: white; font-size: 12px; letter-spacing: 1px; text-decoration: none;">KHÁM PHÁ NGAY</a>
+                </div>
+            </div>
+        <?php endif; ?>
     </section>
 
     <!-- ================= MAIN CONTENT ================= -->

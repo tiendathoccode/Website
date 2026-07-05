@@ -16,6 +16,14 @@ class HomeController
             $categoriesList = [];
         }
 
+        // Lấy danh sách banner để hiển thị ở trang chủ
+        try {
+            $stmtBanners = $dbConn->query("SELECT * FROM banners WHERE status = 'show' ORDER BY display_order ASC");
+            $bannersList = $stmtBanners->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            $bannersList = [];
+        }
+
         $categoryId = isset($_GET["category_id"]) ? (int)$_GET["category_id"] : 0;
         $priceFilter = isset($_GET["price_range"]) ? $_GET["price_range"] : "";
         $sortOrder = isset($_GET["sort"]) ? $_GET["sort"] : "newest";

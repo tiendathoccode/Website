@@ -1,0 +1,523 @@
+/* =====================================================
+   contentmanage.css — Quản lý Nội dung
+   Đồng bộ hoàn toàn với style.css (Aurrelia Fine Jewelry)
+   ===================================================== */
+
+/* ---- Tab Navigation ---- */
+.content-tabs {
+    border-bottom: 1px solid var(--border-color);
+    flex-wrap: nowrap;
+    overflow-x: auto;
+}
+
+.content-tab-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 4px 4px 0 0;
+    position: relative;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.content-tab-btn:hover {
+    color: var(--text-dark);
+    background-color: #f9f7f3;
+}
+
+.content-tab-btn.active {
+    color: var(--text-dark);
+    font-weight: 600;
+    background-color: transparent;
+}
+
+.content-tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: var(--gold-primary);
+    border-radius: 2px 2px 0 0;
+}
+
+.tab-badge {
+    background-color: var(--gold-primary);
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 20px;
+    line-height: 1.4;
+}
+
+/* ---- Tab Panels ---- */
+.content-tab-panel {
+    display: none;
+}
+
+.content-tab-panel.active {
+    display: block;
+}
+
+/* =====================
+   BANNER MODULE
+   ===================== */
+.banner-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.banner-card {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
+    cursor: grab;
+}
+
+.banner-card:active {
+    cursor: grabbing;
+}
+
+.banner-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.banner-card.dragging {
+    opacity: 0.5;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+.banner-card.drag-over {
+    border-color: var(--gold-primary);
+    background-color: #faf8f4;
+}
+
+.banner-img-wrap {
+    height: 140px;
+    overflow: hidden;
+    background-color: #f7f6f4;
+    position: relative;
+}
+
+.banner-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.banner-img-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #c4c1bc;
+    font-size: 2rem;
+}
+
+.banner-order-chip {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: rgba(0,0,0,0.5);
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    letter-spacing: 0.05em;
+}
+
+.banner-status-chip {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+}
+
+.banner-status-chip.on {
+    background-color: #ebf6ee;
+    color: #287d3c;
+}
+
+.banner-status-chip.off {
+    background-color: #f0eeec;
+    color: #796a65;
+}
+
+.banner-body {
+    padding: 12px 14px;
+}
+
+.banner-title-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-dark);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.banner-link-text {
+    font-size: 11px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.banner-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-top: 1px solid var(--border-color);
+    background-color: #fcfbf9;
+}
+
+.banner-actions .form-check-input:checked {
+    background-color: var(--gold-primary);
+    border-color: var(--gold-primary);
+}
+
+/* =====================
+   REVIEW MODULE
+   ===================== */
+.review-card {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 16px 18px;
+    transition: background-color 0.15s ease;
+}
+
+.review-card:hover {
+    background-color: #faf9f7;
+}
+
+.review-card.status-pending {
+    border-left: 3px solid #d4a017;
+}
+
+.review-card.status-approved {
+    border-left: 3px solid #287d3c;
+}
+
+.review-card.status-hidden {
+    border-left: 3px solid #c4c1bc;
+    opacity: 0.75;
+}
+
+.review-avatar {
+    width: 38px;
+    height: 38px;
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.review-stars {
+    color: var(--gold-primary);
+    font-size: 12px;
+    letter-spacing: 1px;
+}
+
+.review-status-badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.04em;
+}
+
+.review-status-badge.pending {
+    background-color: #fef6e4;
+    color: #b07a00;
+}
+
+.review-status-badge.approved {
+    background-color: #ebf6ee;
+    color: #287d3c;
+}
+
+.review-status-badge.hidden {
+    background-color: #f0eeec;
+    color: #796a65;
+}
+
+.review-text {
+    font-size: 13px;
+    color: var(--text-dark);
+    line-height: 1.6;
+}
+
+/* =====================
+   FAQ MODULE
+   ===================== */
+.faq-item {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    overflow: hidden;
+    transition: box-shadow 0.15s ease;
+}
+
+.faq-item:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.faq-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    cursor: pointer;
+    background-color: #ffffff;
+    transition: background-color 0.15s ease;
+}
+
+.faq-header:hover {
+    background-color: #faf9f7;
+}
+
+.faq-chevron {
+    color: var(--text-muted);
+    font-size: 14px;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+}
+
+.faq-item.open .faq-chevron {
+    transform: rotate(180deg);
+}
+
+.faq-question-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-dark);
+    flex: 1;
+}
+
+.faq-answer-wrap {
+    display: none;
+    padding: 0 16px 16px 42px;
+    border-top: 1px solid var(--border-color);
+    background-color: #fcfbf9;
+}
+
+.faq-item.open .faq-answer-wrap {
+    display: block;
+}
+
+.faq-answer-text {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    margin: 12px 0 0;
+}
+
+.faq-drag-handle {
+    cursor: grab;
+    color: #c4c1bc;
+    font-size: 14px;
+}
+
+.faq-drag-handle:active {
+    cursor: grabbing;
+}
+
+.faq-item.dragging {
+    opacity: 0.5;
+}
+
+.faq-item.drag-over {
+    border-color: var(--gold-primary);
+}
+
+/* =====================
+   MESSAGE MODULE
+   ===================== */
+.message-item {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    transition: background-color 0.15s ease;
+    cursor: pointer;
+}
+
+.message-item:hover {
+    background-color: #faf9f7;
+}
+
+.message-item.unread {
+    border-left: 3px solid var(--gold-primary);
+    background-color: #fffdf9;
+}
+
+.message-item.unread .msg-sender-name {
+    font-weight: 700;
+}
+
+.msg-avatar {
+    width: 38px;
+    height: 38px;
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background-color: #f0ede7;
+    color: var(--gold-dark);
+}
+
+.msg-sender-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.msg-email {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.msg-preview {
+    font-size: 12px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 420px;
+}
+
+.msg-date {
+    font-size: 11px;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.unread-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--gold-primary);
+    flex-shrink: 0;
+    margin-top: 5px;
+}
+
+/* =====================
+   SHARED EXTRAS
+   ===================== */
+.avatar-lg {
+    width: 46px;
+    height: 46px;
+}
+
+.delete-icon-wrap {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background-color: #fdeaea;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Toast notification */
+.toast-container-custom {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.toast-custom {
+    background: var(--text-dark);
+    color: #ffffff;
+    font-size: 13px;
+    padding: 12px 18px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    animation: slideInToast 0.25s ease;
+    min-width: 220px;
+}
+
+.toast-custom.toast-success i { color: #5bba70; }
+.toast-custom.toast-error i { color: #e06b6b; }
+
+@keyframes slideInToast {
+    from { opacity: 0; transform: translateX(20px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Empty state */
+.empty-state {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--text-muted);
+}
+
+.empty-state i {
+    font-size: 2.5rem;
+    margin-bottom: 12px;
+    display: block;
+    color: #dcd8d1;
+}
+
+.empty-state p {
+    font-size: 13px;
+    margin: 0;
+}
+
+/* =====================
+   RESPONSIVE
+   ===================== */
+@media (max-width: 767.98px) {
+    .banner-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .msg-preview {
+        max-width: 180px;
+    }
+
+    .content-tabs {
+        gap: 0;
+    }
+
+    .content-tab-btn {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+}

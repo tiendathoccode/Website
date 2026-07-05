@@ -29,6 +29,17 @@ class ProductController
         $stmt2->execute([":id" => $product_id]);
         $extraImages = $stmt2->fetchAll(PDO::FETCH_ASSOC);
 
+        // Lấy danh sách đánh giá của sản phẩm (chỉ lấy những đánh giá đã được duyệt)
+        $stmtReviews = $conn->prepare(
+            "SELECT r.*, u.full_name 
+             FROM reviews r 
+             JOIN users u ON r.user_id = u.user_id 
+             WHERE r.product_id = :pid AND r.status = 'approved' 
+             ORDER BY r.review_id DESC"
+        );
+        $stmtReviews->execute([":pid" => $product_id]);
+        $reviewsList = $stmtReviews->fetchAll(PDO::FETCH_ASSOC);
+
         require_once BASE_PATH . "/app/views/user/product-details.php";
     }
 }
