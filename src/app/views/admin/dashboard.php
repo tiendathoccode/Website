@@ -27,56 +27,68 @@ if (!isset($_SESSION["user_logged_in"]) || $_SESSION["user_logged_in"] !== true 
 <div class="container-fluid">
     <div class="row min-vh-100">
         
-        <nav class="col-md-3 col-lg-2 d-md-block sidebar border-end p-4">
-            <div class="position-sticky d-flex flex-column h-100 justify-content-between">
-                <div>
-                    <div class="brand-zone mb-4">
-                        <h3 class="brand-logo mb-1">AURRELIA</h3>
-                        <small class="text-muted tracking-wider text-uppercase font-xs">Fine Jewelry Admin</small>
+        <!-- Sidebar Navigation -->
+        <nav class="col-md-3 col-lg-2 sidebar border-end p-4">
+            <!-- Mobile Header with Hamburger Trigger -->
+            <div class="d-flex justify-content-between align-items-center d-md-none mb-2">
+                <a href="/index.php?page=admin_dashboard" class="text-decoration-none"><h3 class="brand-logo mb-0">AURRELIA</h3></a>
+                <button class="btn btn-link text-dark p-0 border-0" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+                    <i class="bi bi-list fs-2"></i>
+                </button>
+            </div>
+            
+            <!-- Collapsible Sidebar Content -->
+            <div class="collapse d-md-block" id="sidebarMenu">
+                <div class="position-sticky d-flex flex-column h-100 justify-content-between">
+                    <div>
+                        <div class="brand-zone mb-4">
+                            <h3 class="brand-logo mb-1">AURRELIA</h3>
+                            <small class="text-muted tracking-wider text-uppercase font-xs">Fine Jewelry Admin</small>
+                        </div>
+                        
+                        <ul class="nav flex-column gap-2 mt-4">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="/index.php?page=admin_dashboard"><i class="bi bi-grid-1x2 me-2"></i> Dashboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/index.php?page=admin_products"><i class="bi bi-gem me-2"></i> Sản Phẩm</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/index.php?page=admin_categories"><i class="bi bi-tags me-2"></i> Danh Mục</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/index.php?page=admin_orders"><i class="bi bi-bag me-2"></i> Đơn Hàng</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/index.php?page=admin_users"><i class="bi bi-people me-2"></i> Người Dùng</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/index.php?page=admin_content"><i class="bi bi-layout-text-window me-2"></i> Nội Dung</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/index.php?page=admin_chat"><i class="bi bi-chat-dots me-2"></i> Tin nhắn</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-danger" href="/index.php?page=logout"><i class="bi bi-box-arrow-right me-2"></i> Đăng xuất</a>
+                            </li>
+                        </ul>         
                     </div>
                     
-                    <ul class="nav flex-column gap-2 mt-4">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="/index.php?page=admin_dashboard"><i class="bi bi-grid-1x2 me-2"></i> Dashboard</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/index.php?page=admin_products"><i class="bi bi-gem me-2"></i> Sản Phẩm</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/index.php?page=admin_categories"><i class="bi bi-tags me-2"></i> Danh Mục</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/index.php?page=admin_orders"><i class="bi bi-bag me-2"></i> Đơn Hàng</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/index.php?page=admin_users"><i class="bi bi-people me-2"></i> Người Dùng</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/index.php?page=admin_content"><i class="bi bi-layout-text-window me-2"></i> Nội Dung</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/index.php?page=admin_chat"><i class="bi bi-chat-dots me-2"></i> Tin nhắn</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-danger" href="/index.php?page=logout"><i class="bi bi-box-arrow-right me-2"></i> Đăng xuất</a>
-                        </li>
-                    </ul>         
-                </div>
-                
-                <div class="user-profile d-flex align-items-center gap-3 pt-3 border-top">
-                    <div class="avatar bg-gold text-white rounded-circle d-flex align-items-center justify-content-center fw-bold">
-                        <?php 
-                        $words = explode(" ", $_SESSION["user_name"]);
-                        $initials = "";
-                        foreach ($words as $w) {
-                            $initials .= mb_substr($w, 0, 1, "UTF-8");
-                        }
-                        echo htmlspecialchars(mb_strtoupper(mb_substr($initials, -2, 2, "UTF-8"), "UTF-8"));
-                        ?>
-                    </div>
-                    <div>
-                        <h6 class="mb-0 small fw-bold text-dark"><?php echo htmlspecialchars($_SESSION["user_name"]); ?></h6>
-                        <small class="text-muted font-xs"><?php echo htmlspecialchars(ucfirst($_SESSION["user_role"])); ?></small>
+                    <div class="user-profile d-flex align-items-center gap-3 pt-3 border-top">
+                        <div class="avatar bg-gold text-white rounded-circle d-flex align-items-center justify-content-center fw-bold">
+                            <?php 
+                            $words = explode(" ", $_SESSION["user_name"]);
+                            $initials = "";
+                            foreach ($words as $w) {
+                                $initials .= mb_substr($w, 0, 1, "UTF-8");
+                            }
+                            echo htmlspecialchars(mb_strtoupper(mb_substr($initials, -2, 2, "UTF-8"), "UTF-8"));
+                            ?>
+                        </div>
+                        <div>
+                            <h6 class="mb-0 small fw-bold text-dark"><?php echo htmlspecialchars($_SESSION["user_name"]); ?></h6>
+                            <small class="text-muted font-xs"><?php echo htmlspecialchars(ucfirst($_SESSION["user_role"])); ?></small>
+                        </div>
                     </div>
                 </div>
             </div>

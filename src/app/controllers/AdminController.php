@@ -112,6 +112,13 @@ class AdminController
             $this->json(["status" => "error", "message" => "Method not allowed."]);
         }
 
+        // Check for post_max_size overload
+        if (empty($_POST) && empty($_FILES) && $_SERVER["CONTENT_LENGTH"] > 0) {
+            $_SESSION["error_message"] = "Kích thước tệp tải lên vượt quá giới hạn của máy chủ (post_max_size).";
+            header("Location: /index.php?page=admin_add_product");
+            exit();
+        }
+
         $name = trim($_POST["name"] ?? "");
         $categoryId = (int)($_POST["category_id"] ?? 0);
         $price = (int)($_POST["price"] ?? 0);
@@ -123,24 +130,44 @@ class AdminController
         $mainImage = "assets/images/product/image_2076968380_1.jpg";
 
         // Xử lý upload ảnh nếu có
-        if (isset($_FILES["main_image"]) && $_FILES["main_image"]["error"] === UPLOAD_ERR_OK) {
-            $fileTmpPath = $_FILES["main_image"]["tmp_name"];
-            $fileName = $_FILES["main_image"]["name"];
-            $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-
-            $newFileName = "img_" . time() . "_" . rand(1000, 9999) . "." . $fileExtension;
-            $uploadFileDir = BASE_PATH . "/public/assets/images/product/";
-
-            // Đảm bảo thư mục tồn tại
-            if (!is_dir($uploadFileDir)) {
-                @mkdir($uploadFileDir, 0777, true);
+        if (isset($_FILES["main_image"])) {
+            if ($_FILES["main_image"]["error"] !== UPLOAD_ERR_OK && $_FILES["main_image"]["error"] !== UPLOAD_ERR_NO_FILE) {
+                $uploadErrors = [
+                    UPLOAD_ERR_INI_SIZE   => 'Kích thước tệp tin vượt quá giới hạn của máy chủ (upload_max_filesize).',
+                    UPLOAD_ERR_FORM_SIZE  => 'Kích thước tệp tin vượt quá giới hạn của biểu mẫu.',
+                    UPLOAD_ERR_PARTIAL    => 'Tệp tin chỉ được tải lên một phần.',
+                    UPLOAD_ERR_NO_FILE    => 'Không có tệp tin nào được tải lên.',
+                    UPLOAD_ERR_NO_TMP_DIR => 'Thiếu thư mục tạm thời trên máy chủ.',
+                    UPLOAD_ERR_CANT_WRITE => 'Không thể ghi tệp tin vào đĩa.',
+                    UPLOAD_ERR_EXTENSION  => 'Quá trình tải lên tệp tin bị dừng bởi tiện ích mở rộng.'
+                ];
+                $errMsg = $uploadErrors[$_FILES["main_image"]["error"]] ?? 'Lỗi tải lên không xác định.';
+                $_SESSION["error_message"] = "Lỗi tải ảnh sản phẩm: " . $errMsg;
+                header("Location: /index.php?page=admin_add_product");
+                exit();
             }
 
-            $dest_path = $uploadFileDir . $newFileName;
-            if (@move_uploaded_file($fileTmpPath, $dest_path)) {
-                $mainImage = "assets/images/product/" . $newFileName;
-            } else {
-                $_SESSION["error_message"] = "Không thể ghi tệp tải lên (Lỗi phân quyền thư mục). Hệ thống đã tạo sản phẩm với ảnh mặc định.";
+            if ($_FILES["main_image"]["error"] === UPLOAD_ERR_OK) {
+                $fileTmpPath = $_FILES["main_image"]["tmp_name"];
+                $fileName = $_FILES["main_image"]["name"];
+                $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+                $newFileName = "img_" . time() . "_" . rand(1000, 9999) . "." . $fileExtension;
+                $uploadFileDir = BASE_PATH . "/public/assets/images/product/";
+
+                // Đảm bảo thư mục tồn tại
+                if (!is_dir($uploadFileDir)) {
+                    @mkdir($uploadFileDir, 0777, true);
+                }
+
+                $dest_path = $uploadFileDir . $newFileName;
+                if (@move_uploaded_file($fileTmpPath, $dest_path)) {
+                    $mainImage = "assets/images/product/" . $newFileName;
+                } else {
+                    $_SESSION["error_message"] = "Không thể ghi tệp tải lên (Lỗi phân quyền thư mục).";
+                    header("Location: /index.php?page=admin_add_product");
+                    exit();
+                }
             }
         }
 
@@ -151,6 +178,8 @@ class AdminController
         }
 
         try {
+            $this->conn->beginTransaction();
+
             $stmt = $this->conn->prepare(
                 "INSERT INTO products (category_id, product_name, description, price, sale_price, stock_quantity, main_image, status) 
                  VALUES (:cat, :name, :desc, :price, :sale, :stock, :img, 'show')"
@@ -165,10 +194,17 @@ class AdminController
                 ":img" => $mainImage
             ]);
 
+            $this->conn->commit();
             $_SESSION["success_message"] = "Thêm sản phẩm thành công!";
             header("Location: /index.php?page=admin_products");
             exit();
         } catch (Exception $e) {
+            if ($this->conn->inTransaction()) {
+                $this->conn->rollBack();
+            }
+            if (isset($dest_path) && file_exists($dest_path) && $mainImage !== "assets/images/product/image_2076968380_1.jpg") {
+                @unlink($dest_path);
+            }
             $_SESSION["error_message"] = "Lỗi thêm sản phẩm: " . $e->getMessage();
             header("Location: /index.php?page=admin_add_product");
             exit();
@@ -397,14 +433,20 @@ class AdminController
         }
 
         try {
+            $this->conn->beginTransaction();
+
             $stmt = $this->conn->prepare("INSERT INTO categories (category_name, description, status) VALUES (:name, :desc, :status)");
             $stmt->execute([
                 ":name" => $name,
                 ":desc" => $desc,
                 ":status" => $status
             ]);
+            $this->conn->commit();
             $this->json(["status" => "ok", "message" => "Thêm danh mục mới thành công!"]);
         } catch (Exception $e) {
+            if ($this->conn->inTransaction()) {
+                $this->conn->rollBack();
+            }
             $this->json(["status" => "error", "message" => "Lỗi: " . $e->getMessage()]);
         }
     }
@@ -425,6 +467,8 @@ class AdminController
         }
 
         try {
+            $this->conn->beginTransaction();
+
             $stmt = $this->conn->prepare("UPDATE categories SET category_name = :name, description = :desc, status = :status WHERE category_id = :id");
             $stmt->execute([
                 ":name" => $name,
@@ -432,8 +476,12 @@ class AdminController
                 ":status" => $status,
                 ":id" => $categoryId
             ]);
+            $this->conn->commit();
             $this->json(["status" => "ok", "message" => "Cập nhật danh mục thành công!"]);
         } catch (Exception $e) {
+            if ($this->conn->inTransaction()) {
+                $this->conn->rollBack();
+            }
             $this->json(["status" => "error", "message" => "Lỗi: " . $e->getMessage()]);
         }
     }
@@ -450,6 +498,8 @@ class AdminController
         }
 
         try {
+            $this->conn->beginTransaction();
+
             // Kiểm tra xem danh mục có đang chứa sản phẩm nào không
             $stmtCheck = $this->conn->prepare("SELECT COUNT(*) FROM products WHERE category_id = :id");
             $stmtCheck->execute([":id" => $categoryId]);
@@ -459,14 +509,19 @@ class AdminController
                 // Không được xóa cứng để tránh lỗi foreign key, đổi trạng thái ẩn danh mục hoặc cảnh báo
                 $stmtUpdate = $this->conn->prepare("UPDATE categories SET status = 'hide' WHERE category_id = :id");
                 $stmtUpdate->execute([":id" => $categoryId]);
+                $this->conn->commit();
                 $this->json(["status" => "ok", "message" => "Danh mục hiện đang có sản phẩm. Hệ thống đã chuyển trạng thái sang ẨN thay vì xóa cứng!"]);
             } else {
                 // Xóa cứng nếu không có sản phẩm nào
                 $stmtDel = $this->conn->prepare("DELETE FROM categories WHERE category_id = :id");
                 $stmtDel->execute([":id" => $categoryId]);
+                $this->conn->commit();
                 $this->json(["status" => "ok", "message" => "Xóa danh mục thành công!"]);
             }
         } catch (Exception $e) {
+            if ($this->conn->inTransaction()) {
+                $this->conn->rollBack();
+            }
             $this->json(["status" => "error", "message" => "Lỗi: " . $e->getMessage()]);
         }
     }
@@ -636,7 +691,16 @@ class AdminController
 
     public function apiSaveBanner()
     {
+        $new_dest_path = null;
         try {
+            // Check for post_max_size overload
+            if ($_SERVER["REQUEST_METHOD"] === "POST" && empty($_POST) && empty($_FILES) && $_SERVER["CONTENT_LENGTH"] > 0) {
+                $this->json([
+                    "status" => "error", 
+                    "message" => "Kích thước dữ liệu gửi lên vượt quá giới hạn cho phép của máy chủ (post_max_size)."
+                ]);
+            }
+
             $banner_id = isset($_POST["banner_id"]) && $_POST["banner_id"] !== '' ? (int)$_POST["banner_id"] : null;
             $title = trim($_POST["title"] ?? "");
             $target_link = trim($_POST["target_link"] ?? "");
@@ -650,20 +714,39 @@ class AdminController
                 $image_url = $stmt->fetchColumn();
             }
 
-            if (isset($_FILES["image"]) && $_FILES["image"]["error"] === UPLOAD_ERR_OK) {
-                $fileTmpPath = $_FILES["image"]["tmp_name"];
-                $fileName = $_FILES["image"]["name"];
-                $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-                $newFileName = "banner_" . time() . "_" . rand(1000, 9999) . "." . $fileExtension;
-                $uploadFileDir = BASE_PATH . "/public/assets/images/banner/";
-
-                if (!is_dir($uploadFileDir)) {
-                    @mkdir($uploadFileDir, 0777, true);
+            if (isset($_FILES["image"])) {
+                if ($_FILES["image"]["error"] !== UPLOAD_ERR_OK && $_FILES["image"]["error"] !== UPLOAD_ERR_NO_FILE) {
+                    $uploadErrors = [
+                        UPLOAD_ERR_INI_SIZE   => 'Kích thước tệp tin vượt quá giới hạn của máy chủ (upload_max_filesize).',
+                        UPLOAD_ERR_FORM_SIZE  => 'Kích thước tệp tin vượt quá giới hạn của biểu mẫu.',
+                        UPLOAD_ERR_PARTIAL    => 'Tệp tin chỉ được tải lên một phần.',
+                        UPLOAD_ERR_NO_FILE    => 'Không có tệp tin nào được tải lên.',
+                        UPLOAD_ERR_NO_TMP_DIR => 'Thiếu thư mục tạm thời trên máy chủ.',
+                        UPLOAD_ERR_CANT_WRITE => 'Không thể ghi tệp tin vào đĩa.',
+                        UPLOAD_ERR_EXTENSION  => 'Quá trình tải lên tệp tin bị dừng bởi tiện ích mở rộng.'
+                    ];
+                    $errMsg = $uploadErrors[$_FILES["image"]["error"]] ?? 'Lỗi tải lên không xác định.';
+                    $this->json(["status" => "error", "message" => "Lỗi tải ảnh banner: " . $errMsg]);
                 }
+                
+                if ($_FILES["image"]["error"] === UPLOAD_ERR_OK) {
+                    $fileTmpPath = $_FILES["image"]["tmp_name"];
+                    $fileName = $_FILES["image"]["name"];
+                    $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+                    $newFileName = "banner_" . time() . "_" . rand(1000, 9999) . "." . $fileExtension;
+                    $uploadFileDir = BASE_PATH . "/public/assets/images/banner/";
 
-                $dest_path = $uploadFileDir . $newFileName;
-                if (@move_uploaded_file($fileTmpPath, $dest_path)) {
-                    $image_url = "assets/images/banner/" . $newFileName;
+                    if (!is_dir($uploadFileDir)) {
+                        @mkdir($uploadFileDir, 0777, true);
+                    }
+
+                    $dest_path = $uploadFileDir . $newFileName;
+                    if (@move_uploaded_file($fileTmpPath, $dest_path)) {
+                        $image_url = "assets/images/banner/" . $newFileName;
+                        $new_dest_path = $dest_path; // Track the newly uploaded file path
+                    } else {
+                        $this->json(["status" => "error", "message" => "Không thể ghi tệp tin tải lên (Lỗi phân quyền thư mục)."]);
+                    }
                 }
             }
 
@@ -671,16 +754,26 @@ class AdminController
                 $this->json(["status" => "error", "message" => "Vui lòng tải lên ảnh banner."]);
             }
 
+            $this->conn->beginTransaction();
+
             if ($banner_id) {
                 $stmt = $this->conn->prepare("UPDATE banners SET title = ?, image_url = ?, target_link = ?, display_order = ?, status = ? WHERE banner_id = ?");
                 $stmt->execute([$title, $image_url, $target_link, $display_order, $status, $banner_id]);
+                $this->conn->commit();
                 $this->json(["status" => "success", "message" => "Đã cập nhật banner thành công."]);
             } else {
                 $stmt = $this->conn->prepare("INSERT INTO banners (title, image_url, target_link, display_order, status) VALUES (?, ?, ?, ?, ?)");
                 $stmt->execute([$title, $image_url, $target_link, $display_order, $status]);
+                $this->conn->commit();
                 $this->json(["status" => "success", "message" => "Đã thêm banner thành công."]);
             }
         } catch (Exception $e) {
+            if ($this->conn->inTransaction()) {
+                $this->conn->rollBack();
+            }
+            if ($new_dest_path && file_exists($new_dest_path)) {
+                @unlink($new_dest_path);
+            }
             $this->json(["status" => "error", "message" => $e->getMessage()]);
         }
     }
@@ -839,16 +932,23 @@ class AdminController
                 $this->json(["status" => "error", "message" => "Vui lòng nhập đầy đủ câu hỏi và câu trả lời."]);
             }
 
+            $this->conn->beginTransaction();
+
             if ($faq_id) {
                 $stmt = $this->conn->prepare("UPDATE faqs SET question = ?, answer = ?, display_order = ?, status = ? WHERE faq_id = ?");
                 $stmt->execute([$question, $answer, $display_order, $status, $faq_id]);
+                $this->conn->commit();
                 $this->json(["status" => "success", "message" => "Đã cập nhật câu hỏi FAQ thành công."]);
             } else {
                 $stmt = $this->conn->prepare("INSERT INTO faqs (question, answer, display_order, status) VALUES (?, ?, ?, ?)");
                 $stmt->execute([$question, $answer, $display_order, $status]);
+                $this->conn->commit();
                 $this->json(["status" => "success", "message" => "Đã thêm câu hỏi FAQ thành công."]);
             }
         } catch (Exception $e) {
+            if ($this->conn->inTransaction()) {
+                $this->conn->rollBack();
+            }
             $this->json(["status" => "error", "message" => $e->getMessage()]);
         }
     }
